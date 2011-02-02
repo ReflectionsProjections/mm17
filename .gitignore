@@ -1,0 +1,12 @@
+*.swp
+*.o
+*.gch
+*.class
+server/jars/mm17.jar
+server/viz.json.gz
+clients/MechMania17/*
+*.json
+*.json.gz
+viz.pb
+viz.pb.gz
+arena.pb
