@@ -36,34 +36,41 @@ message Vector {
 }
 
 enum CommandType {
-	FACE    = 0;
-	SHOOT   = 1;
-	BUILD   = 2;
+	FACE      = 0;
+	SHOOT     = 1;
+	BUILD     = 2;
+	MISSILES  = 3;
 }
 
 // All for the want of inheritance.
 message Command {
-	message Face {
+	message Face { // Face towards an object
 		required int32  id     = 1; // Which ship to have face this point
 		required Vector point  = 2; // Where to face
 	}
 
-	message Shoot {
+	message Shoot { // Fire!
 		required int32  id     = 1; // Which ship
 		required Vector at     = 2; // Where to fire?
 	}
 
-	message Build {
+	message Build { // Build a new ship
 		required int32  size   = 1; // How big do you want it?
 		required bool   warp   = 2; // Do you want warp capabilities?
 	}
 
+	message Missiles { // Purchase missiles
+		required int32 id      = 1; // Who are these for?
+		required int32 quantity= 2; // How many?
+	}
+
 	required CommandType  type      = 1;
-	optional Face         face      = 2;
-	optional Shoot        shoot     = 3;
-	optional Build        build     = 4;
-	optional bool         succeeded = 5;
-	optional int32        id        = 6;
+	optional bool         succeeded = 2;
+	optional int32        id        = 3;
+	optional Face         face      = 4;
+	optional Shoot        shoot     = 5;
+	optional Build        build     = 6;
+	optional Missiles     missiles  = 7;
 }
 
 message Actions {
@@ -84,6 +91,7 @@ message GameState {
 		required int32  size       = 5;
 		required int32  armor      = 6; // Armor points remaining
 		required int32  vision     = 7; // Vision radius
+		required int32  missiles   = 8; // Remaining missiles
 	}
 
 	message Object {
