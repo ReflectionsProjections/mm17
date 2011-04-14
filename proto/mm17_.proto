@@ -1,0 +1,110 @@
+// Actual Protocol Buffer definitions for MM17
+package MechMania17;
+
+option optimize_for = SPEED;
+
+message ClientConnect {
+	required string name = 1;
+	optional int32  id   = 2;
+}
+
+message PlayerList {
+	repeated ClientConnect players = 1;
+}
+
+message DeadPlayers {
+	message DeadPlayer {
+		required string name    = 1;
+		required string reason  = 2;
+	}
+	repeated DeadPlayer players = 1;
+}
+
+message FinalScores {
+	message Score {
+		required string name = 1;
+		required int32 score = 2;
+	}
+	repeated Score scores = 1;
+}
+
+message Vector {
+	required int32 x = 1;
+	required int32 y = 2;
+	required int32 z = 3;
+	optional int32 r = 4;
+}
+
+enum CommandType {
+	FACE    = 0;
+	SHOOT   = 1;
+	BUILD   = 2;
+}
+
+// All for the want of inheritance.
+message Command {
+	message Face {
+		required int32  id     = 1; // Which ship to have face this point
+		required Vector point  = 2; // Where to face
+	}
+
+	message Shoot {
+		required int32  id     = 1; // Which ship
+		required Vector at     = 2; // Where to fire?
+	}
+
+	message Build {
+		required int32  size   = 1; // How big do you want it?
+		required bool   warp   = 2; // Do you want warp capabilities?
+	}
+
+	required CommandType  type      = 1;
+	optional Face         face      = 2;
+	optional Shoot        shoot     = 3;
+	optional Build        build     = 4;
+	optional bool         succeeded = 5;
+	optional int32        id        = 6;
+}
+
+message Actions {
+	repeated Command actions = 1;
+}
+
+message GameState {
+	required int32  ore     = 1; // Amount of universal fuel / building material available to the player
+	repeated Ship   ships   = 2; // The player's ships, if empty they are all dead or your planet blew up
+	repeated Object objects = 3; // Objects visible to the player
+	required int32  id      = 4; // Player's ID number
+
+	message Ship {
+		required int32  id         = 1;
+		required Vector position   = 2;
+		required Vector direction  = 3;
+		required Vector velocity   = 4;
+		required int32  size       = 5;
+		required int32  armor      = 6; // Armor points remaining
+		required int32  vision     = 7; // Vision radius
+	}
+
+	message Object {
+		enum Type {
+			UNKNOWN = 0;
+			PLANET  = 1;
+			ROCK    = 2;
+			SHIP    = 3;
+		}
+		required int32  id        = 1;
+		required Type   type      = 2;
+		required int32  owner     = 3;
+		required Vector position  = 4; // Use the `r` from this to get the radius
+		optional Vector velocity  = 5;
+		optional bool   mining    = 6; // If this is a rock, and we are mining it
+	}
+
+}
+
+message Turn {
+	required int32     turn_count = 1;
+	optional GameState game_state = 2;
+	optional Command   command    = 3;
+}
