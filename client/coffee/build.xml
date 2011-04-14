@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project name="mm17" default="jar">
+	<property name="lib.dir"		value="jars"/>
+	<property name="src.dir"		value="src"/>
+	<property name="classes.dir"	value="classes"/>
+
+	<property name="main-class"		value="MechMania17.ClientMain"/>
+
+	<path id="classpath">
+		<fileset dir="${lib.dir}" includes="*.jar"/>
+	</path>
+
+	<target name="clean" description="remove intermediate files">
+		<delete dir="${classes.dir}"/>
+	</target>
+	<target name="clobber" depends="clean" description="remove all artifact files">
+		<delete file="${lib.dir}/${ant.project.name}.jar"/>
+	</target>
+	<target name="compile" description="compile the Java source code to class files">
+		<mkdir dir="${classes.dir}"/>
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
+			<compilerarg value="-Xlint"/>
+		</javac>
+	</target>
+	<target name="jar" depends="compile" description="create a Jar file for the application">
+		<jar destfile="${lib.dir}/${ant.project.name}.jar">
+			<fileset dir="${classes.dir}" includes="**/*.class"/>
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="run" depends="jar">
+		<java fork="true" classname="${main-class}">
+			<jvmarg value="-XX:MaxDirectMemorySize=1G"/>
+			<jvmarg value="-XX:+AggressiveOpts"/>
+			<jvmarg value="-XX:+UseBiasedLocking"/>
+			<jvmarg value="-Xmx512M"/>
+			<jvmarg value="-Xms16M"/>
+			<jvmarg value="-Xss16M"/>
+			<classpath>
+				<path refid="classpath"/>
+				<path location="${lib.dir}/${ant.project.name}.jar"/>
+			</classpath>
+			<arg line='${args}'/>
+		</java>
+	</target>
+</project>
