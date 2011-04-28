@@ -80,7 +80,7 @@ message Actions {
 message GameState {
 	required int32  ore     = 1; // Amount of universal fuel / building material available to the player
 	repeated Ship   ships   = 2; // The player's ships, if empty they are all dead or your planet blew up
-	repeated Object objects = 3; // Objects visible to the player
+	repeated Entity objects = 3; // Objects visible to the player
 	required int32  id      = 4; // Player's ID number
 
 	message Ship {
@@ -94,7 +94,7 @@ message GameState {
 		required int32  missiles   = 8; // Remaining missiles
 	}
 
-	message Object {
+	message Entity {
 		enum Type {
 			UNKNOWN = 0;
 			PLANET  = 1;
