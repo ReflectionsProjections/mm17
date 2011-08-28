@@ -3,7 +3,7 @@ from Game import RangeException, Map, Player
 class Ship(object):
     """The class for a Player's ship.  Access to ship methods is through
     /ship/{id}/{method}.  A Player must be authorized to access certain methods.
-    Any method that returns info must do so in a dictionary."""
+    Any method that returns info must do so in a dictionary. """
 
     def __init__(self, player_id, position):
         self.owner = player_id
@@ -31,11 +31,11 @@ class Ship(object):
         return info
 
     def move(self, angle):
-        """ POST method.  Must specify an angle. How does this tie into server?"""
+        """ POST method.  Must specify an angle. How does this tie into server? """
         self.direction = angle
 
     class Laser(object):
-        """ The Laser class!  Defines a shot."""
+        """ The Laser class!  Defines a shot. """
         def __init__(self, ship, origin, angle, range):
             self.ship = ship
             self.direction = angle
@@ -43,19 +43,19 @@ class Ship(object):
 
 
     def shoot(self, angle):
-        """POST method, must define an angle. Creates a new LAser blast and registers it with the Map."""
+        """ POST method, must define an angle. Creates a new LAser blast and registers it with the Map. """
         shot = self.Laser(self, self.position, angle, self.weapon_range)
         Map.fired_shots.append(shot)
 
     def scan(self, ship_id):
-        """POST method.  Scans a ship if in range and returns ship.info.  Otherwise it raises a RangeException."""
+        """ POST method.  Scans a ship if in range and returns ship.info.  Otherwise it raises a RangeException. """
         if distance(self.position, ship.position) < self.scan_range:
             return ship.info()
         else:
             raise RangeException("Ship" + ship_id + "is out of range!")
 
     def _update_attrs(self):
-        """Internal method that updates attributes after a talent boost."""
+        """ Internal method that updates attributes after a talent boost. """
         ranges = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900,
                   1000, 1100, 1200, 1300, 1400, 1500, 1600]
 
@@ -67,7 +67,7 @@ class Ship(object):
         self.speed = ranges[self.talents['speed'] / 10]
 
     def add_talent_point(self, talent_str):
-        """POST method to increment a talent tree by one point."""
+        """ POST method to increment a talent tree by one point. """
         if self.talent_points > 0:
             self.talents[talent_str] += 1
             self.talent_points -= 1
@@ -76,7 +76,7 @@ class Ship(object):
             raise Exception("Not enough points!")
         
     def radar(self):
-        """GET method.  Returns a list of 'blips' with some info based
-        on position and radar range."""
+        """ GET method.  Returns a list of 'blips' with some info based
+        on position and radar range. """
         return Map.radar(self.position, self.radar_range)
                          
