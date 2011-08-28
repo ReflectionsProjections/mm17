@@ -1,5 +1,4 @@
-import Player
-import Map
+from Game import RangeException, Map, Player
 
 class Ship(object):
     def __init__(self, Player, position):
@@ -44,13 +43,19 @@ class Ship(object):
         else:
             raise RangeException()
 
-    def update_attrs(self, talents):
+    def update_attrs(self):
         ranges = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900,
-                  1000, 1100, 1200, 1300,  1400, 1500]
+                  1000, 1100, 1200, 1300, 1400, 1500]
+        self.radar_range = ranges[self.talents['radar']]
+        self.scan_range = ranges[self.talents['radar'] / 5]
+        self.weapon_power = ranges[self.talents['weapons'] / 10]
+        self.shield_strength = ranges[self.talents['shields'] / 5]
+        self.speed = ranges[self.talents['speed'] / 10]
 
-        self.scan_range = ranges[talents['radar']]
-        self.weapon_power = ranges[talents['weapons'] / 10]
-        self.shield_strength = ranges[talents['shields'] / 5]
-        self.speed = ranges[talents['speed'] / 10]
+    def add_talent_point(self, talent_str):
+        self.talents[talent_str] += 1
+        self.update_attrs()
         
+    def radar(self):
+        return Map.radar(self.position, self.radar_range)
                          
