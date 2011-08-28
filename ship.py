@@ -45,7 +45,7 @@ class Ship(object):
 
     def update_attrs(self):
         ranges = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900,
-                  1000, 1100, 1200, 1300, 1400, 1500]
+                  1000, 1100, 1200, 1300, 1400, 1500, 1600]
         self.radar_range = ranges[self.talents['radar']]
         self.scan_range = ranges[self.talents['radar'] / 5]
         self.weapon_power = ranges[self.talents['weapons'] / 10]
