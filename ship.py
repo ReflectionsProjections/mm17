@@ -2,7 +2,8 @@ from Game import RangeException, Map, Player
 
 class Ship(object):
     """The class for a Player's ship.  Access to ship methods is through
-    /ship/{id}/{method}.  A Player must be authorized to access certain methods"""
+    /ship/{id}/{method}.  A Player must be authorized to access certain methods.
+    Any method that returns info must do so in a dictionary."""
 
     def __init__(self, player_id, position):
         self.owner = player_id
