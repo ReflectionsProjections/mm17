@@ -16,6 +16,7 @@ class MMHandler(BaseHTTPRequestHandler):
 		return
 
 if __name__ == '__main__':
-	print "Starting..."
-	server = HTTPServer(('',7000), MMHandler)
+	port = 7000
+	print "Starting on port " + str(port) + "..."
+	server = HTTPServer(('', port), MMHandler)
 	server.serve_forever()
