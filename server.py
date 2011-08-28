@@ -8,7 +8,9 @@ class MMHandler(BaseHTTPRequestHandler):
 		self.send_response(200)
 		self.send_header('Content-type', 'application/json')
 		self.end_headers()
-		self.wfile.write("{ herp: \"derp\" }")
+		tester = {"herp":"derp"}
+		writeout = json.dumps(tester)
+		self.wfile.write(writeout)
 		return
 	def do_POST(self):
 		return

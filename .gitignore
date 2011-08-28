@@ -10,3 +10,4 @@ clients/MechMania17/*
 viz.pb
 viz.pb.gz
 arena.pb
+*.pyc
