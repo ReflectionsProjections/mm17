@@ -1,4 +1,4 @@
-from Game import RangeException, Map, Player
+from Game import Map, Player
 
 class Ship(object):
     """The class for a Player's ship.  Access to ship methods is through
@@ -16,6 +16,7 @@ class Ship(object):
         self.talent_points = 0
         self.position = position
         self._update_attrs(self.talents)
+        return {'status': 1}
 
     def info(self):
         """ GET method.  Must provide auth token for some info?  Also, scan method
@@ -28,11 +29,12 @@ class Ship(object):
                 'experience' : self.experience,
                 'health' : self.health,
                 }
-        return info
+        return {'status':1, 'info': info}
 
     def move(self, angle):
         """ POST method.  Must specify an angle. How does this tie into server? """
         self.direction = angle
+        return {'status':1}
 
     class Laser(object):
         """ The Laser class!  Defines a shot. """
@@ -46,13 +48,14 @@ class Ship(object):
         """ POST method, must define an angle. Creates a new LAser blast and registers it with the Map. """
         shot = self.Laser(self, self.position, angle, self.weapon_range)
         Map.fired_shots.append(shot)
+        return {'status':1}
 
     def scan(self, ship_id):
         """ POST method.  Scans a ship if in range and returns ship.info.  Otherwise it raises a RangeException. """
         if distance(self.position, ship.position) < self.scan_range:
-            return ship.info()
+            return {'status' : 1, 'info' : ship.info()}
         else:
-            raise RangeException("Ship" + ship_id + "is out of range!")
+            return {'status' : 0, 'error': "Ship" + ship_id + "is out of range!"}
 
     def _update_attrs(self):
         """ Internal method that updates attributes after a talent boost. """
@@ -72,8 +75,9 @@ class Ship(object):
             self.talents[talent_str] += 1
             self.talent_points -= 1
             self._update_attrs()
+            return {'status' : 1}
         else:
-            raise Exception("Not enough points!")
+            return {'status' : 0, 'error' : "Not enough points!")
         
     def radar(self):
         """ GET method.  Returns a list of 'blips' with some info based
