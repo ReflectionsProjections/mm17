@@ -1,5 +1,6 @@
 import datetime
 import Player
+import MMHandler
 
 class Game:
     """The main Game class runs the game and contains the main loop
@@ -9,7 +10,10 @@ class Game:
         self.players = []
         self.map = map
         self.log_file = log_file
-        self.next_id
+        self.server = HTTPServer(('', port), MMHandler)
+	self.server.serve_forever()
+        slepp(2)
+        self._begin()
 
     def _log(self, message):
         """ Adds a message to the end of the log file. """
@@ -27,9 +31,9 @@ class Game:
         self.active = False
 
     def _add_player(self, name, color):
-        new = Player(name, id = len(self,players), color)
-        self.players.append(Player)
-    
+        new_player = Player(name, id = len(self,players), color)
+        self.players.append(new_player)
+
     def _check_players(self):
         actives = [player for player in self.players if player.active == True]
         if len(actives) > 1: return True
