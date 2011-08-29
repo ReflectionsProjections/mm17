@@ -1,13 +1,14 @@
-from Game import Map, Player
+import Game
+import Map
 
 class Ship(object):
     """The class for a Player's ship.  Access to ship methods is through
-    /ship/{id}/{method}.  A Player must be authorized to access certain methods.
-    Any method that returns info must do so in a dictionary. """
+    /ship/{id}/{method}.  A Player must be authorized to access certain
+    methods. Any method that returns info must do so in a dictionary. """
 
-    def __init__(self, player_id, position):
-        self.owner = player_id
-        self.id = Game.players[id].next_ship_id()
+    def __init__(self, player, position):
+        self.owner = player
+        self.id Game.next_id()
         self.level = 1
         self.experience = 0
         self.health = 100
@@ -21,7 +22,7 @@ class Ship(object):
     def info(self):
         """ GET method.  Must provide auth token for some info?  Also, scan method
         accesses this if the other ship is within range. """
-        info = {'id' : self.id,
+        info = {'id' : self.id, 
                 'owner' : self.id,
                 'position' : self.position,
                 'level' : self.level,
@@ -29,7 +30,7 @@ class Ship(object):
                 'experience' : self.experience,
                 'health' : self.health,
                 }
-        return {'status':1, 'info': info}
+        return {'status' : 1, 'info' : info}
 
     def move(self, angle):
         """ POST method.  Must specify an angle. How does this tie into server? """
