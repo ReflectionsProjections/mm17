@@ -10,10 +10,8 @@ class Game:
         self.players = []
         self.map = map
         self.log_file = log_file
-        self.server = HTTPServer(('', port), MMHandler)
-	self.server.serve_forever()
-        slepp(2)
-        self._begin()
+        self.fired_shots = []
+        self.begin()
 
     def _log(self, message):
         """ Adds a message to the end of the log file. """
@@ -42,9 +40,12 @@ class Game:
     def _main(self):
         while self.active == True:
             if _check_players == False: self._end
+            self._handle_turn()
 
     def next_id(self):
         self.next_id += 1
         return next_id
             
-            
+    def _handle_turn():
+        for shot in self.fired_shots:
+            # collision detection goes here somehow
