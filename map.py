@@ -1,5 +1,5 @@
 from math import sqrt
-import random
+from random import randrange
 
 class Map:
 
