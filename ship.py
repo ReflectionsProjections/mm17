@@ -20,8 +20,8 @@ class Ship(object):
         return (200)
 
     def info(self):
-        """ GET method.  Must provide auth token for some info?  Also, scan method
-        accesses this if the other ship is within range. """
+        """ GET method.  Must provide auth token for some info?  Also, 
+        scan method accesses this if the other ship is within range. """
         info = {'id' : self.id, 
                 'owner' : self.id,
                 'position' : self.position,
@@ -49,8 +49,7 @@ class Ship(object):
     def shoot(self, angle):
         """ POST method, must define an angle. Creates a new LAser blast and registers it with the Map. """
         shot = self.Laser(self, self.position, angle, self.weapon_range)
-        Game.fired_shots.append(shot)
-        return (200)
+        return (200, shot)
 
     def scan(self, ship_id):
         """ POST method.  Scans a ship if in range and returns ship.info.  Otherwise it raises a RangeException. """

@@ -6,12 +6,11 @@ class Game:
     """The main Game class runs the game and contains the main loop
     that updates statuses and logs data."""
 
-    def __init__(self, map, log_file):
-        self.players = []
-        self.map = map
-        self.log_file = log_file
-        self.fired_shots = []
-        self.begin()
+    def __init__(self, map, log_file, players):
+        self.map = map # map object
+        self.log_file = log_file # should be a path
+        self.players = players.shuffle() # list of players
+        self.turn = 0
 
     def _log(self, message):
         """ Adds a message to the end of the log file. """
@@ -23,7 +22,9 @@ class Game:
         self.active = True
         self.start_time = datetime.now
         self._log("Game started.")
-        
+        self.current_player = players[randint(0 , len(self.players) - 1)]
+        self._main()
+
     def _end(self):
         self._log("Game ended.")
         self.active = False
@@ -46,6 +47,12 @@ class Game:
         self.next_id += 1
         return next_id
             
-    def _handle_turn():
-        for shot in self.fired_shots:
-            # collision detection goes here somehow
+    def _handle_turn(self, player):
+        for action in player.actions:
+            if hasattr(action['object'], action['method']):
+                getattr(action['object'], action['method'])(**kwargs)
+            else:
+                _log('%s attempted to use method %s with object %s, which failed' % (player.name, action['method'], action['object']))
+        self.turn += 1
+        self.current_player = self.players[self.players.index(self.current_player) + self.player_offset]
+        
