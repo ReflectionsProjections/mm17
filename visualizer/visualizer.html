@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MechMania 17</title>
+		
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+		<script type="text/javascript" src="mechmania.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="reset.css" />
+		
+		<style type="text/css">
+			body {
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<canvas id="mainCanvas">
+		</canvas>
+		
+		<script type="text/javascript">
+			var camera = new Camera(0, 0, 1000, 1000);
+			var world = new World(2000, 2000);
+			
+			var canvas = $("#mainCanvas").get(0);
+			var context = null;
+			
+			function resizeCanvas()
+			{
+				canvas.width = document.width;
+				canvas.height = document.height;
+				
+				// TODO: this is a stub
+				camera.width = canvas.width;
+				camera.height = canvas.height;
+			}
+			
+			function run()
+			{
+				world.render(context, camera);
+			}
+			
+			function init()
+			{
+				resizeCanvas();
+				
+				if(canvas.getContext)
+				{
+					world.init();
+					context = canvas.getContext("2d");
+					run();
+				}
+			}
+			
+			$(window).ready(function ()
+			{
+				init();
+			});
+		</script>
+	</body>
+</html>
