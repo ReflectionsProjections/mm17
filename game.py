@@ -40,20 +40,20 @@ class Game(object):
     def _main(self):
         while self.active == True:
             if _check_players == False: self._end
-            self._handle_turn()
 
     def next_id(self):
         self.next_id += 1
         return next_id
             
-    def _handle_turn(self):
+    def handle_turn(self, actions):
+        """Executes a list of actions given by a player.  Should be called by server."""
         self.turn += 1
-        for action in self.current_player.actions:
+        self.current_player = self.players[self.turn % len(self.players)]
+        for action in actions:
             object = Map.objects[action['object'])]
             if hasattr(object, action['method']):
               method = getattr(object, action['method'])
               method(**action['kwargs']
             else:
                 _log('%s attempted to use method %s with object %s, which failed' % (player.name, action['method'], action['object']))
-        self.current_player = self.players[self.turn % len(self.players)]
         

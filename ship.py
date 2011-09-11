@@ -2,8 +2,7 @@ import Game
 import Map
 
 class Ship(object):
-    """The class for a Player's ship.  Access to ship methods is through
-    /ship/{id}/{method}.  A Player must be authorized to access certain
+    """The class for a Player's ship.  A Player must be authorized to access certain
     methods. Any method that returns info must do so in a dictionary. """
 
     def __init__(self, player, position):
@@ -20,7 +19,7 @@ class Ship(object):
         return (200)
 
     def info(self):
-        """ GET method.  Must provide auth token for some info?  Also, 
+        """ Must provide auth token for some info?  Also, 
         scan method accesses this if the other ship is within range. """
         info = {'id' : self.id, 
                 'owner' : self.id,
@@ -33,7 +32,7 @@ class Ship(object):
         return (200, info)
 
     def move(self, angle):
-        """ POST method.  Must specify an angle. How does this tie into server? """
+        """ Must specify an angle. How does this tie into server? """
         self.direction = angle
         return (200)
 
@@ -47,12 +46,12 @@ class Ship(object):
 
 
     def shoot(self, angle):
-        """ POST method, must define an angle. Creates a new LAser blast and registers it with the Map. """
+        """ Must define an angle."""
         shot = self.Laser(self, self.position, angle, self.weapon_range)
         return (200, shot)
 
     def scan(self, ship_id):
-        """ POST method.  Scans a ship if in range and returns ship.info.  Otherwise it raises a RangeException. """
+        """Scans a ship if in range and returns ship.info."""
         if distance(self.position, ship.position) < self.scan_range:
             return (200, ship.info())
         else:
@@ -71,7 +70,7 @@ class Ship(object):
         self.speed = ranges[self.talents['speed'] / 10]
 
     def add_talent_point(self, talent_str):
-        """ POST method to increment a talent tree by one point. """
+        """ Method to ncrement a talent tree by one point. """
         if self.talent_points > 0:
             self.talents[talent_str] += 1
             self.talent_points -= 1
@@ -81,7 +80,7 @@ class Ship(object):
             return (400,  "Not enough points!")
         
     def radar(self):
-        """ GET method.  Returns a list of 'blips' with some info based
+        """ Returns a list of objects with some info based
         on position and radar range. """
         return (200, Map.radar(self.position, self.radar_range))
                          
