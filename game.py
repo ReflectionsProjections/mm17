@@ -47,7 +47,8 @@ class Game(object):
 
 
     def handle_turn(self, actions):
-        """Executes a list of actions given by a player.  Should be called by server."""
+        """Executes a list of actions given by a player.
+        Should be called by server."""
         self.next_turn()
         for action in actions:
             object = Map.objects[action['object']]
