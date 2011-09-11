@@ -1,5 +1,5 @@
 import datetime
-import Player
+from player import Player
 
 class Game(object):
     """The main Game class runs the game and contains the main loop
@@ -29,7 +29,7 @@ class Game(object):
         self.active = False
 
     def _add_player(self, name, color):
-        new_player = Player(name, id = len(self,players), color)
+        new_player = Player(name, color, id = len(self,players))
         self.players.append(new_player)
 
     def _check_players(self):
@@ -41,19 +41,19 @@ class Game(object):
         while self.active == True:
             if _check_players == False: self._end
 
-    def next_id(self):
-        self.next_id += 1
-        return next_id
-            
-    def handle_turn(self, actions):
-        """Executes a list of actions given by a player.  Should be called by server."""
+    def next_turn(self):
         self.turn += 1
         self.current_player = self.players[self.turn % len(self.players)]
+
+
+    def handle_turn(self, actions):
+        """Executes a list of actions given by a player.  Should be called by server."""
+        self.next_turn()
         for action in actions:
-            object = Map.objects[action['object'])]
+            object = Map.objects[action['object']]
             if hasattr(object, action['method']):
               method = getattr(object, action['method'])
-              method(**action['kwargs']
+              method(**action['kwargs'])
             else:
-                _log('%s attempted to use method %s with object %s, which failed' % (player.name, action['method'], action['object']))
+                self._log('%s attempted to use method %s with object %s, which failed' % (player.name, action['method'], action['object']))
         
