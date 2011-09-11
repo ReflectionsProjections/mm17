@@ -1,8 +1,7 @@
 import datetime
 import Player
-import MMHandler
 
-class Game:
+class Game(object):
     """The main Game class runs the game and contains the main loop
     that updates statuses and logs data."""
 
@@ -22,7 +21,7 @@ class Game:
         self.active = True
         self.start_time = datetime.now
         self._log("Game started.")
-        self.current_player = players[randint(0 , len(self.players) - 1)]
+        self.current_player = players[0]
         self._main()
 
     def _end(self):
@@ -48,11 +47,11 @@ class Game:
         return next_id
             
     def _handle_turn(self, player):
+        self.turn += 1
         for action in player.actions:
             if hasattr(action['object'], action['method']):
                 getattr(action['object'], action['method'])(**kwargs)
             else:
                 _log('%s attempted to use method %s with object %s, which failed' % (player.name, action['method'], action['object']))
-        self.turn += 1
-        self.current_player = self.players[self.players.index(self.current_player) + self.player_offset]
+        self.current_player = self.players[self.turn % len(self.players)]
         
