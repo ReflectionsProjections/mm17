@@ -8,7 +8,9 @@ class Game(object):
     def __init__(self, map, log_file, players):
         self.map = map # map object
         self.log_file = log_file # should be a path
-        self.players = players.shuffle() # list of players
+        self.players = players # list of players
+        self.moves = {}
+        self.player_results = {}
         self.turn = 0
 
     def _log(self, message):
@@ -21,40 +23,114 @@ class Game(object):
         self.active = True
         self.start_time = datetime.now
         self._log("Game started.")
-        self.current_player = players[0]
         self._main()
 
     def _end(self):
         self._log("Game ended.")
         self.active = False
 
-    def _add_player(self, name, color):
-        new_player = Player(name, color, id = len(self,players))
-        self.players.append(new_player)
-
-    def _check_players(self):
-        actives = [player for player in self.players if player.active == True]
-        if len(actives) > 1: return True
-        else: return False
-
-    def _main(self):
-        while self.active == True:
-            if _check_players == False: self._end
-
-    def next_turn(self):
-        self.turn += 1
-        self.current_player = self.players[self.turn % len(self.players)]
-
-
-    def handle_turn(self, actions):
+    def _resolve_turn(self):
         """Executes a list of actions given by a player.
         Should be called by server."""
-        self.next_turn()
-        for action in actions:
-            object = Map.objects[action['object']]
-            if hasattr(object, action['method']):
-              method = getattr(object, action['method'])
-              method(**action['kwargs'])
+        for ship in self.map.objects.itervalues():
+            del ship.events[:]
+        for action in self.actions.iteritems():
+            for ship, vector in action.thrust.iteritems():
+                ship.thrust(vector)
+            for ship, angle in action.fire.iteritems():
+                ship.fire(angle,self.map)
+        self.actions = {}
+
+        deadships = []
+        for ship in self.map.objects.itervalues():
+            for e in ship.events:
+                # read damage records, compute new hp
+            if ship.health < 0:
+                deadships.append(ship)
+                ship.health = 0
+                del ship.events[:]
             else:
-                self._log('%s attempted to use method %s with object %s, which failed' % (player.name, action['method'], action['object']))
-        
+                # compute radar returns, extend events
+
+        self.player_results = {}
+        for p in self.players:
+            self.player_results =
+            [{'id' : ship.id,
+              'health' : ship.health,
+              'position' : ship.position,
+              'velocity' : ship.velocity,
+              'events' : ship.events}
+             for ship in self.map.objects.itervalues()
+             if ship.owner is p]
+
+        # clear out dead ships
+        for ship in deadships:
+            del map[ship.id]
+            ship.owner.ship_count -= 1
+        # clear out defeated players
+        deadplayers = []
+        for p in players:
+            if p.ship_count == 0:
+                deadplayer.append(p)
+        #remove?
+
+        for ship in self.map.itervalues():
+            ship.step(1) # take timestep
+        self.turn += 1
+
+    def validate(self, player, actions):
+        """Filter down to well-formed and legal actions.
+        Return a pair of a JSON description of the paring results,
+        and a parsed representation of the actions"""
+        valid = 0
+        duplicate = 0
+        wrong_owner = 0
+        invalid_ship = 0
+        malformed = 0
+
+        thrust = {}
+        fire = {}
+        for a in actions:
+            if not(hasattr(a,'command')) or
+               not(a.command in ['thrust','fire']) or
+               not(hasattr(a,'ship')):
+               malformed += 1
+            elif 
+                try sid = int(a.ship):
+                except ValueError:
+                    malformed += 1
+                else:
+                    if sid not in self.map:
+                        invalid_ship += 1
+                    elif not(self.map[sid].owner is player):
+                        wrong_owner += 1
+                    else:
+                        if a.command == 'thrust':
+                            if sid in thrust:
+                                duplicate += 1
+                            else:
+                                if not(hasattr(a,'thrust')) or
+                                   not(type(a.thrust) is list) of
+                                   len(a.thrust) != 2:
+                                   malformed += 1
+                                else:
+                                    thrust[sid] = a.thrust
+                                    valid += 1
+                        elif a.command == 'fire':
+                            if sid in fire:
+                                duplicate += 1
+                            else:
+                                if not(hasattr(a,'angle')) or
+                                   not (type(a.angle) in [float,int,long]):
+                                   malformed += 1
+                                else:
+                                    fire[sid] = a.angle
+                                    valid += 1
+    self.actions[player] = {'thrust':thrust, 'fire':fire}
+    if len(self.actions) == len(self.players):
+        self._resolve_turn()
+    return {'valid':valid,
+            'duplicate':duplicate,
+            'wrong_owner':wrong_owner,
+            'invalid_ship':invalid_ship,
+            'malformed':malformed}

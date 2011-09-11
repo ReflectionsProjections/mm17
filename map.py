@@ -1,6 +1,8 @@
 from math import sqrt
 from random import randrange
 
+from vector import distance
+
 class Map(object):
 
     def __init__(self, width, height):
@@ -9,23 +11,15 @@ class Map(object):
         self.height = height
         self.objects = {} # Mmm, hashbrowns
 
-    @classmethod
     def add_object(self, object):
         """Adds an object to the map's global object dictionary.
         Mayne it should just be implemented as a list?"""
-        id = len(self.objects) 
+        id = len(self.objects)
+        object.id = id
         self.objectts[id] = object
         return id
 
-    @staticmethod
-    def distance(pos1, pos2):
-        """Returns the distance between two (x, y) position tuples"""
-        return sqrt((pos1[0] - pos2[0])**2 + (pos1[1] - pos2[1])**2)
-
     def radar(self, position, range):
         """Returns all objects within a certain radius of a position"""
-        nearby = []
-        for object in self. objects:
-            if distance(position, object.position) <= range:
-                nearby.append(object)
-        return nearby
+        return [object for object in self.objects.itervalues()
+                if distance(position, object.position) <= range]

@@ -1,5 +1,12 @@
+import math
+import random
+
 import Game
 import Map
+from vector import distance
+
+# half of dispersion
+angle_fuzz = (2*math.pi)/16
 
 class Ship(object):
     """The class for a Player's ship.  A Player must be authorized to access certain
@@ -8,80 +15,47 @@ class Ship(object):
     def __init__(self, player, position):
         self.owner = player
         self.id Game.next_id()
-        self.level = 1
-        self.experience = 0
         self.health = 100
-        self.talents = {'weapons': 1, 'shields': 1, 
-                        'speed': 1, 'radar': 1}
-        self.talent_points = 0
+        self.max_thrust = 10
         self.position = position
-        self._update_attrs(self.talents)
-        return (200)
+        self.velocity = (0,0)
 
-    def info(self):
-        """ Must provide auth token for some info?  Also, 
-        scan method accesses this if the other ship is within range. """
-        info = {'id' : self.id, 
-                'owner' : self.id,
-                'position' : self.position,
-                'level' : self.level,
-                'talents' : self.talents,
-                'experience' : self.experience,
-                'health' : self.health,
-                }
-        return (200, info)
+    def step(self, dt):
+        vx, vy = self.velocity
+        x, y = self.position
+        self.position = (x + dt*vx, y + dt*vy)
 
-    def move(self, angle):
+    def thrust(self, accel):
         """ Must specify an angle. How does this tie into server? """
-        self.direction = angle
-        return (200)
-
-    class Laser(object):
-        """ The Laser class!  Defines a shot. """
-        def __init__(self, ship, origin, angle):
-            self.ship = ship
-            self.direction = angle
-            self.origin = ship.position
-            self.range = ship.weapon_range
-
-
-    def shoot(self, angle):
-        """ Must define an angle."""
-        shot = self.Laser(self, self.position, angle, self.weapon_range)
-        return (200, shot)
-
-    def scan(self, ship_id):
-        """Scans a ship if in range and returns ship.info."""
-        if distance(self.position, ship.position) < self.scan_range:
-            return (200, ship.info())
+        dx, dx = accel
+        mag = sqrt(dx*dx + dy*dy)
+        if mag > self.max_accel:
+            scale = self.max_accel/mag
         else:
-            return (403, "Ship" + ship_id + "is out of range!"}
+            scale = 1
+        x, y = self.velocity
+        self.velocity = (x+scale*dx, y+scale*dy)
 
-    def _update_attrs(self):
-        """ Internal method that updates attributes after a talent boost. """
-        ranges = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900,
-                  1000, 1100, 1200, 1300, 1400, 1500, 1600]
+    def fire(self, angle, map):
+        """Fire at angle into the ships found in the map"""
+        pass
 
-        self.radar_range = ranges[self.talents['radar']]
-        self.scan_range = ranges[self.talents['radar'] / 5]
-        self.weapon_power = ranges[self.talents['weapons'] / 10]
-        self.weapon_range = ranges[self.talents['weapons'] / 5]
-        self.shield_strength = ranges[self.talents['shields'] / 5]
-        self.speed = ranges[self.talents['speed'] / 10]
-
-    def add_talent_point(self, talent_str):
-        """ Method to ncrement a talent tree by one point. """
-        if self.talent_points > 0:
-            self.talents[talent_str] += 1
-            self.talent_points -= 1
-            self._update_attrs()
-            return (200)
-        else:
-            return (400,  "Not enough points!")
-        
-    def radar(self):
-        """ Returns a list of objects with some info based
-        on position and radar range. """
-        return (200, Map.radar(self.position, self.radar_range))
-                         
- 
+    def scan(self, ship):
+        """Returns fuzzzed info if ship is in range, or None"""
+        dist = distance(self.position, ship.position)
+        dist_error = random.uniform(0.5,1.5)
+        dist *= dist_error
+        if dist < self.scan_range:
+            dx = ship.position[0] - self.position[0]
+            dy = ship.position[1] - self.position[1]
+            if dist == 0:
+                return (0,0)
+            else:
+                angle = math.atan2(dy,dx)
+                angle_error = random.uniform(-angle_fuzz,angle_fuzz)
+                angle += angle_error
+                if angle < -math.pi:
+                    angle += 2*math.pi
+                elif angle > math.pi:
+                    angle -= 2*math.pi
+            return angle, dist
