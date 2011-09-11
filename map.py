@@ -7,7 +7,7 @@ class Map(object):
         self.origin = (0, 0)
         self.width = width
         self.height = height
-        self.objects = {0: self} # Mmm, hashbrowns
+        self.objects = {} # Mmm, hashbrowns
 
     @classmethod
     def add_object(self, object):
