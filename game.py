@@ -113,7 +113,7 @@ class Game(object):
 								duplicate += 1
 							else:
 								if not(hasattr(a,'thrust')) or \
-								 not(type(a.thrust) is list) is \
+								 not(type(a.thrust) is list) or \
 								 len(a.thrust) != 2:
 									malformed += 1
 								else:
