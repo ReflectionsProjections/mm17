@@ -44,23 +44,25 @@ class Game(object):
 		deadships = []
 		for ship in self.map.objects.itervalues():
 			for e in ship.events:
+				pass
 				# read damage records, compute new hp
 			if ship.health < 0:
 				deadships.append(ship)
 				ship.health = 0
 				del ship.events[:]
 			else:
+				pass
 				# compute radar returns, extend events
 
 		self.player_results = {}
 		for p in self.players:
-			self.player_results =
+			self.player_results = \
 			[{'id' : ship.id,
 			  'health' : ship.health,
 			  'position' : ship.position,
 			  'velocity' : ship.velocity,
-			  'events' : ship.events}
-			 for ship in self.map.objects.itervalues()
+			  'events' : ship.events} \
+			 for ship in self.map.objects.itervalues() \
 			 if ship.owner is p]
 
 		# clear out dead ships
@@ -91,12 +93,13 @@ class Game(object):
 		thrust = {}
 		fire = {}
 		for a in actions:
-			if not(hasattr(a,'command')) or
-			   not(a.command in ['thrust','fire']) or
-			   not(hasattr(a,'ship')):
-			   malformed += 1
-			elif 
-				try sid = int(a.ship):
+			if not(hasattr(a,'command')) or \
+			 not(a.command in ['thrust','fire']) or \
+			 not(hasattr(a,'ship')):
+				malformed += 1
+			else:
+				try:
+					sid = int(a.ship)
 				except ValueError:
 					malformed += 1
 				else:
@@ -109,10 +112,10 @@ class Game(object):
 							if sid in thrust:
 								duplicate += 1
 							else:
-								if not(hasattr(a,'thrust')) or
-								   not(type(a.thrust) is list) of
-								   len(a.thrust) != 2:
-								   malformed += 1
+								if not(hasattr(a,'thrust')) or \
+								 not(type(a.thrust) is list) is \
+								 len(a.thrust) != 2:
+									malformed += 1
 								else:
 									thrust[sid] = a.thrust
 									valid += 1
@@ -120,17 +123,17 @@ class Game(object):
 							if sid in fire:
 								duplicate += 1
 							else:
-								if not(hasattr(a,'angle')) or
-								   not (type(a.angle) in [float,int,long]):
-								   malformed += 1
+								if not(hasattr(a,'angle')) or \
+								 not (type(a.angle) in [float,int,long]):
+									malformed += 1
 								else:
 									fire[sid] = a.angle
 									valid += 1
-	self.actions[player] = {'thrust':thrust, 'fire':fire}
-	if len(self.actions) == len(self.players):
-		self._resolve_turn()
-	return {'valid':valid,
-			'duplicate':duplicate,
-			'wrong_owner':wrong_owner,
-			'invalid_ship':invalid_ship,
-			'malformed':malformed}
+		self.actions[player] = {'thrust':thrust, 'fire':fire}
+		if len(self.actions) == len(self.players):
+			self._resolve_turn()
+		return {'valid':valid,
+				'duplicate':duplicate,
+				'wrong_owner':wrong_owner,
+				'invalid_ship':invalid_ship,
+				'malformed':malformed}
