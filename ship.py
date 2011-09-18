@@ -1,9 +1,10 @@
 import math
+from math import sin, cos
 import random
 
 import Game
 import Map
-from vector import distance
+from vector import distance, circle_in_rect
 
 # half of dispersion
 angle_fuzz = (2*math.pi)/16
