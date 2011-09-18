@@ -36,14 +36,14 @@ class MMHandler(BaseHTTPRequestHandler):
 			self.send_error(400, "Bad JSON.")
 
 		if input['auth_code'] == Game.current_player.auth_code:
-		       	response = Game.handle_turn(input)
-	       		self.send_error(response['code'])
-       			self.send_header('Content-type', 'application/json')			
+			response = Game.handle_turn(input)
+				self.send_error(response['code'])
+				self.send_header('Content-type', 'application/json')			
 			self.end_headers()
-	       		writeout = json.dumps(response['output'])
-       			self.wfile.write(writeout)
+				writeout = json.dumps(response['output'])
+				self.wfile.write(writeout)
 		else:
-	       		self.send_error(403, "Wrong auth code! (Maybe it isn't your turn?")
+			self.send_error(403, "Wrong auth code! (Maybe it isn't your turn?")
 		return 
 
 if __name__ == '__main__':
