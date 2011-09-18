@@ -5,10 +5,17 @@ class Game(object):
 	"""The main Game class runs the game and contains the main loop
 	that updates statuses and logs data."""
 
-	def __init__(self, map, log_file, players):
-		self.map = map # map object
-		self.log_file = log_file # should be a path
-		self.players = players # list of players
+	def __init__(self, game_map, log_file, players):
+		"""Initialize the game object
+
+		Arguments:
+		game_map - Map object for the game
+		log_file - Path to log game data to
+		players - A list of the game's players
+		"""
+		self.game_map = game_map
+		self.log_file = log_file
+		self.players = players
 		self.moves = {}
 		self.player_results = {}
 		self.turn = 0
@@ -23,7 +30,6 @@ class Game(object):
 		self.active = True
 		self.start_time = datetime.now
 		self._log("Game started.")
-		self._main()
 
 	def _end(self):
 		self._log("Game ended.")
@@ -32,17 +38,17 @@ class Game(object):
 	def _resolve_turn(self):
 		"""Executes a list of actions given by a player.
 		Should be called by server."""
-		for ship in self.map.objects.itervalues():
+		for ship in self.game_map.objects.itervalues():
 			del ship.events[:]
 		for action in self.actions.iteritems():
 			for ship, vector in action.thrust.iteritems():
 				ship.thrust(vector)
 			for ship, angle in action.fire.iteritems():
-				ship.fire(angle,self.map)
+				ship.fire(angle,self.game_map)
 		self.actions = {}
 
 		deadships = []
-		for ship in self.map.objects.itervalues():
+		for ship in self.game_map.objects.itervalues():
 			for e in ship.events:
 				pass
 				# read damage records, compute new hp
@@ -62,12 +68,12 @@ class Game(object):
 			  'position' : ship.position,
 			  'velocity' : ship.velocity,
 			  'events' : ship.events} \
-			 for ship in self.map.objects.itervalues() \
+			 for ship in self.game_map.objects.itervalues() \
 			 if ship.owner is p]
 
 		# clear out dead ships
 		for ship in deadships:
-			del map[ship.id]
+			del self.game_map[ship.id]
 			ship.owner.ship_count -= 1
 		# clear out defeated players
 		deadplayers = []
@@ -76,7 +82,7 @@ class Game(object):
 				deadplayer.append(p)
 		#remove?
 
-		for ship in self.map.itervalues():
+		for ship in self.game_map.itervalues():
 			ship.step(1) # take timestep
 		self.turn += 1
 
@@ -103,9 +109,9 @@ class Game(object):
 				except ValueError:
 					malformed += 1
 				else:
-					if sid not in self.map:
+					if sid not in self.game_map:
 						invalid_ship += 1
-					elif not(self.map[sid].owner is player):
+					elif not(self.game_map[sid].owner is player):
 						wrong_owner += 1
 					else:
 						if a.command == 'thrust':
@@ -113,7 +119,7 @@ class Game(object):
 								duplicate += 1
 							else:
 								if not(hasattr(a,'thrust')) or \
-								 not(type(a.thrust) is list) is \
+								 not(type(a.thrust) is list) or \
 								 len(a.thrust) != 2:
 									malformed += 1
 								else:

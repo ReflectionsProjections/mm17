@@ -5,27 +5,35 @@ import json, os
 from game import Game
 
 class MMHandler(BaseHTTPRequestHandler):
+	def send_error(self, code, text):
+		# send_error doesn't do JSON responses; we want json, so here's our own error thing
+		self.send_response(code)
+		self.send_header('Content-type', 'application/json')
+		self.end_headers()
+		self.wfile.write("{error: \"%s\" }" % text)
+	def respond():
+		self.send_response(200)
+		self.send_header('Content-type', 'application/json')
+		self.end_headers()
+
 	def do_GET(self):
-		if self.path == '/turn_info':
-			self.send_response(200)
-			self.send_header('Content-type', 'application/json')
-			self.end_headers()
+		args = self.path.split("/")[1:]
+		if len(args[0]) < 1:
+			self.send_error(400, "Requests to the root are invalid. Did you mean /turn_info?")
+			return
+		if args[0] == 'turn_info':
+			self.respond()
 			output = json.dumps(Game.info())
 			self.wfile.write(output)
-
-		elif self.path == '/tester':
-			self.send_response(200)
-			self.send_header('Content-type', 'text/html')
-			self.end_headers()
+			return
+		elif args[0] == 'tester':
+			self.respond()
 			with open(os.getcwd() + '/tester.html', 'r') as tester:
 				self.wfile.write(tester.read())
+			return
 		else:
-			self.send_response(404)
-			self.send_header('Content-type', 'text/plain')
-			self.end_headers()
-			writeout = "Wrong path."
-			self.wfile.write(writeout)
-		return
+			self.send_error(404, "Unknown resource identifier: %s" % self.path)
+			return
 
 	def do_POST(self):
 		length = int(self.headers.getheader('content-length'))
@@ -34,6 +42,7 @@ class MMHandler(BaseHTTPRequestHandler):
 			input = json.loads(rfile)
 		except ValueError:
 			self.send_error(400, "Bad JSON.")
+			return
 
 		if input['auth_code'] == Game.current_player.auth_code:
 			response = Game.handle_turn(input)
@@ -42,9 +51,10 @@ class MMHandler(BaseHTTPRequestHandler):
 			self.end_headers()
 			writeout = json.dumps(response['output'])
 			self.wfile.write(writeout)
+			return
 		else:
 			self.send_error(403, "Wrong auth code! (Maybe it isn't your turn?")
-		return
+			return
 
 if __name__ == '__main__':
 	port = 7000
