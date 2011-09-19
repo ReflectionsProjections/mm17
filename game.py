@@ -1,4 +1,5 @@
 import datetime
+import time
 from player import Player
 
 class Game(object):
@@ -14,24 +15,25 @@ class Game(object):
 		players - A list of the game's players
 		"""
 		self.game_map = game_map
-		self.log_file = log_file
+		self.log_file = open(log_file, 'a')
 		self.players = players
-		self.moves = {}
-		self.player_results = {}
 		self.turn = 0
+		self.actions = [] # list of dicts, index for turn [player] for player
+		self.player_results = {}
 
 	def _log(self, message):
 		""" Adds a message to the end of the log file. """
-		with open(self.log_file, 'a') as log:
-			text = "%s: %s" % (datetime.now, message)
-			log.write(text)
+		text = "%s: %s" % (datetime.now, message)
+		self.log_file.write(text)
 
 	def _begin(self):
+		"""Starts the game turn loop."""
 		self.active = True
-		self.start_time = datetime.now
+		self.last_turn_time = time.time()
 		self._log("Game started.")
 
 	def _end(self):
+		"""Stops the game turn loop."""
 		self._log("Game ended.")
 		self.active = False
 
@@ -85,6 +87,26 @@ class Game(object):
 		for ship in self.game_map.itervalues():
 			ship.step(1) # take timestep
 		self.turn += 1
+		self.last_turn_time = time.time()
+
+	def _main(self):
+		"""Loops and waits for all turns to be submitted.  Called by
+		_begin() and ends by _end().  Also checks for exit condition.
+		"""
+		while self.active == True:
+			alive_players = [x for x in self.players if x.alive == True]
+			if alive_players <= 1:
+				self._end()
+			turns_submitted = 0
+			for player, action in self.actions[self.turn]:
+				if action:
+					turns_submitted++
+			if turns_submitted == len(alive_players):
+				self._resolve_turn()
+			elif time.time() - self.last_turn_time > 2:
+				self._resolve_turn()
+			else: 
+				continue
 
 	def validate(self, player, actions):
 		"""Filter down to well-formed and legal actions.
