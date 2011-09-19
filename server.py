@@ -15,8 +15,57 @@ class MMHandler(BaseHTTPRequestHandler):
 	game_name = 'logs/game-%s' % game_time
 	game_map = Map(100, 100, 4)
 	game = Game(game_map, game_name, {})
+
+	def game_info(self, params):
+		""" Handles a request for the game state, which includes active players and whether or not the game has started """
+		gameStatus = self.game._gameInfo()
+		self.respond()
+		self.wfile.write(json.dumps(gameStatus))
+		return
+
+	def game_turn(self, params):
+		""" Handles a request for the game state at the most recent completed turn """
+		self.respond()
+		output = json.dumps(self.game.lastTurnInfo())
+		self.wfile.write(output)
+		return
+
+	def game_join(self, params):
+		""" Handles a request to join the game """
+		if 'auth' not in params or 'name' not in params:
+			self.send_error(400, "Auth code or name was not provided")
+			return
+
+		authCode = params['auth'][0]
+		name = params['name'][0]
+
+		successObj = self.game._addPlayer(name, authCode)
+		self.respond()
+		self.wfile.write(json.dumps(successObj))
+		return
+
+	# This maps URIs to handlers
+	PATHS = {
+		'game': {
+			'info': game_info,
+			'turn': game_turn,
+			'join': game_join,
+		},
+	}
+
+	def walk_path(self, search_dict, search_path):
+		""" Walk the PATHS object to find the correct handler based upon the URI queried """
+		first_item = search_path.pop(0)
+		if first_item in search_dict:
+			if isinstance(search_dict[first_item], dict):
+				return self.walk_path(search_dict[first_item], search_path)
+			else:
+				return search_dict[first_item]
+		else:
+			return None
+
 	def send_error(self, code, text):
-		# send_error doesn't do JSON responses; we 
+		# send_error doesn't do JSON responses; we
 		# want json, so here's our own error thing
 		self.send_response(code)
 		self.send_header('Content-type', 'application/json')
@@ -29,33 +78,22 @@ class MMHandler(BaseHTTPRequestHandler):
 
 	def do_GET(self):
 		parsedURL = urlparse(self.path)
-		path = parsedURL.path[1:]
 		params = parse_qs(parsedURL.query)
 
-		if len(path) < 1:
-			self.send_error(400, "Requests to the root are invalid. Did you mean /turn_info?")
-			return
-		if path  == 'turn_info':
-			self.respond()
-			output = json.dumps(self.game.lastTurnInfo())
-			self.wfile.write(output)
-			return
-		elif path == 'game_info':
-			gameStatus = self.game._gameInfo()
-			self.respond()
-			self.wfile.write(json.dumps(gameStatus))
-			return
-		elif path == 'join':
-			if 'auth' not in params or 'name' not in params:
-				self.send_error(400, "Auth code or name was not provided")
-				return
+		exploded_path = parsedURL.path[1:].split('/')
+		search_paths = []
 
-			authCode = params['auth'][0]
-			name = params['name'][0]
+		if exploded_path[0] == '':
+			self.send_error(400, "Requests to the root are invalid. Did you mean /game/turn?")
+			return
+		
+		for path in exploded_path:
+			if path is not '':
+				search_paths.append(path)
 
-			successObj = self.game._addPlayer(name, authCode)
-			self.respond()
-			self.wfile.write(json.dumps(successObj))
+		handler = self.walk_path(self.PATHS, search_paths)
+		if handler is not None:
+			handler(self, params)
 			return
 		else:
 			self.send_error(404, "Unknown resource identifier: %s" % self.path)

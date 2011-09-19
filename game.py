@@ -129,7 +129,7 @@ class Game(object):
 			turns_submitted = 0
 			for player, action in self.actions[self.turn]:
 				if action:
-					turns_submitted++
+					turns_submitted+=1
 			if turns_submitted == len(alive_players):
 				self._resolve_turn()
 			elif time.time() - self.last_turn_time > 2:
