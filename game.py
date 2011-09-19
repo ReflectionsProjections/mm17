@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from player import Player
 
 class Game(object):
@@ -19,16 +19,44 @@ class Game(object):
 		self.moves = {}
 		self.player_results = {}
 		self.turn = 0
+		self.active = False
+	
+	def _gameInfo(self):
+		active_players = []
+		for key, player in self.players.items():
+			if player.alive:
+				active_players.append(player.name)
+
+		status = {
+			'game_active': self.active,
+			'active_players': active_players
+		}
+		return status
+
+	def _addPlayer(self, name, authToken):
+		""" Adds a player to the current game """
+		newPlayer = Player(name, authToken)
+		if len(self.players.keys()) < self.game_map.maxPlayers:
+			if authToken not in self.players:
+				self.players[authToken] = newPlayer
+			else:
+				return {'join_success': False, 'message': 'Already joined'}
+
+			if len(self.players.keys()) == self.game_map.maxPlayers:
+				self._begin()
+			return {'join_success': True, 'message': 'Joined succesfully'}
+		else:
+			return {'join_success': False, 'message': 'Game full'}
 
 	def _log(self, message):
 		""" Adds a message to the end of the log file. """
 		with open(self.log_file, 'a') as log:
-			text = "%s: %s" % (datetime.now, message)
+			text = "%s: %s" % (datetime.now(), message)
 			log.write(text)
 
 	def _begin(self):
 		self.active = True
-		self.start_time = datetime.now
+		self.start_time = datetime.now()
 		self._log("Game started.")
 
 	def _end(self):
@@ -144,7 +172,7 @@ class Game(object):
 				'invalid_ship':invalid_ship,
 				'malformed':malformed}
 
-	def info(self):
+	def lastTurnInfo(self):
 		information = {
 			'turn': self.turn,
 		}
