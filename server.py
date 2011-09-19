@@ -17,7 +17,7 @@ class MMHandler(BaseHTTPRequestHandler):
 		self.send_response(code)
 		self.send_header('Content-type', 'application/json')
 		self.end_headers()
-		self.wfile.write("{'error': \"%s\" }" % text)
+		self.wfile.write(json.dumps({'error': text}))
 	def respond(self):
 		self.send_response(200)
 		self.send_header('Content-type', 'application/json')
