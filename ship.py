@@ -19,6 +19,7 @@ class Ship(object):
 		self.game = game
 		
 		# attribute itialization
+		self.alive = True
 		self.position = position
 		self.velocity = (0,0)
 		self.health = 100

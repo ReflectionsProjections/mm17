@@ -33,15 +33,16 @@ class Game(object):
 		self._log("Game started.")
 
 	def _end(self):
-		"""Stops the game turn loop."""
+		"""Stops the game main loop."""
 		self._log("Game ended.")
 		self.active = False
 
 	def _resolve_turn(self):
-		"""Executes a list of actions given by a player.
-		Should be called by server."""
-		for ship in self.game_map.objects.itervalues():
+		"""Executes a list of actions given by the players."""
+		# Clear events from previous turn
+		for ship in self.game_map.ships.itervalues():
 			del ship.events[:]
+		
 		for action in self.actions.iteritems():
 			for ship, vector in action.thrust.iteritems():
 				ship.thrust(vector)
@@ -107,64 +108,6 @@ class Game(object):
 				self._resolve_turn()
 			else: 
 				continue
-
-	def validate(self, player, actions):
-		"""Filter down to well-formed and legal actions.
-		Return a pair of a JSON description of the paring results,
-		and a parsed representation of the actions"""
-		valid = 0
-		duplicate = 0
-		wrong_owner = 0
-		invalid_ship = 0
-		malformed = 0
-
-		thrust = {}
-		fire = {}
-		for a in actions:
-			if not(hasattr(a,'command')) or \
-			 not(a.command in ['thrust','fire']) or \
-			 not(hasattr(a,'ship')):
-				malformed += 1
-			else:
-				try:
-					sid = int(a.ship)
-				except ValueError:
-					malformed += 1
-				else:
-					if sid not in self.game_map:
-						invalid_ship += 1
-					elif not(self.game_map[sid].owner is player):
-						wrong_owner += 1
-					else:
-						if a.command == 'thrust':
-							if sid in thrust:
-								duplicate += 1
-							else:
-								if not(hasattr(a,'thrust')) or \
-								 not(type(a.thrust) is list) or \
-								 len(a.thrust) != 2:
-									malformed += 1
-								else:
-									thrust[sid] = a.thrust
-									valid += 1
-						elif a.command == 'fire':
-							if sid in fire:
-								duplicate += 1
-							else:
-								if not(hasattr(a,'angle')) or \
-								 not (type(a.angle) in [float,int,long]):
-									malformed += 1
-								else:
-									fire[sid] = a.angle
-									valid += 1
-		self.actions[player] = {'thrust':thrust, 'fire':fire}
-		if len(self.actions) == len(self.players):
-			self._resolve_turn()
-		return {'valid':valid,
-				'duplicate':duplicate,
-				'wrong_owner':wrong_owner,
-				'invalid_ship':invalid_ship,
-				'malformed':malformed}
 
 	def info(self):
 		information = {
