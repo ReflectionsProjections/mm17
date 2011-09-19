@@ -46,7 +46,7 @@ def circle_in_rect(rect, center, radius):
 			return True
 		# if the following is true for all sides, center is in rect
 		if cross_prod > 0:
-			center_right_of_side++
+			center_right_of_side+=1
 	# if we have 4, then circle is in rect
 	if center_right_of_side == 4:
 		return True

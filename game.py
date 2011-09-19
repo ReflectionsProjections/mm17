@@ -143,3 +143,8 @@ class Game(object):
 				'wrong_owner':wrong_owner,
 				'invalid_ship':invalid_ship,
 				'malformed':malformed}
+
+	def info(self):
+		information = {
+			'turn': self.turn,
+		}
