@@ -13,7 +13,8 @@ class MMHandler(BaseHTTPRequestHandler):
 	game_map = Map(100, 100, 4)
 	game = Game(game_map, game_name, [])
 	def send_error(self, code, text):
-		# send_error doesn't do JSON responses; we want json, so here's our own error thing
+		# send_error doesn't do JSON responses; we 
+		# want json, so here's our own error thing
 		self.send_response(code)
 		self.send_header('Content-type', 'application/json')
 		self.end_headers()
