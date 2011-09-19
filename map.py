@@ -10,7 +10,8 @@ class Map(object):
 		self.width = width
 		self.height = height
 		self.maxPlayers = maxPlayers
-		self.objects = {} # Mmm, hashbrowns
+		self.objects = {}
+		self.ships = {}
 
 	def add_object(self, object):
 		"""Adds an object to the map's global object dictionary.
