@@ -19,6 +19,7 @@ def validate_actions(game, player, input):
     results = []
     for action in actions:
         if action['obj_type'] == "ship":
+            
             results.append(validate_ship_action(action))
         else:
             results.append({'error':'bad or no obj_type in action'})
@@ -61,7 +62,10 @@ def validate_ship_action(action, player, game):
                 a, b = int(accel[0], accel[1])
             except:
                 return {'error':'invalid accel values'}
-            game.actions[gam.turn][player].append(action)
+            result = {'obj_id': action['ship_id'],
+                      'method': action['command'],
+                      'params': action['args']}
+            game.actions[gam.turn][player].append(result)
             return {'success' : True}
     elif action['command'] == 'fire':
         if 'angle' not in action['args'].keys():
@@ -72,7 +76,10 @@ def validate_ship_action(action, player, game):
                 angle = int(angle)
             except:
                 return {'error':'invalid angle value'}
-            game.actions[gam.turn][player].append(action)
+            result = {'obj_id': action['ship_id'],
+                      'method': action['command'],
+                      'params': action['args']}
+            game.actions[game.turn][player].append(result)
             return {'success' : True}
     else:
         return {'error':'invalid ship command'}

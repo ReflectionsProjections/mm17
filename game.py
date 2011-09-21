@@ -17,7 +17,7 @@ class Game(object):
 		self.game_map = game_map
 		self.log_file = open(log_file, 'w')
 		self.players = players
-		self.actions = [] # list of dicts, index for turn [player] for player
+		self.actions = [] # list of dicts, index for turn, [player] for player
 		self.player_results = {}
 		self.turn = 0
 		self.active = False
@@ -55,7 +55,11 @@ class Game(object):
 		self.log_file.write(text)
 
 	def _begin(self):
-		"""Starts the game turn loop."""
+		"""Sets up beginning state and starts the game turn loop."""
+		for player in self.players:
+			new_ship = Ship(self, player, (0,0))
+			self.game_map.add_object(new_ship)
+			player.add_object(new_ship)
 		self.active = True
 		self.last_turn_time = time.time()
 		self._log("Game started.")
@@ -67,54 +71,47 @@ class Game(object):
 
 	def _resolve_turn(self):
 		"""Executes a list of actions given by the players."""
-		# Clear events from previous turn
-		for ship in self.game_map.ships.itervalues():
-			del ship.events[:]
 		
-		for action in self.actions.iteritems():
-			for ship, vector in action.thrust.iteritems():
-				ship.thrust(vector)
-			for ship, angle in action.fire.iteritems():
-				ship.fire(angle,self.game_map)
-		self.actions = {}
+		actions = self.actions[self.turn]
+		for player in self.actions.iteritems():
+			for action in player:
+				obj = self.game_map.objects[action['obj_id']]
+				method = getattr(obj, action['method'])
+				obj.results[self.turn]\
+				    .append(method(**action['params']))
 
-		deadships = []
-		for ship in self.game_map.objects.itervalues():
-			for e in ship.events:
+		for object in self.game_map.objects.itervalues():
+			for event in object.events:
 				pass
 				# read damage records, compute new hp
-			if ship.health < 0:
-				deadships.append(ship)
-				ship.health = 0
-				del ship.events[:]
+			if object.health < 0:
+				object.alive == False
+				object.health = 0
+				object.results[self.turn]\
+				    .append({'status':'destroyed'})
 			else:
 				pass
 				# compute radar returns, extend events
 
-		self.player_results = {}
+		# Create a maasive list of results to return to the player
 		for p in self.players:
-			self.player_results = \
-			[{'id' : ship.id,
-			  'health' : ship.health,
-			  'position' : ship.position,
-			  'velocity' : ship.velocity,
-			  'events' : ship.events} \
-			 for ship in self.game_map.objects.itervalues() \
-			 if ship.owner is p]
+			self.player_results[self.turn][p] = \
+			[object.get_state()
+			 for object in self.game_map.objects.itervalues() \
+			 if object.owner is p]
 
-		# clear out dead ships
-		for ship in deadships:
-			del self.game_map[ship.id]
-			ship.owner.ship_count -= 1
+
 		# clear out defeated players
-		deadplayers = []
 		for p in players:
-			if p.ship_count == 0:
-				deadplayer.append(p)
-		#remove?
+			alive = [x for x in p.objects if x.alive]
+			if len(alive) == 0:
+				p.alive = False
 
-		for ship in self.game_map.itervalues():
-			ship.step(1) # take timestep
+		# take timestep
+		for object in self.game_map.objects.itervalues():
+			object.step(1)
+
+		# advnace turn and reset timer
 		self.turn += 1
 		self.last_turn_time = time.time()
 
@@ -141,3 +138,37 @@ class Game(object):
 		information = {
 			'turn': self.turn,
 		}
+
+
+
+class GameObject(object):
+	"""Base class for all game objects on the map since they need 
+	certain common info"""
+	def __init__(self, game, position, owner):
+		self.game = game
+		self.position = position
+		self.velocity = (0,0)
+		self.owner = owner
+		self.alive = True
+
+		# holds all events to be processed on turn handle
+		# list of lists accessed like events[turn]
+		self.events = []
+
+		# holds results from turns to be returned to user
+		# list of lists accessed like results[turn]
+		self.results = []
+
+	def step(self, dt):
+		vx, vy = self.velocity
+		x, y = self.position
+		self.position = (x + dt*vx, y + dt*vy)
+
+	def get_state(self):
+		state = {'obj_id': id(self),
+			 'owner': self.owner,
+			 'position':self.position,
+			 'alive': self.alive,
+			 'results':self.results[game.turn]
+			 }
+		return state

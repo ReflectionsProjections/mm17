@@ -12,7 +12,7 @@ from validate import handle_input
 
 class MMHandler(BaseHTTPRequestHandler):
 	def __init__(self, request, client_address, server):
-		"""Override __init__ to start game.  Note that the 
+		"""Override __init__ to start game. Note that the 
 		BaseHTTPRequestHandler call to __init__ must go last
 		since it does all of it's handling in __init__.  If
 		called before, then Game isn't started."""
@@ -30,14 +30,14 @@ class MMHandler(BaseHTTPRequestHandler):
 		self.wfile.write(json.dumps(gameStatus))
 		return
 
-	def game_turn(self, params):
-		""" Handles a request for the game state at the most recent completed turn """
+	def game_turn_get(self, params):
+		""" Handles a GET request for the game state at the most recent completed turn """
 		self.respond()
 		output = json.dumps(self.game.lastTurnInfo())
 		self.wfile.write(output)
 		return
 
-	def game_turn_submit(self, input):
+	def game_turn_post(self, input):
 		""" Handles a POST request for the next turn"""
 		self.respond()
 		output = json.dumps(self.handle_input(input, game))
@@ -58,20 +58,24 @@ class MMHandler(BaseHTTPRequestHandler):
 		self.wfile.write(json.dumps(successObj))
 		return
 
-	# This maps URIs to handlers
-	PATHS = {
+	# These map URIs to handlers depending on request method
+	GET_PATHS = {
 		'game': {
 			'info': game_info,
-			'turn': {
-				'' : game_turn,
-				'submit': game_turn_submit
-				},
+			'turn': game_turn_get,
 			'join': game_join,
+		},
+	}
+
+	POST_PATHS = {
+		'game': {
+			'turn': game_turn_post,
 		},
 	}
 
 	def walk_path(self, search_dict, search_path):
 		""" Walk the PATHS object to find the correct handler based upon the URI queried """
+		print search_path
 		first_item = search_path.pop(0)
 		if first_item in search_dict:
 			if isinstance(search_dict[first_item], dict):
@@ -108,7 +112,7 @@ class MMHandler(BaseHTTPRequestHandler):
 			if path is not '':
 				search_paths.append(path)
 
-		handler = self.walk_path(self.PATHS, search_paths)
+		handler = self.walk_path(self.GET_PATHS, search_paths)
 		if handler is not None:
 			handler(self, params)
 			return
@@ -137,7 +141,7 @@ class MMHandler(BaseHTTPRequestHandler):
 			self.send_error(400, "Bad JSON.")
 			return
 
-		handler = self.walk_path(self.PATHS, search_paths)
+		handler = self.walk_path(self.POST_PATHS, search_paths)
 		if handler is not None:
 			handler(self, input)
 			return

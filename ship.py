@@ -2,26 +2,21 @@ import math
 from math import sin, cos
 import random
 
-import Game
+import Game, GameObject
 import Map
 from vector import distance, circle_in_rect
 
 # half of dispersion
 angle_fuzz = (2*math.pi)/16
 
-class Ship(object):
+class Ship(GameObject):
 	"""The class for a Player's ship.  A Player must be authorized to access certain
 	methods. Any method that returns info must do so in a dictionary. """
 
 	def __init__(self, game, player, position):
-		# refrences to other objects
-		self.owner = player
-		self.game = game
-		
+		super(GameObject, self).__init__(game, position, player)
+
 		# attribute itialization
-		self.alive = True
-		self.position = position
-		self.velocity = (0,0)
 		self.health = 100
 		self.scan_range = 2000
 		self.weapon_range = 1000
@@ -30,14 +25,6 @@ class Ship(object):
 		# max values
 		self.max_velocity = 10
 		self.max_accel = 2
-
-		# holds all events to be processed for next turn handle
-		self.events = []
-
-	def step(self, dt):
-		vx, vy = self.velocity
-		x, y = self.position
-		self.position = (x + dt*vx, y + dt*vy)
 
 	def thrust(self, accel):
 		"""Sets the velocity based on acceleration and current velocity.
@@ -106,17 +93,17 @@ class Ship(object):
 			within_beam[0].events(("damage", self.id, damage_amt, )
 					   
 
-	def scan(self, ship):
+	def scan(self, object):
 		"""Returns fuzzzed info if ship is in range, or None"""
 		# Multiply the returned distance by a random value
-		dist = distance(self.position, ship.position)
+		dist = distance(self.position, object.position)
 		if dist < self.scan_range:
 			dist_error = random.uniform(0.5,1.5)
 			dist *= dist_error
-			dx = ship.position[0] - self.position[0]
-			dy = ship.position[1] - self.position[1]
+			dx = object.position[0] - self.position[0]
+			dy = object.position[1] - self.position[1]
 			if dist == 0:
-				return (0,0)
+				return angle, dist, object.health
 			else:
 				angle = math.atan2(dy,dx)
 				angle_error = random.uniform(-angle_fuzz,angle_fuzz)
@@ -125,5 +112,6 @@ class Ship(object):
 					angle += 2*math.pi
 				elif angle > math.pi:
 					angle -= 2*math.pi
-			return angle, dist, ship.health
+				return angle, dist, object.health
 		else: return None
+						      

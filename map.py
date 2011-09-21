@@ -14,11 +14,9 @@ class Map(object):
 		self.ships = {}
 
 	def add_object(self, object):
-		"""Adds an object to the map's global object dictionary.
-		Mayne it should just be implemented as a list?"""
-
+		"""Adds an object to the map's global object dictionary."""
 		objID = id(object)
-		if objID not in self.objects:
+		if objID not in self.objects.keys():
 			self.objects[objID] = object
 
 		return objID
