@@ -8,13 +8,20 @@ from urlparse import parse_qs
 from time import gmtime, strftime
 from game import Game
 from map import Map
+from validate import handle_input
 
 class MMHandler(BaseHTTPRequestHandler):
-	# This NEEDS to be inited inside of an __init__ method - but it doesn't seem to work. This is a hack for now.
-	game_time = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
-	game_name = 'logs/game-%s' % game_time
-	game_map = Map(100, 100, 4)
-	game = Game(game_map, game_name, {})
+	def __init__(self, request, client_address, server):
+		"""Override __init__ to start game.  Note that the 
+		BaseHTTPRequestHandler call to __init__ must go last
+		since it does all of it's handling in __init__.  If
+		called before, then Game isn't started."""
+		game_time = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
+		game_name = 'logs/game-%s' % game_time
+		game_map = Map(100, 100, 4)
+		self.game = Game(game_map, game_name, {})
+		BaseHTTPRequestHandler.__init__(self, request, client_address, server)
+
 
 	def game_info(self, params):
 		""" Handles a request for the game state, which includes active players and whether or not the game has started """
@@ -27,6 +34,13 @@ class MMHandler(BaseHTTPRequestHandler):
 		""" Handles a request for the game state at the most recent completed turn """
 		self.respond()
 		output = json.dumps(self.game.lastTurnInfo())
+		self.wfile.write(output)
+		return
+
+	def game_turn_submit(self, input):
+		""" Handles a POST request for the next turn"""
+		self.respond()
+		output = json.dumps(self.handle_input(input, game))
 		self.wfile.write(output)
 		return
 
@@ -48,7 +62,10 @@ class MMHandler(BaseHTTPRequestHandler):
 	PATHS = {
 		'game': {
 			'info': game_info,
-			'turn': game_turn,
+			'turn': {
+				'' : game_turn,
+				'submit': game_turn_submit
+				},
 			'join': game_join,
 		},
 	}
@@ -100,6 +117,18 @@ class MMHandler(BaseHTTPRequestHandler):
 			return
 
 	def do_POST(self):
+		parsedURL = urlparse(self.path)
+		exploded_path = parsedURL.path[1:].split('/')
+		search_paths = []
+
+		if exploded_path[0] == '':
+			self.send_error(400, "Requests to the root are invalid. Did you mean /game/turn?")
+			return
+		
+		for path in exploded_path:
+			if path is not '':
+				search_paths.append(path)
+
 		length = int(self.headers.getheader('content-length'))
 		rfile = self.rfile.read(length)
 		try:
@@ -108,16 +137,15 @@ class MMHandler(BaseHTTPRequestHandler):
 			self.send_error(400, "Bad JSON.")
 			return
 
-		if input['auth_code'] == Game.current_player.auth_code:
-			response = Game.handle_turn(input)
-			self.send_error(response['code'])
-			self.send_header('Content-type', 'application/json')
-			self.end_headers()
-			writeout = json.dumps(response['output'])
-			self.wfile.write(writeout)
+		handler = self.walk_path(self.PATHS, search_paths)
+		if handler is not None:
+			handler(self, input)
 			return
 		else:
-			self.send_error(403, "Wrong auth code! (Maybe it isn't your turn?")
+			self.send_error(404, "Unknown resource identifier: %s" % self.path)
+
+
+		
 			return
 
 if __name__ == '__main__':

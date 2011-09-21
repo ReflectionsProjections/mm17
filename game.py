@@ -15,7 +15,7 @@ class Game(object):
 		players - A list of the game's players
 		"""
 		self.game_map = game_map
-		self.log_file = open(log_file, 'a')
+		self.log_file = open(log_file, 'w')
 		self.players = players
 		self.actions = [] # list of dicts, index for turn [player] for player
 		self.player_results = {}

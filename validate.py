@@ -1,60 +1,28 @@
-def validate(gamef, player, actions):
-    """Filter down to well-formed and legal actions.
-    Return a pair of a JSON description of the paring results,
-    and a parsed representation of the actions"""
-    valid = 0
-    duplicate = 0
-    wrong_owner = 0
-    invalid_ship = 0
-    malformed = 0
-    
-    thrust = {}
-    fire = {}
-    for a in actions:
-        if not(hasattr(a,'command')) or \
-                not(a['command'] in ['thrust','fire']) or \
-                not(hasattr(a,'ship')):
-            malformed += 1
-        else:
-            try:
-                sid = int(a.ship)
-            except ValueError:
-                malformed += 1
+def handle_input(input, game):
+    """Hadles incoming input from POST requests and passes 
+    them to validators."""
+    if 'auth' in input.keys():
+        for player in game.players:
+            if input['auth'] == player.auth_tokem:
+                return validate_actions(game, player, input)
             else:
-                if sid not in self.game_map:
-                    invalid_ship += 1
-                elif not(self.game_map[sid].owner is player):
-                    wrong_owner += 1
-                else:
-                    if a.command == 'thrust':
-                        if sid in thrust:
-                            duplicate += 1
-                        else:
-                            if not(hasattr(a,'thrust')) or \
-                                    not(type(a.thrust) is list) or \
-                                    len(a.thrust) != 2:
-                                malformed += 1
-                            else:
-                                thrust[sid] = a.thrust
-                                valid += 1
-                    elif a.command == 'fire':
-                        if sid in fire:
-                            duplicate += 1
-                        else:
-                            if not(hasattr(a,'angle')) or \
-                                    not (type(a.angle) in [float,int,long]):
-                                malformed += 1
-                            else:
-                                fire[sid] = a.angle
-                                valid += 1
-                                self.actions[player] = {'thrust':thrust, 'fire':fire}
+                return {'error':'bad auth token'}
+    else:
+        return {'error':'no auth token provided'}
 
-return {'valid':valid,
-        'duplicate':duplicate,
-        'wrong_owner':wrong_owner,
-        'invalid_ship':invalid_ship,
-        'malformed':malformed}
-
+def validate_actions(game, player, input):
+    """Filter down to well-formed and legal actions. 
+    Return a pair of a JSON description of the paring 
+    results and a parsed representation of the actions"""
+    if 'actions' not in input:
+        return {'error': 'no actions provided'}
+    results = []
+    for action in actions:
+        if action['obj_type'] == "ship":
+            results.append(validate_ship_action(action))
+        else:
+            results.append({'error':'bad or no obj_type in action'})
+    return results
 
 def validate_ship_action(action, player, game):
     # make sure a ship action has all required keys
@@ -98,7 +66,7 @@ def validate_ship_action(action, player, game):
     elif action['command'] == 'fire':
         if 'angle' not in action['args'].keys():
           return {'error':'fire requires angle arg'}
-     else:
+        else:
             angle = action['args']['angle']
             try:
                 angle = int(angle)
@@ -108,4 +76,3 @@ def validate_ship_action(action, player, game):
             return {'success' : True}
     else:
         return {'error':'invalid ship command'}
-
