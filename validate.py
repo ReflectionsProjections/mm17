@@ -19,7 +19,6 @@ def validate_actions(game, player, input):
     game.actions[game.turn][player] = []
     for action in input['actions']:
         if action['obj_type'] == "ship":
-            
             results.append(validate_ship_action(action, player, game))
         else:
             results.append({'error':'bad or no obj_type in action'})

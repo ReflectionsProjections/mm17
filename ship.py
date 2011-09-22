@@ -1,5 +1,5 @@
 import math
-from math import sin, cos
+from math import sin, cos, sqrt
 import random
 
 from game_obj import GameObject
@@ -41,9 +41,10 @@ class Ship(GameObject):
 		x, y = self.velocity
 		self.velocity = (x+scale*dx, y+scale*dy)
 		# scale doown to max velocity
-		vel_mag = sqrt(self.velocity[0]**2, self.velocity[1]**2)
-		vel_scale = max_velocity/vel_mag
-		self.velocity = vel_scale * self.velocity
+		vel_mag = sqrt(self.velocity[0]**2 + self.velocity[1]**2)
+		vel_scale = self.max_velocity/vel_mag
+		self.velocity = (vel_scale * self.velocity[0],
+				 vel_scale * self.velocity[1])
 		return {'thrust_success':True, 
 			'velocity': self.velocity, 
 			'position': self.position}

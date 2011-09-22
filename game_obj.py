@@ -9,12 +9,11 @@ class GameObject(object):
 		self.alive = True
 
 		# holds all events to be processed on turn handle
-		# list of lists accessed like events[turn]
 		self.events = []
 
 		# holds results from turns to be returned to user
-		# list of lists accessed like results[turn]
-		self.results = []
+		# dict of lists accessed like results[turn]
+		self.results = {0: []}
 
 
 	def step(self, dt):
@@ -27,7 +26,7 @@ class GameObject(object):
 			 'owner': self.owner,
 			 'position':self.position,
 			 'alive': self.alive,
-			 'results':self.results[game.turn]
+			 'results':self.results[self.game.turn]
 			 }
 		return state
 

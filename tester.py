@@ -1,14 +1,9 @@
 #! /usr/bin/env python
 from urllib2 import urlopen
 import json
+players = {'one':'asdfg'}
 
 def test_join():
-    players = {'one':'asdfg',
-               'two':'asdfg',
-               'six':'asdfg',
-               'three': 'poiuy',
-               'four': 'mnbvcx',
-               'five':'zxcvb'}
     output = ""
     for name, auth in players.items():
         url = "http://localhost:7000/game/join?name="+name+"&auth="+auth
@@ -23,11 +18,13 @@ def test_info_all():
         url = "http://localhost:7000/game/info/all?auth=asdfg"
         return urlopen(url).read()
 
-def test_thrust():
+def test_actions():
     url = "http://localhost:7000/game/turn"
     data = {'auth':'asdfg', 
             'actions':[]}
-    for id in json.loads(test_info_all())['objects']:
+
+    for obj in json.loads(test_info_all())['objects']:
+        id = obj['id']
         action = {'obj_type':'ship', 
                   'ship_id': id, 
                   'command': 'thrust',
@@ -38,5 +35,7 @@ def test_thrust():
 if __name__ == '__main__':
     print test_join()
     print test_info()
+    print "Testing /game/info/all GET"
     print test_info_all()
-    print test_thrust()
+    print "Testing /game/turn POST"
+    print test_actions()
