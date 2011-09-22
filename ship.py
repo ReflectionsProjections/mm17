@@ -2,8 +2,7 @@ import math
 from math import sin, cos
 import random
 
-import Game, GameObject
-import Map
+from game_obj import GameObject
 from vector import distance, circle_in_rect
 
 # half of dispersion
@@ -14,7 +13,7 @@ class Ship(GameObject):
 	methods. Any method that returns info must do so in a dictionary. """
 
 	def __init__(self, game, player, position):
-		super(GameObject, self).__init__(game, position, player)
+		super(Ship, self).__init__(game, position, player)
 
 		# attribute itialization
 		self.health = 100
@@ -45,6 +44,9 @@ class Ship(GameObject):
 		vel_mag = sqrt(self.velocity[0]**2, self.velocity[1]**2)
 		vel_scale = max_velocity/vel_mag
 		self.velocity = vel_scale * self.velocity
+		return {'thrust_success':True, 
+			'velocity': self.velocity, 
+			'position': self.position}
 		
 
 	def fire(self, angle):
@@ -85,12 +87,14 @@ class Ship(GameObject):
 		else:
 			within_beam.sort(key=distance(self.position, obj.position))
 			# Hit first in line, record id
-			self.events.append(("shot", within_beam[0].id))
+			self.events.append(("shot", id(within_beam[0])))
 			# register damage with hit object
 			dist = distance(self.position, within_beam[0].position)
 			damage_amt = self.weapon_strength *(self.weapon_range - \
 								    dist)/weapon_range 
-			within_beam[0].events(("damage", self.id, damage_amt, )
+			within_beam[0].events.append({'type':'damage', 
+						      'amount':damage_amt, 
+						      'hit_by':id(self)})
 					   
 
 	def scan(self, object):

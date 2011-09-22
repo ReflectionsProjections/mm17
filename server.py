@@ -7,31 +7,28 @@ from urlparse import parse_qs
 
 from time import gmtime, strftime
 from game import Game
-from map import Map
+from gamemap import Map
 from validate import handle_input
 
-class MMHandler(BaseHTTPRequestHandler):
-	def __init__(self, request, client_address, server):
-		"""Override __init__ to start game. Note that the 
-		BaseHTTPRequestHandler call to __init__ must go last
-		since it does all of it's handling in __init__.  If
-		called before, then Game isn't started."""
-		game_time = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
-		game_name = 'logs/game-%s' % game_time
-		game_map = Map(100, 100, 4)
-		self.game = Game(game_map, game_name, {})
-		BaseHTTPRequestHandler.__init__(self, request, client_address, server)
 
+
+class MMHandler(BaseHTTPRequestHandler):
+	game_time = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
+	game_name = 'logs/game-%s' % game_time
+	game_map = Map(100, 100, 4)
+	game = Game(game_map, game_name)
 
 	def game_info(self, params):
-		""" Handles a request for the game state, which includes active players and whether or not the game has started """
+		""" Handles a request for the game state, which includes
+		active players and whether or not the game has started """
 		gameStatus = self.game._gameInfo()
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
 		return
 
 	def game_turn_get(self, params):
-		""" Handles a GET request for the game state at the most recent completed turn """
+		""" Handles a GET request for the game state at the most
+		recent completed turn """
 		self.respond()
 		output = json.dumps(self.game.lastTurnInfo())
 		self.wfile.write(output)
@@ -75,7 +72,6 @@ class MMHandler(BaseHTTPRequestHandler):
 
 	def walk_path(self, search_dict, search_path):
 		""" Walk the PATHS object to find the correct handler based upon the URI queried """
-		print search_path
 		first_item = search_path.pop(0)
 		if first_item in search_dict:
 			if isinstance(search_dict[first_item], dict):
@@ -126,7 +122,7 @@ class MMHandler(BaseHTTPRequestHandler):
 		search_paths = []
 
 		if exploded_path[0] == '':
-			self.send_error(400, "Requests to the root are invalid. Did you mean /game/turn?")
+			self.send_error(400, "Requests to the root are invali. Did you mean /game/turn?")
 			return
 		
 		for path in exploded_path:
@@ -146,14 +142,18 @@ class MMHandler(BaseHTTPRequestHandler):
 			handler(self, input)
 			return
 		else:
-			self.send_error(404, "Unknown resource identifier: %s" % self.path)
-
-
-		
+			self.send_error(404, "Unknown resource identifier: %s"\
+						% self.path)
 			return
+
+
+class MMServer(HTTPServer):
+	def __init__(self, server_address):
+		"""Override __init__ to start game."""
+
+		HTTPServer.__init__(self, server_address, MMHandler)
 
 if __name__ == '__main__':
 	port = 7000
 	print "Starting on port " + str(port) + "..."
-	server = HTTPServer(('', port), MMHandler)
-	server.serve_forever()
+	MMServer(('', port)).serve_forever()

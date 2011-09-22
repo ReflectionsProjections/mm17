@@ -1,12 +1,13 @@
 from datetime import datetime
 import time
+from ship import Ship
 from player import Player
 
 class Game(object):
 	"""The main Game class runs the game and contains the main loop
 	that updates statuses and logs data."""
 
-	def __init__(self, game_map, log_file, players):
+	def __init__(self, game_map, log_file):
 		"""Initialize the game object
 
 		Arguments:
@@ -15,8 +16,8 @@ class Game(object):
 		players - A list of the game's players
 		"""
 		self.game_map = game_map
+		self.players = {}
 		self.log_file = open(log_file, 'w')
-		self.players = players
 		self.actions = [] # list of dicts, index for turn, [player] for player
 		self.player_results = {}
 		self.turn = 0
@@ -24,7 +25,7 @@ class Game(object):
 	
 	def _gameInfo(self):
 		active_players = []
-		for key, player in self.players.items():
+		for player in self.players.itervalues():
 			if player.alive:
 				active_players.append(player.name)
 
@@ -38,25 +39,31 @@ class Game(object):
 		""" Adds a player to the current game """
 		newPlayer = Player(name, authToken)
 		if len(self.players.keys()) < self.game_map.maxPlayers:
-			if authToken not in self.players:
-				self.players[authToken] = newPlayer
+			if authToken in self.players.keys():
+				return {'join_success': False, 
+					'message': 'Already joined'}
 			else:
-				return {'join_success': False, 'message': 'Already joined'}
+				self.players[authToken] = newPlayer
+				self._log(name + " joined the game.")
+				if len(self.players.keys()) == self.game_map.maxPlayers:
+					self._begin()
+				return {'join_success': True, 
+					'message': 'Joined succesfully'}
 
-			if len(self.players.keys()) == self.game_map.maxPlayers:
-				self._begin()
-			return {'join_success': True, 'message': 'Joined succesfully'}
+
+
 		else:
-			return {'join_success': False, 'message': 'Game full'}
+			return {'join_success': False, 
+				'message': 'Game full'}
 
 	def _log(self, message):
 		""" Adds a message to the end of the log file. """
-		text = "%s: %s" % (datetime.time(), message)
+		text = "%s: %s\n" % (datetime.now(), message)
 		self.log_file.write(text)
 
 	def _begin(self):
 		"""Sets up beginning state and starts the game turn loop."""
-		for player in self.players:
+		for player in self.players.itervalues():
 			new_ship = Ship(self, player, (0,0))
 			self.game_map.add_object(new_ship)
 			player.add_object(new_ship)
@@ -141,34 +148,3 @@ class Game(object):
 
 
 
-class GameObject(object):
-	"""Base class for all game objects on the map since they need 
-	certain common info"""
-	def __init__(self, game, position, owner):
-		self.game = game
-		self.position = position
-		self.velocity = (0,0)
-		self.owner = owner
-		self.alive = True
-
-		# holds all events to be processed on turn handle
-		# list of lists accessed like events[turn]
-		self.events = []
-
-		# holds results from turns to be returned to user
-		# list of lists accessed like results[turn]
-		self.results = []
-
-	def step(self, dt):
-		vx, vy = self.velocity
-		x, y = self.position
-		self.position = (x + dt*vx, y + dt*vy)
-
-	def get_state(self):
-		state = {'obj_id': id(self),
-			 'owner': self.owner,
-			 'position':self.position,
-			 'alive': self.alive,
-			 'results':self.results[game.turn]
-			 }
-		return state
