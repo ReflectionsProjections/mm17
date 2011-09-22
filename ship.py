@@ -119,3 +119,8 @@ class Ship(GameObject):
 				return angle, dist, object.health
 		else: return None
 						      
+	def create_ship(self):
+		new_ship = Ship(self.game, self, (self.position+5,
+					       self.position+5))
+		self.game.game_map.add_object(new_ship)
+		self.add_object(new_ship)
