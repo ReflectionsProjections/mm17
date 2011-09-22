@@ -18,7 +18,7 @@ class Game(object):
 		self.game_map = game_map
 		self.players = {}
 		self.log_file = open(log_file, 'w')
-		self.actions = [] # list of dicts, index for turn, [player] for player
+		self.actions = [{}] # list of dicts, index for turn, [player] for player
 		self.player_results = {}
 		self.turn = 0
 		self.active = False
@@ -32,6 +32,19 @@ class Game(object):
 		status = {
 			'game_active': self.active,
 			'active_players': active_players
+		}
+		return status
+
+	def _gameInfoAll(self, auth):
+		active_players = []
+		for player in self.players.itervalues():
+			if player.alive:
+				active_players.append(player.name)
+		player = self.players[auth]
+		status = {
+			'game_active': self.active,
+			'active_players': active_players,
+			'objects': [object._to_dict() for object in self.game_map.objects.itervalues()]
 		}
 		return status
 
@@ -120,6 +133,7 @@ class Game(object):
 
 		# advnace turn and reset timer
 		self.turn += 1
+		self.actions[game.turn] = {}
 		self.last_turn_time = time.time()
 
 	def _main(self):

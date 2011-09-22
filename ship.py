@@ -124,3 +124,13 @@ class Ship(GameObject):
 					       self.position+5))
 		self.game.game_map.add_object(new_ship)
 		self.add_object(new_ship)
+
+	def _to_dict(self):
+		dict = {'type':'ship',
+			'id':id(self),
+			'owner': self.owner.name,
+			'alive': self.alive,
+			'position': self.position,
+			'velocity': self.velocity,
+			'health': self.health}
+		return dict

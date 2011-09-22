@@ -16,8 +16,6 @@ class GameObject(object):
 		# list of lists accessed like results[turn]
 		self.results = []
 
-	def __str__(self):
-		return "GameObject base class"
 
 	def step(self, dt):
 		vx, vy = self.velocity

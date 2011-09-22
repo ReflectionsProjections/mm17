@@ -5,10 +5,8 @@ from vector import distance
 
 class Map(object):
 
-	def __init__(self, width, height, maxPlayers):
+	def __init__(self, maxPlayers):
 		self.origin = (0, 0)
-		self.width = width
-		self.height = height
 		self.maxPlayers = maxPlayers
 		self.objects = {}
 		self.ships = {}
@@ -18,7 +16,8 @@ class Map(object):
 		objID = id(object)
 		if objID not in self.objects.keys():
 			self.objects[objID] = object
-
+			if isinstance(object, Ship):
+				self.ships[objID] = object
 		return objID
 
 	def radar(self, position, range):

@@ -10,18 +10,23 @@ from game import Game
 from gamemap import Map
 from validate import handle_input
 
-
-
 class MMHandler(BaseHTTPRequestHandler):
 	game_time = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
 	game_name = 'logs/game-%s' % game_time
-	game_map = Map(100, 100, 4)
+	game_map = Map(4)
 	game = Game(game_map, game_name)
 
 	def game_info(self, params):
 		""" Handles a request for the game state, which includes
 		active players and whether or not the game has started """
 		gameStatus = self.game._gameInfo()
+		self.respond()
+		self.wfile.write(json.dumps(gameStatus))
+		return
+
+	def game_info_all(self, params):
+		""" Handles a request for the game state, which includes all info available to the player """
+		gameStatus = self.game._gameInfoAll(params['auth'][0])
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
 		return
@@ -37,7 +42,7 @@ class MMHandler(BaseHTTPRequestHandler):
 	def game_turn_post(self, input):
 		""" Handles a POST request for the next turn"""
 		self.respond()
-		output = json.dumps(self.handle_input(input, game))
+		output = json.dumps(handle_input(input, self.game))
 		self.wfile.write(output)
 		return
 
@@ -58,7 +63,10 @@ class MMHandler(BaseHTTPRequestHandler):
 	# These map URIs to handlers depending on request method
 	GET_PATHS = {
 		'game': {
-			'info': game_info,
+			'info': {
+				'': game_info,
+				'all':game_info_all
+				},
 			'turn': game_turn_get,
 			'join': game_join,
 		},
@@ -103,10 +111,11 @@ class MMHandler(BaseHTTPRequestHandler):
 		if exploded_path[0] == '':
 			self.send_error(400, "Requests to the root are invalid. Did you mean /game/turn?")
 			return
-		
+
 		for path in exploded_path:
 			if path is not '':
 				search_paths.append(path)
+		search_paths.append('')
 
 		handler = self.walk_path(self.GET_PATHS, search_paths)
 		if handler is not None:
@@ -128,6 +137,7 @@ class MMHandler(BaseHTTPRequestHandler):
 		for path in exploded_path:
 			if path is not '':
 				search_paths.append(path)
+		search_paths.append('')
 
 		length = int(self.headers.getheader('content-length'))
 		rfile = self.rfile.read(length)

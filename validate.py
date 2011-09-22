@@ -2,9 +2,8 @@ def handle_input(input, game):
     """Hadles incoming input from POST requests and passes 
     them to validators."""
     if 'auth' in input.keys():
-        for player in game.players:
-            if input['auth'] == player.auth_tokem:
-                return validate_actions(game, player, input)
+            if input['auth'] in game.players.keys():
+                return validate_actions(game, game.players[input['auth']], input)
             else:
                 return {'error':'bad auth token'}
     else:
@@ -17,10 +16,11 @@ def validate_actions(game, player, input):
     if 'actions' not in input:
         return {'error': 'no actions provided'}
     results = []
-    for action in actions:
+    game.actions[game.turn][player] = []
+    for action in input['actions']:
         if action['obj_type'] == "ship":
             
-            results.append(validate_ship_action(action))
+            results.append(validate_ship_action(action, player, game))
         else:
             results.append({'error':'bad or no obj_type in action'})
     return results
@@ -54,18 +54,19 @@ def validate_ship_action(action, player, game):
     if action['command'] == 'thrust':
         if 'accel' not in action['args'].keys():
           return {'error':'thrust requires accel arg'}
-        elif not isinstance(action['args']['accel'], tuple):
-          return {'error':'accel must be tuple'}
+        elif not isinstance(action['args']['accel'], list):
+            print action['args']['accel']
+            return {'error':'accel must be list'}
         else:
             accel = action['args']['accel']
             try:
-                a, b = int(accel[0], accel[1])
+                a, b = accel[0], accel[1]
             except:
                 return {'error':'invalid accel values'}
             result = {'obj_id': action['ship_id'],
                       'method': action['command'],
                       'params': action['args']}
-            game.actions[gam.turn][player].append(result)
+            game.actions[game.turn][player].append(result)
             return {'success' : True}
     elif action['command'] == 'fire':
         if 'angle' not in action['args'].keys():
