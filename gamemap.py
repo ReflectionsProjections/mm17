@@ -1,6 +1,6 @@
 from math import sqrt
 from random import randrange
-
+from ship import Ship
 from vector import distance
 
 class Map(object):
