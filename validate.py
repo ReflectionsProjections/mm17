@@ -1,3 +1,4 @@
+from numbers import Number
 def handle_input(input, game):
     """Hadles incoming input from POST requests and passes 
     them to validators."""
@@ -51,10 +52,11 @@ def validate_ship_action(action, player, game):
         return {'error':'args must be a dictionary'}
     # validate commands
     if action['command'] == 'thrust':
+        if ship.methods_used['thrust']:
+            return {'error':'thrust action already used'}
         if 'accel' not in action['args'].keys():
-          return {'error':'thrust requires accel arg'}
+            return {'error':'thrust requires accel arg'}
         elif not isinstance(action['args']['accel'], list):
-            print action['args']['accel']
             return {'error':'accel must be list'}
         else:
             accel = action['args']['accel']
@@ -66,20 +68,22 @@ def validate_ship_action(action, player, game):
                       'method': action['command'],
                       'params': action['args']}
             game.actions[game.turn][player].append(result)
+            ship.methods_used['thrust'] = True
             return {'success' : True}
     elif action['command'] == 'fire':
-        if 'angle' not in action['args'].keys():
+        if ship.methods_used['fire']:
+            return {'error':'fire action already used'}
+        elif 'angle' not in action['args'].keys():
           return {'error':'fire requires angle arg'}
         else:
             angle = action['args']['angle']
-            try:
-                angle = int(angle)
-            except:
-                return {'error':'invalid angle value'}
+            if not isinstance(angle, Number):
+                return {'error':'angle must be int'}
             result = {'obj_id': action['ship_id'],
                       'method': action['command'],
                       'params': action['args']}
             game.actions[game.turn][player].append(result)
+            ship.methods_used['fire'] = True
             return {'success' : True}
     else:
         return {'error':'invalid ship command'}

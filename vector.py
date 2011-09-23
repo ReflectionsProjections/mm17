@@ -54,3 +54,15 @@ def circle_in_rect(rect, center, radius):
 		return False
 
 
+
+def circle_collision(circle1, circle2):
+	""" Checks to see if a line intersects with a circle.
+	circle = ((x,y), radius) center and radius
+
+	returns True/False"""
+	if circle1[1] > circle2[1]:
+		bigger = circle1
+	else: bigger = circle2
+	dist = distance(circle1[0], circle2[0])
+	if dist < bigger[1]: return True
+	else: return False

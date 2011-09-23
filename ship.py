@@ -1,12 +1,11 @@
-import math
-from math import sin, cos, sqrt
+from math import sin, cos, sqrt, pi, hypot, atan2
 import random
 
 from game_obj import GameObject
 from vector import distance, circle_in_rect
 
 # half of dispersion
-angle_fuzz = (2*math.pi)/16
+angle_fuzz = (2*pi)/16
 
 class Ship(GameObject):
 	"""The class for a Player's ship.  A Player must be authorized to access certain
@@ -15,15 +14,17 @@ class Ship(GameObject):
 	def __init__(self, game, player, position):
 		super(Ship, self).__init__(game, position, player)
 
+		self.size = 10
+		self.direction = 0
 		# attribute itialization
 		self.health = 100
 		self.scan_range = 2000
 		self.weapon_range = 1000
 		self.weapon_strength = 100
-
 		# max values
-		self.max_velocity = 10
-		self.max_accel = 2
+		self.max_velocity = 50
+		self.max_accel = 5
+		self.methods_used = {'thrust':False,'fire':False}
 
 	def thrust(self, accel):
 		"""Sets the velocity based on acceleration and current velocity.
@@ -31,24 +32,21 @@ class Ship(GameObject):
 		Arguments:
 		accel - (x,y) acceleration tuple
 		"""
-		dx, dy = accel
 		# test to see if the accel is greater than allowed max
-		mag = sqrt(dx*dx + dy*dy)
+		mag = hypot(*accel)
 		if mag > self.max_accel:
 			scale = self.max_accel/mag
 		else:
 			scale = 1
 		x, y = self.velocity
+		dx, dy = accel
 		self.velocity = (x+scale*dx, y+scale*dy)
 		# scale doown to max velocity
-		vel_mag = sqrt(self.velocity[0]**2 + self.velocity[1]**2)
+		vel_mag = hypot(*self.velocity)
 		vel_scale = self.max_velocity/vel_mag
 		self.velocity = (vel_scale * self.velocity[0],
 				 vel_scale * self.velocity[1])
-		return {'thrust_success':True, 
-			'velocity': self.velocity, 
-			'position': self.position}
-		
+		self.direction = 
 
 	def fire(self, angle):
 		"""Fire at angle relative to the ship's direction.  The laser
@@ -110,28 +108,29 @@ class Ship(GameObject):
 			if dist == 0:
 				return angle, dist, object.health
 			else:
-				angle = math.atan2(dy,dx)
+				angle = atan2(dy, dx)
 				angle_error = random.uniform(-angle_fuzz,angle_fuzz)
 				angle += angle_error
-				if angle < -math.pi:
-					angle += 2*math.pi
-				elif angle > math.pi:
-					angle -= 2*math.pi
-				return angle, dist, object.health
+				if angle < -pi:
+					angle += 2*pi
+				elif angle > pi:
+					angle -= 2*pi
+				return (angle, dist, object.health)
 		else: return None
 						      
 	def create_ship(self):
+		"""Temporary method to create a ship near another ship"""
 		new_ship = Ship(self.game, self, (self.position+5,
 					       self.position+5))
 		self.game.game_map.add_object(new_ship)
 		self.add_object(new_ship)
 
 	def _to_dict(self):
-		dict = {'type':'ship',
+		state = {'type':'ship',
 			'id':id(self),
 			'owner': self.owner.name,
 			'alive': self.alive,
 			'position': self.position,
 			'velocity': self.velocity,
 			'health': self.health}
-		return dict
+		return state

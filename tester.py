@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 from urllib2 import urlopen
 import json
+from math import pi
 players = {'one':'asdfg'}
 
 def test_join():
@@ -29,6 +30,11 @@ def test_actions():
                   'ship_id': id, 
                   'command': 'thrust',
                   'args': { 'accel': (1, 1)}}
+        data['actions'].append(action)
+        action = {'obj_type':'ship', 
+                  'ship_id': id, 
+                  'command': 'fire',
+                  'args': { 'angle': pi}}
         data['actions'].append(action)
     return urlopen(url, json.dumps(data)).read()
 

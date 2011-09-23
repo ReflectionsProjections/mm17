@@ -77,7 +77,7 @@ class Game(object):
 		self.player_results[self.turn] = {}
 		for p in self.players.iterkeys():
 			self.player_results[self.turn][p] = \
-			[object.get_state() \
+			[object._to_dict() \
 			 for object in self.game_map.objects.itervalues() \
 			 if object.owner == self.players[p]]
 
