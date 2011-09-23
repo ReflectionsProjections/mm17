@@ -46,7 +46,8 @@ class Ship(GameObject):
 		vel_scale = self.max_velocity/vel_mag
 		self.velocity = (vel_scale * self.velocity[0],
 				 vel_scale * self.velocity[1])
-		self.direction = 
+		# XXX: What the fuck was this supposed to do
+		#self.direction = 
 
 	def fire(self, angle):
 		"""Fire at angle relative to the ship's direction.  The laser
@@ -91,8 +92,8 @@ class Ship(GameObject):
 			dist = distance(self.position, within_beam[0].position)
 			damage_amt = self.weapon_strength *(self.weapon_range - \
 								    dist)/weapon_range 
-			within_beam[0].events.append({'type':'damage', 
-						      'amount':damage_amt, 
+			within_beam[0].events.append({'type':'damage',
+						      'amount':damage_amt,
 						      'hit_by':id(self)})
 					   
 
@@ -116,7 +117,8 @@ class Ship(GameObject):
 				elif angle > pi:
 					angle -= 2*pi
 				return (angle, dist, object.health)
-		else: return None
+		else:
+			return None
 						      
 	def create_ship(self):
 		"""Temporary method to create a ship near another ship"""

@@ -105,7 +105,7 @@ class MMHandler(BaseHTTPRequestHandler):
 		first_item = search_path.pop(0)
 		if first_item in search_dict:
 			if isinstance(search_dict[first_item], dict):
-				return self.walk_path(search_dict[first_item], 
+				return self.walk_path(search_dict[first_item], \
 						      search_path)
 			else:
 				return search_dict[first_item]
