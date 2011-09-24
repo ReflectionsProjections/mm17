@@ -2,6 +2,7 @@
 
 from map_obj import MapObject
 import Constants
+import unittest
 
 class Asteroid(MapObject):
 	"""
@@ -28,9 +29,6 @@ class Asteroid(MapObject):
 		"""
 		self.resources -= Constants.resource_pull
 
-if __name__ == '__main__':
-	unittest.main()
-
 	def _to_dict(self):
 		state = {'type':'asteroid',
 					'id': id(self),
@@ -41,15 +39,18 @@ if __name__ == '__main__':
 		return state
 
 class Refinery(object):
-	def __init__(self, game, asteroid, owner)
-	self.game = game
-	self.asteroid = asteroid
-	self.owner = owner
+
+	def __init__(self, game, asteroid, owner):
+		self.game = game
+		self.asteroid = asteroid
+		self.owner = owner
 
 
-	def _to_dict(self)
-
-		state = { 'type':'Refinery'
-					'id':id(self)
+	def _to_dict(self):
+		state = { 'type':'Refinery',
+					'id': id(self),
 					'asteroid':self.asteroid}
 		return state
+
+if __name__ == '__main__':
+	unittest.main()
