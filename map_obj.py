@@ -30,7 +30,7 @@ class MapObject(object):
 		self.methods_used = {}
 
 		# Add this object to the game map
-		game.gamemap.add_object(self)
+		game.game_map.add_object(self)
 
 
 	def step(self, dt):
