@@ -33,10 +33,10 @@ if __name__ == '__main__':
 
 	def _to_dict(self):
 		state = {'type':'asteroid',
-					'id':id(self)
-					'position': self.position
-					'resources' : self.resources
-					'size' : self.size
+					'id': id(self),
+					'position': self.position,
+					'resources' : self.resources,
+					'size' : self.size,
 					'refinery' : id(self.refinery)}
 		return state
 
