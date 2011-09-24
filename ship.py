@@ -1,5 +1,6 @@
 from math import sin, cos, sqrt, pi, hypot, atan2
 import random
+import Constants
 
 from game_obj import GameObject
 from vector import distance, circle_in_rect
@@ -20,16 +21,16 @@ class Ship(GameObject):
 		@param position: The position to locate the ship
 		@param owner: The player that is creating this ship
 		"""
-		self.size = 10
+		self.size = Constants.base_size
 		self.direction = 0
 		# attribute itialization
-		self.health = 100
-		self.scan_range = 2000
-		self.weapon_range = 1000
-		self.weapon_strength = 100
+		self.health = Constants.base_health
+		self.scan_range = Constants.scan_range
+		self.weapon_range = Constants.weapon_range
+		self.weapon_strength = Constants.weapon_strength
 		# max values
-		self.max_velocity = 50
-		self.max_accel = 5
+		self.max_velocity = Constants.max_velocity
+		self.max_accel = Constants.max_accel
 		self.methods_used = {'thrust':False,'fire':False}
 
 	def thrust(self, accel):
