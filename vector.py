@@ -1,19 +1,22 @@
 from math import fabs
 
 def distance(pos1, pos2):
-	"""Returns the distance between two (x, y) position tuples"""
+	"""Returns the distance between two (x, y) position tuples
+	
+	@param pos1: First position
+	@param pos2: Second position
+	"""
 
 	return sqrt((pos1[0] - pos2[0])**2 + (pos1[1] - pos2[1])**2)
 
 def intersect_circle(center, radius, line):
 	""" Checks to see if a line intersects with a circle.
 
-	Arguments:
-	center - (x,y) coordinate of circle center
-	radius - radius of circle
-	line - ((x, y), (x,y)) start and end points of line
+	@param center: (x,y) coordinate of circle center
+	@param radius: radius of circle
+	@param line: ((x, y), (x,y)) start and end points of line
 
-	Return: True if the line interesects with the circle
+	@return True if the line interesects with the circle
 	"""
 
 	line_v = line[1][0]-line[0][0], line[0][1]-line[0][1] # Vector of line
@@ -31,12 +34,11 @@ def intersect_circle(center, radius, line):
 def circle_in_rect(center, radius, rect):
 	""" Checks to see if a circle intersects the rectangle.
 
-	Arguments:
-	center - Center point for the circle
-	radius - Radius of the circle
-	rect - a tuple of fours points, stored CCW
+	@param center: Center point for the circle
+	@param radius: Radius of the circle
+	@param rect: a tuple of fours points, stored CCW
 
-	Returns true if center is in rectangle.
+	@return True if center is in rectangle.
 	"""
 
 	# each side has a start point and a vector
@@ -69,11 +71,10 @@ def circle_in_rect(center, radius, rect):
 def circle_collision(circle1, circle2):
 	"""Checks to see if a circle intersects another circle
 
-	Arguments:
-	circle1 - ((x,y), radius) center and radius
-	circle2 - Second circle to check
+	@param circle1: ((x,y), radius) center and radius
+	@param circle2: Second circle to check
 
-	Returns true if the circles collide with each other
+	@returns True if the circles collide with each other
 	"""
 	if circle1[1] > circle2[1]:
 		bigger = circle1
