@@ -139,14 +139,14 @@ class Ship(MapObject):
 		Returns dict that can be used by JSON
 		"""
 		state = {'type':'ship',
-					'id':id(self),
-					'owner': self.owner.name,
-					'alive': self.alive,
-					'position': self.position,
-					'velocity': self.velocity,
-					'health': self.health}
+				 'id':id(self),
+				 'owner': self.owner.name,
+				 'alive': self.alive,
+				 'position': self.position,
+				 'velocity': self.velocity,
+				 'health': self.health}
 		return state
-	
+
 	def create_refinery(self, asteroid):
 		"""
 		Create a refinery on an asteroid

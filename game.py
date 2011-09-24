@@ -132,8 +132,8 @@ class Game(object):
 					break
 			else:
 				p.alive = False
-			p._update_resources()
-			p._update_score()
+			p.update_resources()
+			p.update_score()
 
 		# take timestep
 		for object in self.game_map.objects.itervalues():

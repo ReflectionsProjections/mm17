@@ -36,6 +36,7 @@ class Planet(MapObject):
 		state = {
 				'obj_id': id(self),
 				'position': self.position,
+				'size':self.size,
 				'base': id(self.base) if self.base else None
 				}
 		return state
@@ -93,13 +94,14 @@ class Base(object):
 		Return the current state in JSON serializable representation.
 
 		@type: dict
-		@return The current game state in JSON serializable representation.
+		@return: The current base state in JSON serializable representation.
 		"""
 		state = { 'type':'Base',
 					'id': id(self),
-					'planet':self.planet}
+					'planet':self.planet
+				  }
 		return state
 
-
+	
 if __name__ == '__main__':
 	unittest.main()

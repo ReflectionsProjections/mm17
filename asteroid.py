@@ -64,8 +64,9 @@ class Refinery(object):
 		@return The current game state in JSON serializable representation.
 		"""
 		state = { 'type':'Refinery',
-					'id': id(self),
-					'asteroid':self.asteroid}
+				  'id': id(self),
+				  'owner': self.owner,
+				  'asteroid':self.asteroid}
 		return state
 
 if __name__ == '__main__':

@@ -7,7 +7,9 @@ from planet import Base
 
 class Player(object):
 	def __init__(self, name, auth_token):
-		"""Create a new player representation.
+		"""
+		Create a new player representation.
+		
 		@param name: The name of the new player
 		@param auth_token: Authorization code for the payer (unique)
 		"""
@@ -25,14 +27,16 @@ class Player(object):
 					  self.refineries]
 
 	def add_object(self, obj):
-		"""Add an object to the player's directory.
+		"""
+		Add an object to the player's directory.
+
 		@param obj: The object to add.
 		"""
 		objID = id(obj)
 		if objID not in self.objects.keys():
 			self.objects[objID] = obj
 		if isinstance(obj, Ship):
-			self.ship[objID] = obj
+			self.ships[objID] = obj
 		if isinstance(obj, Base):
 			self.bases[objID] = obj
 		if isinstance(obj, Refinery):
@@ -40,14 +44,43 @@ class Player(object):
 		return objID
 
 	def update_score(self):
+		"""
+		Update the player score every turn.
+		"""
 		if self.alive:
 			shipsScore = (len(self.ships) * Constants.score_constant)
 			self.score += (self.resources + shipsScore)
 
 	def update_resources(self):
+		"""
+		Update the player's resources every turn.
+		"""
 		for refinery in self.refineries:
 			self.resources += Constants.resource_pull
 			self.refinery.asteroid.pull_resources
+
+	def to_dict(self):
+		"""
+		Return the current state in JSON serializable representation.
+
+		@type: dict
+		@return: The current player state to JSON serializable representation.
+		"""
+		state = { 'type':'Player',
+				  'name':self.name,
+				  'id': id(self),
+				  'resources': self.resources,
+				  'ships': self.ships.keys(),
+				  'bases': self.bases.keys(),
+				  'refineries': self.refineries.keys()
+				  }
+		return state
+	
+	def forfeit(self):
+		"""
+		Deactivate the player.
+		"""
+		self.alive = False
 
 class PlayerTests(unittest.TestCase):
 	def test_create(self):
