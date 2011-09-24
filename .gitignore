@@ -12,3 +12,4 @@ viz.pb.gz
 arena.pb
 *.pyc
 logs/*
+html/*
