@@ -30,6 +30,12 @@ class Asteroid(MapObject):
 		self.resources -= Constants.resource_pull
 
 	def _to_dict(self):
+		"""
+		Return the current state in JSON serializable representation.
+
+		@type: dict
+		@return The current game state in JSON serializable representation.
+		"""
 		state = {'type':'asteroid',
 					'id': id(self),
 					'position': self.position,
@@ -41,6 +47,9 @@ class Asteroid(MapObject):
 class Refinery(object):
 
 	def __init__(self, asteroid, owner):
+		"""
+		Creates a refinery.
+		"""
 		self.asteroid = asteroid
 		self.owner = owner
 
@@ -48,6 +57,12 @@ class Refinery(object):
 
 
 	def _to_dict(self):
+		"""
+		Return the current state in JSON serializable representation.
+
+		@type: dict
+		@return The current game state in JSON serializable representation.
+		"""
 		state = { 'type':'Refinery',
 					'id': id(self),
 					'asteroid':self.asteroid}
