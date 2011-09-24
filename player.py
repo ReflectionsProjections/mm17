@@ -21,5 +21,21 @@ class Player(object):
 			self.objects[objID] = obj
 		return objID
 
+class PlayerTests(unittest.case.TestCase):
+	def test_create(self):
+		p = Player("Hello","world")
+		self.assertTrue(p.name == "Hello")
+		self.assertTrue(p.auth_token == "world")
+		self.assertTrue(p.alive)
+		self.assertTrue(len(p.objects) == 0)
+	def test_add(self):
+		p = Player("a","b")
+		objects = []
+		objects.append("hello")
+		objects.append("test")
+		for i in objects:
+			p.add_object(i)
+		self.assertTrue(len(p.objects) == 2)
+
 if __name__ == "__main__":
 	unittest.main()
