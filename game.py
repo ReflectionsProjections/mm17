@@ -197,7 +197,7 @@ class Game(object):
 		@param name: Name of player
 		@param authToken: player token"""
 		newPlayer = Player(name, authToken)
-		if len(self.players.keys()) >= self.game_map.maxPlayers:
+		if len(self.players.keys()) >= self.game_map.max_players:
 			return {'join_success': False,
 				'message': 'Game full'}
 		if authToken in self.players.keys():
@@ -207,7 +207,7 @@ class Game(object):
 		self.players[authToken] = newPlayer
 		self._log(name + " joined the game.")
 
-		if len(self.players.keys()) == self.game_map.maxPlayers:
+		if len(self.players.keys()) == self.game_map.max_players:
 			self._begin()
 
 		return {'join_success': True,
