@@ -13,3 +13,4 @@ arena.pb
 *.pyc
 logs/*
 html/*
+test_log

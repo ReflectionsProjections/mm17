@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+import unittest
+
 class GameObject(object):
 	"""Base class for all game objects on the map since they need
 	certain common info

@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+import unittest
 from math import fabs
 
 def distance(pos1, pos2):

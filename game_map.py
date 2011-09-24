@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+import unittest
 from math import sqrt
 from random import randrange
 from ship import Ship

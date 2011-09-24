@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+import unittest
 from urllib2 import urlopen
 import json
 from math import pi
