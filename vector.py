@@ -19,7 +19,7 @@ def intersect_circle(center, radius, line):
 	@param radius: radius of circle
 	@param line: ((x, y), (x,y)) start and end points of line
 
-	@return True if the line interesects with the circle
+	@return: True if the line interesects with the circle
 	"""
 
 	line_v = line[1][0]-line[0][0], line[0][1]-line[0][1] # Vector of line
@@ -41,7 +41,7 @@ def circle_in_rect(center, radius, rect):
 	@param radius: Radius of the circle
 	@param rect: a tuple of fours points, stored CCW
 
-	@return True if center is in rectangle.
+	@return: True if center is in rectangle.
 	"""
 
 	# each side has a start point and a vector
@@ -77,7 +77,7 @@ def circle_collision(circle1, circle2):
 	@param circle1: ((x,y), radius) center and radius
 	@param circle2: Second circle to check
 
-	@returns True if the circles collide with each other
+	@return: True if the circles collide with each other
 	"""
 	if circle1[1] > circle2[1]:
 		bigger = circle1

@@ -10,13 +10,13 @@ class Map(object):
 	"""Map class that contains objects
 
 	"""
-	def __init__(self, maxPlayers):
+	def __init__(self, max_players):
 		"""Initializes the game map
 		
-		@param maxPlayers: The maximum number of players the map supports
+		@param max_players: The maximum number of players the map supports
 		"""
 		self.origin = (0, 0)
-		self.maxPlayers = maxPlayers
+		self.max_players = max_players
 		self.objects = {}
 		self.ships = {}
 

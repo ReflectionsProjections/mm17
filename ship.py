@@ -109,8 +109,7 @@ class Ship(GameObject):
 	def scan(self, object):
 		"""Scan an object, the data is fuzzed based on distance from the ship
 
-		@param: The object to get fuzzed data from
-		@return: The fuzzed angle and distance
+		@param object: The object to get fuzzed data from
 		"""
 		# Multiply the returned distance by a random value
 		dist = distance(self.position, object.position)
