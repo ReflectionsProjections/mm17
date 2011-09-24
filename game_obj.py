@@ -48,7 +48,7 @@ class GameObject(object):
 		
 		pass
 
-	def to_dict(self):
+	def _to_dict(self):
 		"""Returns the current state in JSON serializable representation.
 		
 		@return: The current game state in JSON serializable representation

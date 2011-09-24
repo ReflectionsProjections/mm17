@@ -141,12 +141,12 @@ class Ship(GameObject):
 
 	def _to_dict(self):
 		state = {'type':'ship',
-			'id':id(self),
-			'owner': self.owner.name,
-			'alive': self.alive,
-			'position': self.position,
-			'velocity': self.velocity,
-			'health': self.health}
+					'id':id(self),
+					'owner': self.owner.name,
+					'alive': self.alive,
+					'position': self.position,
+					'velocity': self.velocity,
+					'health': self.health}
 		return state
 
 if __name__ == '__main__':
