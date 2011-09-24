@@ -4,6 +4,8 @@ import unittest
 from math import sqrt
 from random import randrange
 from ship import Ship
+from planet import Planet
+from asteroid import Asteroid
 from vector import distance
 
 class Map(object):
@@ -38,6 +40,10 @@ class Map(object):
 			self.objects[objID] = object
 			if isinstance(object, Ship):
 				self.ships[objID] = object
+			if isinstance(object, Planet):
+				self.planets[objID] = object
+			if isinstance(object, Asteroid):
+				self.asteroidss[objID] = object
 		return objID
 
 	def radar(self, position, range):

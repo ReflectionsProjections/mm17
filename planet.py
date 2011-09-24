@@ -21,7 +21,7 @@ class Planet(MapObject):
 		"""
 		super(Planet, self).__init__(game, position)
 
-		self.size = Constantse
+		self.size = Constants.planet_scale * size
 		self.resources = size * Constants.planet_scale
 		# will contain refrence to base if it contains one
 		self.base = None
