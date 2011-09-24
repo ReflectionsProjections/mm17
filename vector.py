@@ -2,7 +2,7 @@
 
 import unittest
 
-from math import fabs, sqrt
+from math import fabs, sqrt, hypot
 
 def distance(pos1, pos2):
 	"""Returns the distance between two (x, y) position tuples
@@ -18,17 +18,23 @@ def intersect_circle(center, radius, line):
 
 	@param center: (x,y) coordinate of circle center
 	@param radius: radius of circle
-	@param line: ((x, y), (x,y)) start and end points of line
+	@param line: ((x, y), (x, y)) start point and vector
 
 	@return: True if the line interesects with the circle
 	"""
-
-	line_v = line[1][0]-line[0][0], line[0][1]-line[0][1] # Vector of line
-	line_len = sqrt(line_v[0]**2 + line_v[1]**2) # Length of line
-	line_v = line_v[0]/line_len, line_v[1]/line_len # unit vector of line
-	normal = -line_v[1], line_v[0] # normal unit vector
-	center_line_v = center[0]-line[1][0], center[1]-line[1][1] # vector from point to end
-	dist = fabs(ac[0]*n[0]+ac[1]*n[1]) # Projection of center_line_v to n (the minimum distance)
+	# Vector of line
+	line_v = line[1] 
+	# Length of line
+	line_len = hypot(*line_v) 
+	# unit vector of line
+	line_uv = line_v[0]/line_len, line_v[1]/line_len 
+	 # normal unit vector
+	normal = -line_uv[1], line_uv[0]
+	# vector from point to end
+	center_line_v = center[0]-(line[0][0]+line[1][0]),\
+		center[1]-(line[0][1]+line[1][1])
+	# Projection of center_line_v to n (the minimum distance)
+	dist = fabs(center_line_v[0]*normal[0]+center_line_v[1]*normal[1])
 	if dist < radius:
 		return True
 	else:
@@ -53,12 +59,14 @@ def circle_in_rect(center, radius, rect):
 
 	center_right_of_side = 0 # must be four to be true
 	for side in sides:
+		# find side vector
+		(rect[1][0] - rect[0][0], rect[1][1] - rect[0][1])
 		# find vector bewtween point and start of side
 		vector = (side[0][0] - center[0], side[0][1] - center[1])
 		# take cross product between vector and side
 		cross_prod = side[1][0]*vector[1] - side[1][1]*vector[0]
 		# if side intersects ciclre, return true
-		if intersect_circle(center, radius, side[1]):
+		if intersect_circle(center, radius, side):
 			return True
 		# if the following is true for all sides, center is in rect
 		if cross_prod > 0:
@@ -80,11 +88,9 @@ def circle_collision(circle1, circle2):
 
 	@return: True if the circles collide with each other
 	"""
-	if circle1[1] > circle2[1]:
-		bigger = circle1
-	else: bigger = circle2
+	min_dist = circle1[1] + circle2[1]
 	dist = distance(circle1[0], circle2[0])
-	if dist < bigger[1]:
+	if dist < min_dist:
 		return True
 	else:
 		return False

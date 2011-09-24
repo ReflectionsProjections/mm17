@@ -95,13 +95,14 @@ class Ship(MapObject):
 			# No object hit
 			self.events.append(("shot", None))
 		else:
-			within_beam.sort(key=distance(self.position, obj.position))
+			cmp_dist = lambda a: distance(self.position, a.position)
+			within_beam.sort(key=cmp_dist)
 			# Hit first in line, record id
 			self.events.append(("shot", id(within_beam[0])))
 			# register damage with hit object
 			dist = distance(self.position, within_beam[0].position)
-			damage_amt = self.weapon_strength *(self.weapon_range - \
-					dist)/weapon_range
+			damage_amt = Constants.weapon_strength *(Constants.weapon_range - \
+					dist)/Constants.weapon_range
 			within_beam[0].events.append({'type':'damage',
 					'amount':damage_amt,
 					'hit_by':id(self)})

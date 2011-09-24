@@ -133,6 +133,10 @@ class Game(object):
 			else:
 				p.alive = False
 
+		# add resources
+		for p in self.players.itervalues():
+			p._update_resources()
+
 		# take timestep
 		for object in self.game_map.objects.itervalues():
 			object.step(1)

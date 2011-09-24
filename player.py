@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import unittest
+import Constants
 
 class Player(object):
 	def __init__(self, name, auth_token):
@@ -10,6 +11,7 @@ class Player(object):
 		self.name = name
 		self.auth_token = auth_token
 		self.alive = True
+		self.resources = 0
 		self.objects = {}
 		self.ships = {}
 		self.bases = {}
@@ -26,6 +28,9 @@ class Player(object):
 		if objID not in self.objects.keys():
 			self.objects[objID] = obj
 		return objID
+
+	def _update_resources(self):
+		self.resources += len(self.refineries)*Constants.resource_pull
 
 class PlayerTests(unittest.TestCase):
 	def test_create(self):
