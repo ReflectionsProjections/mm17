@@ -173,7 +173,7 @@ if __name__ == '__main__':
 	args = vars(argsys.parse_args())
 	if args['syntest']:
 		sys.exit(0)
-	port = args['port']
+	port = args['port'][0]
 	print "Starting on port " + str(port) + "..."
 	server = HTTPServer(('', port), MMHandler)
 	server.serve_forever()
