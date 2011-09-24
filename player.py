@@ -21,7 +21,7 @@ class Player(object):
 			self.objects[objID] = obj
 		return objID
 
-class PlayerTests(unittest.case.TestCase):
+class PlayerTests(unittest.TestCase):
 	def test_create(self):
 		p = Player("Hello","world")
 		self.assertTrue(p.name == "Hello")
