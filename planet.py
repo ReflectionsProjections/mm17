@@ -15,18 +15,18 @@ class Planet(MapObject):
 
 		@type  position: tuple
 		@param position: Position of Planet on the map
-		
+
 		@type  size: int
 		@param size: Size of the Planet
 		"""
 		super(Planet, self).__init__(game, position)
-		
+
 		self.size = Constantse
 		self.resources = size * Constants.planet_scale
 		# will contain refrence to base if it contains one
 		self.base = None
 
-	def to_dict(self):
+	def _to_dict(self):
 		"""
 		Return the current state in JSON serializable representation.
 
@@ -39,6 +39,54 @@ class Planet(MapObject):
 				'base': id(self.base) if self.base else None
 				}
 		return state
+
+class Base(object):
+	"""
+	A base that can be built on a planet.  Players can use these to
+	create ships, etc.
+	"""
+
+	def __init___(self, planet, owner):
+		"""
+		Construct a base.
+
+		@type planet: Planet object
+		@param planet: The Planet object that this base is associated with
+		
+		@type owner: Player object
+		@param owner: The Player object this base is owned by
+		"""
+		self.planet = planet
+		self.owner = owner
+		self.health = Constants.base_health
+
+	def create_ship(self, position):
+		"""
+		Construct a ship.
+		
+		@type: tuple
+		@param position: location the player wants the object at
+		"""
+		# if outside build radius, move position in
+		if distance(self.planet.position, position) > Constants.build_radius:
+			mag = hypot(*position)
+			position = (position[0]*(build_radius/mag),
+						position[1]*(build_radius/mag))
+		new_ship = Ship(position, self.planet.owner)
+		return new_ship
+
+	def salvage_ship(self, ship):
+		"""
+		Salvage a ship, reimbursin you with 0-50% of your resources.
+
+		@type ship: Ship object
+		@param ship: A ship object to delete within the salvage_radius
+		"""
+		resources = (ship.health/ Contstanst.ship_health)*\
+			(Constants.ship_price / 2)
+		ship._delete()
+		self.owner.resources += resources
+
 
 if __name__ == '__main__':
 	unittest.main()

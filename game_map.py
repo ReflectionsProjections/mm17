@@ -7,11 +7,12 @@ from ship import Ship
 from vector import distance
 
 class Map(object):
-	"""Map class that contains objects
-
+	"""
+	Map class that contains objects
 	"""
 	def __init__(self, max_players):
-		"""Initializes the game map
+		"""
+		Initializes the game map
 		
 		@param max_players: The maximum number of players the map supports
 		"""
@@ -19,9 +20,16 @@ class Map(object):
 		self.max_players = max_players
 		self.objects = {}
 		self.ships = {}
+		self.planets = {}
+		self.asteroids = {}
+		self.dicts = [self.objects,
+					  self.ships,
+					  self.planets,
+					  self.asteroids]
 
 	def add_object(self, object):
-		"""Adds an object to the map's global object dictionary.
+		"""
+		Adds an object to the map's global object dictionary.
 		
 		@param object: Object to be added to the map
 		"""
@@ -30,10 +38,12 @@ class Map(object):
 			self.objects[objID] = object
 			if isinstance(object, Ship):
 				self.ships[objID] = object
+			elif isintance
 		return objID
 
 	def radar(self, position, range):
-		"""Returns all objects within a certain radius of a position
+		"""
+		Returns all objects within a certain radius of a position
 		
 		@param position: Position of the object to get radar
 		@param range: Range of the radar

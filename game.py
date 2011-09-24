@@ -91,7 +91,7 @@ class Game(object):
 				ship.events = [{'status':'destroyed'}]
 			else:
 				# compute radar returns for live ships
-				nearships = self.game_map.radar(ship.position, ship.range)
+				nearships = self.game_map.radar(ship.position, ship.scan_range)
 				for other in nearships:
 					scan = ship.scan(other)
 					if scan:

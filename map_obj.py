@@ -2,18 +2,18 @@
 import unittest
 
 class MapObject(object):
-	"""Base class for all game objects on the map since they need
+	"""
+	Base class for all game objects on the map since they need
 	certain common info
 	"""
 	
-	def __init__(self, game, position):
-		"""Initializes game object
-
-		@param game: XXX Global game instance
+	def __init__(self, position):
+		"""
+		Initializes map object
+		@type position: tuple
 		@param position: Position of the GameObject on the map
 		"""
-		self.game = game
-		self.position = position
+  		self.position = position
 		self.velocity = (0,0)
 		self.direction = 0
 		self.size = 1
@@ -36,6 +36,7 @@ class MapObject(object):
 	def step(self, dt):
 		"""Timestep executed every turn.
 		
+		@type dt: number
 		@param dt: Change in time
 		"""
 		
@@ -45,15 +46,18 @@ class MapObject(object):
 		self.position = (x + dt*vx, y + dt*vy)
 
 	def handle_damage(self, damage_event):
-		"""By default, do nothing.
+		"""
+		By default, do nothing.
 		
+		@type damage_event: dict
 		@param damage_event: Whatever damage_events are
 		"""
 		
 		pass
 
 	def _to_dict(self):
-		"""Returns the current state in JSON serializable representation.
+		"""
+		Returns the current state in JSON serializable representation.
 		
 		@return: The current game state in JSON serializable representation
 		"""
@@ -63,6 +67,22 @@ class MapObject(object):
 				'results':self.results[self.game.turn]
 				}
 		return state
+
+
+	def _delete(self, object):
+		"""Delete object from map dicts and owner dicts.
+
+		@type object: MapObject object
+		@param object: object to delete from map and owner dicts
+		"""
+		for dict in game.game_map.dicts:
+			if id(object) in dict.keys():
+				del dict[object]
+		if hasattr(object, 'owner'):
+			owner = object.owner
+			for dict in owner.dicts:
+				if id(object) in dict.keys():
+					del dict[id(object)]
 
 if __name__=='__main__':
 	# TODO: Unit tests

@@ -11,6 +11,12 @@ class Player(object):
 		self.auth_token = auth_token
 		self.alive = True
 		self.objects = {}
+		self.ships = {}
+		self.bases = {}
+		self.refineries = {}
+		self.dicts = [self.ships,
+					  self.bases,
+					  self.refineries]
 
 	def add_object(self, obj):
 		"""Add an object to the player's directory.

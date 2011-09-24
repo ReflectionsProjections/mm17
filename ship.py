@@ -16,11 +16,10 @@ class Ship(MapObject):
 	certain methods. Any method that returns info must do so in a dictionary.
 	"""
 
-	def __init__(self, game, position, owner):
-		super(Ship, self).__init__(game, position)
+	def __init__(self, position, owner):
+		super(Ship, self).__init__(position, owner)
 		"""Add a ship to the game.
 
-		@param game: The game to add the ship to
 		@param position: The position to locate the ship
 		@param owner: The player that is creating this ship
 		"""
