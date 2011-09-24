@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 
 from game_obj import GameObject
-import Constansts
+import Constants
+import unittest
 
 class Planet(GameObject):
 	"""

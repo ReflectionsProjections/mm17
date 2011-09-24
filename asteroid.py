@@ -2,6 +2,7 @@
 
 from game_obj import GameObject
 import Constants
+import unittest
 
 class Asteroid(GameObject):
 	"""
