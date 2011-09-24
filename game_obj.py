@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 class GameObject(object):
 	"""Base class for all game objects on the map since they need
 	certain common info
@@ -56,3 +57,7 @@ class GameObject(object):
 				'results':self.results[self.game.turn]
 				}
 		return state
+
+if __name__=='__main__':
+	# TODO: Unit tests
+	unittest.main()

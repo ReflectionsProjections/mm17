@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 from math import fabs
 
 def distance(pos1, pos2):
@@ -84,3 +86,6 @@ def circle_collision(circle1, circle2):
 		return True
 	else:
 		return False
+
+if __name__=='__main__':
+	unittest.main()

@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 from datetime import datetime
 import time
 from ship import Ship
@@ -231,8 +233,8 @@ class TestGame(unittest.TestCase):
 	def testGameInfo(self):
 		self.assertEqual(
 			{'game_active':False,
-			 'turn':0,
-			 'active_players':[]},
+			'turn':0,
+			'active_players':[]},
 			self.game.game_info())
 
 	def testJoining(self):

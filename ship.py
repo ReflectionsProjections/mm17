@@ -149,5 +149,5 @@ class Ship(GameObject):
 			'health': self.health}
 		return state
 
-	if __name__ == '__main__':
-		pass
+if __name__ == '__main__':
+	unittest.main()

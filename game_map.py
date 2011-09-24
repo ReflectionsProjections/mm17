@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 from math import sqrt
 from random import randrange
 from ship import Ship
@@ -37,3 +39,7 @@ class Map(object):
 		"""
 		return [object for object in self.objects.itervalues()
 				if distance(position, object.position) <= range]
+
+if __name__=='__main__':
+	# TODO: Unit tests
+	unittest.main()

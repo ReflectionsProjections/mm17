@@ -10,9 +10,9 @@ max_velocity = 50
 max_accel = 5
 
 """ Constants used in asteroid.py """
-asteroid_scale = 10		# asteroid.resources = size * asteroidScale
-resource_pull = 1		# Ammount of resources pulled from factories each turn
+asteroid_scale = 10  # asteroid.resources = size * asteroidScale
+resource_pull = 1    # Ammount of resources pulled from factories each turn
 
 
 if __name__ == '__main__':
-    pass
+	unittest.main()

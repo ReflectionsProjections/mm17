@@ -13,5 +13,5 @@ class Asteroid(GameObject):
 	def pullResources():
 		self.resources -= Constants.resource_pull
 
-	if __name__ == '__main__':
-		pass
+if __name__ == '__main__':
+	unittest.main()

@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 class Player(object):
 	def __init__(self, name, auth_token):
 		"""Create a new player representation.
