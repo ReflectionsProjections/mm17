@@ -57,8 +57,7 @@ class Game(object):
 			for action in player:
 				obj = self.game_map.objects[action['obj_id']]
 				method = getattr(obj, action['method'])
-				obj.results[self.turn]\
-				    .append(method(**action['params']))
+				obj.results[self.turn].append(method(**action['params']))
 
 		for object in self.game_map.objects.itervalues():
 			for event in object.events:
@@ -67,8 +66,7 @@ class Game(object):
 			if object.health < 0:
 				object.alive == False
 				object.health = 0
-				object.results[self.turn]\
-				    .append({'status':'destroyed'})
+				object.results[self.turn].append({'status':'destroyed'})
 			else:
 				pass
 				# compute radar returns, extend events
@@ -77,9 +75,9 @@ class Game(object):
 		self.player_results[self.turn] = {}
 		for p in self.players.iterkeys():
 			self.player_results[self.turn][p] = \
-			[object._to_dict() \
-			 for object in self.game_map.objects.itervalues() \
-			 if object.owner == self.players[p]]
+					[object._to_dict() \
+					for object in self.game_map.objects.itervalues() \
+					if object.owner == self.players[p]]
 
 
 		# clear out defeated players
@@ -106,7 +104,7 @@ class Game(object):
 		"""
 		while self.active == True:
 			alive_players = [x for x in self.players.itervalues() \
-						 if x.alive == True]
+					if x.alive == True]
 			if alive_players <= 1:
 				self._end()
 			turns_submitted = 0
@@ -117,7 +115,7 @@ class Game(object):
 				self._resolve_turn()
 			elif time.time() - self.last_turn_time > 2:
 				self._resolve_turn()
-			else: 
+			else:
 				continue
 
 	# API Calls
@@ -151,7 +149,7 @@ class Game(object):
 			'turn':self.turn,
 			'alive_players': alive_players,
 			'objects': [object._to_dict() for object in\
-					    self.game_map.objects.itervalues()]
+					self.game_map.objects.itervalues()]
 		}
 		return status
 
@@ -160,16 +158,16 @@ class Game(object):
 		newPlayer = Player(name, authToken)
 		if len(self.players.keys()) < self.game_map.maxPlayers:
 			if authToken in self.players.keys():
-				return {'join_success': False, 
+				return {'join_success': False,
 					'message': 'Already joined'}
 			else:
 				self.players[authToken] = newPlayer
 				self._log(name + " joined the game.")
 				if len(self.players.keys()) == \
-					    self.game_map.maxPlayers:
+						self.game_map.maxPlayers:
 					self._begin()
-				return {'join_success': True, 
+				return {'join_success': True,
 					'message': 'Joined succesfully'}
 		else:
-			return {'join_success': False, 
+			return {'join_success': False,
 				'message': 'Game full'}

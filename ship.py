@@ -45,7 +45,7 @@ class Ship(GameObject):
 		vel_mag = hypot(*self.velocity)
 		vel_scale = self.max_velocity/vel_mag
 		self.velocity = (vel_scale * self.velocity[0],
-				 vel_scale * self.velocity[1])
+				vel_scale * self.velocity[1])
 		# XXX: What the fuck was this supposed to do
 		#self.direction = 
 
@@ -66,10 +66,10 @@ class Ship(GameObject):
 		
 		w = width/2 
 		# Four points, counter clockwise
-		p_0 = (self.position[0] + w * cos(angle), 
-		       self.position + w * -sin(angle))    
- 		p_3 = (self.position[0] + w * -cos(angle), 
-		       self.position + w * sin(angle))      
+		p_0 = (self.position[0] + w * cos(angle),
+				self.position + w * -sin(angle))
+		p_3 = (self.position[0] + w * -cos(angle),
+				self.position + w * sin(angle))
 		p_1 = (p_0[0] + length * cos(angle), p_0[1] + length * sin(angle))
 		p_2 = (p_1[0] + length * cos(angle), p_1[1] + length * sin(angle))  
 
@@ -91,11 +91,10 @@ class Ship(GameObject):
 			# register damage with hit object
 			dist = distance(self.position, within_beam[0].position)
 			damage_amt = self.weapon_strength *(self.weapon_range - \
-								    dist)/weapon_range 
+					dist)/weapon_range
 			within_beam[0].events.append({'type':'damage',
-						      'amount':damage_amt,
-						      'hit_by':id(self)})
-					   
+					'amount':damage_amt,
+					'hit_by':id(self)})
 
 	def scan(self, object):
 		"""Returns fuzzzed info if ship is in range, or None"""
@@ -119,11 +118,11 @@ class Ship(GameObject):
 				return (angle, dist, object.health)
 		else:
 			return None
-						      
+
 	def create_ship(self):
 		"""Temporary method to create a ship near another ship"""
 		new_ship = Ship(self.game, self, (self.position+5,
-					       self.position+5))
+				self.position+5))
 		self.game.game_map.add_object(new_ship)
 		self.add_object(new_ship)
 
