@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 
+import os
+import sys
+import optparse
+import json
+import unittest
+
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-import json, os
 from urlparse import urlparse
 from urlparse import parse_qs
 
@@ -10,8 +15,6 @@ from game import Game
 from game_map import Map
 from validate import handle_input
 
-import sys
-import optparse
 
 class MMHandler(BaseHTTPRequestHandler):
 	game_time = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
@@ -21,9 +24,7 @@ class MMHandler(BaseHTTPRequestHandler):
 
 	# URI Handling Functions
 
-	# TODO: Clean up function names and calling conventions
-
-	def game_info(self, params):
+	def game_status(self, params):
 		"""
 		Handle a request for the game state. Write out to the request
 		handler json data with active players and whether or not the game
@@ -34,11 +35,11 @@ class MMHandler(BaseHTTPRequestHandler):
 				to operate.
 		"""
 
-		gameStatus = self.game.game_info()
+		gameStatus = self.game.game_status()
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
 
-	def game_info_all(self, params):
+	def game_avail_info(self, params):
 		"""
 		Handle a request for the game state. Write out json data with
 		all information available to the player.
@@ -48,7 +49,7 @@ class MMHandler(BaseHTTPRequestHandler):
 				with valid user authentication id.
 		"""
 
-		gameStatus = self.game.game_info_all(params['auth'][0])
+		gameStatus = self.game.game_avail_info(params['auth'][0])
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
 
@@ -107,8 +108,8 @@ class MMHandler(BaseHTTPRequestHandler):
 	GET_PATHS = {
 		'game': {
 			'info': {
-				'': game_info,
-				'all':game_info_all
+				'': game_status,
+				'all':game_avail_info
 				},
 			'turn': game_turn_get,
 			'join': game_join,
@@ -250,8 +251,9 @@ if __name__ == '__main__':
 			help='Run unit tests', dest='unittest', default=False)
 	(opts, args) = argsys.parse_args()
 	if opts.unittest:
-		# TODO: UNIT TESTS!
-		sys.exit(0)
+		# Reset the arguments so that only filename is passed
+		sys.argv = sys.argv[:1]
+		unittest.main()
 	port = opts.port
 	print "Starting on port " + str(port) + "..."
 	server = HTTPServer(('', port), MMHandler)
