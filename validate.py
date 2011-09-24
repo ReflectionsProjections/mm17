@@ -1,22 +1,28 @@
+#!/usr/bin/env python
+import unittest
 from numbers import Number
 
 def handle_input(input, game):
-	"""Handles POST request data and passes to validators."""
-
+	"""Handle POST request data and passes to validators.
+	
+	@param input: Dictionary of input values to handle
+	@param game: XXX game instance
+	"""
 	if 'auth' in input.keys():
-			if input['auth'] in game.players.keys():
-				return validate_actions(game, 
-						game.players[input['auth']], input)
-			else:
-				return {'error':'bad auth token'}
+		if input['auth'] in game.players.keys():
+			return validate_actions(game, game.players[input['auth']], input)
+		else:
+			return {'error':'bad auth token'}
 	else:
 		return {'error':'no auth token provided'}
 
 def validate_actions(game, player, input):
-	"""Filter down to well-formed and legal actions.
+	"""Validate actions requested by a player
 
-	Return - a pair of a JSON description of the paring results and a
-		parsed representation of the actions
+	@param game: XXX game instance
+	@param player: The player requesting these actions
+	@param input: JSON actions to parse
+	@return JSON dump of parse results
 	"""
 
 	if 'actions' not in input:
@@ -33,6 +39,12 @@ def validate_actions(game, player, input):
 	return results
 
 def validate_ship_action(action, player, game):
+	"""Valide an action performed by a ship
+
+	@param action: Action to validate
+	@param player: The player that requested the action
+	@param game: XXX game instance
+	"""
 	# make sure a ship action has all required keys
 	attrs = ['command', 'ship_id', 'args']
 	for attr in attrs:
@@ -106,3 +118,11 @@ def validate_ship_action(action, player, game):
 			return {'success' : True}
 	else:
 		return {'error':'invalid ship command'}
+
+class UnitTests(unittest.TestCase):
+	def test_main(self):
+		print "hello world"
+		self.assertTrue(True)
+
+if __name__ == "__main__":
+	unittest.main()
