@@ -23,9 +23,9 @@ class Map(object):
 		self.planets = {}
 		self.asteroids = {}
 		self.dicts = [self.objects,
-					  self.ships,
-					  self.planets,
-					  self.asteroids]
+				self.ships,
+				self.planets,
+				self.asteroids]
 
 	def add_object(self, object):
 		"""
@@ -38,7 +38,6 @@ class Map(object):
 			self.objects[objID] = object
 			if isinstance(object, Ship):
 				self.ships[objID] = object
-			elif isintance
 		return objID
 
 	def radar(self, position, range):
@@ -52,5 +51,4 @@ class Map(object):
 				if distance(position, object.position) <= range]
 
 if __name__=='__main__':
-	# TODO: Unit tests
 	unittest.main()
