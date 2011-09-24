@@ -1,10 +1,9 @@
 #! /usr/bin/env python
 
-from game_obj import GameObject
+from map_obj import MapObject
 import Constants
-import unittest
 
-class Asteroid(GameObject):
+class Asteroid(MapObject):
 	"""
 	An asteroid that a refinery can be built on
 	"""
@@ -42,9 +41,10 @@ if __name__ == '__main__':
 		return state
 
 class Refinery(object):
-	def __init__(self, game, asteroid)
+	def __init__(self, game, asteroid, owner)
 	self.game = game
 	self.asteroid = asteroid
+	self.owner = owner
 
 
 	def _to_dict(self)

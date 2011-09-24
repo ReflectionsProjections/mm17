@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 
-from game_obj import GameObject
+from map_obj import MapObject
 import Constants
 import unittest
 
-class Planet(GameObject):
+class Planet(MapObject):
 	"""
 	A planet that can be captured. A base can be built here by a ship.
 	"""

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 import unittest
 
-class GameObject(object):
+class MapObject(object):
 	"""Base class for all game objects on the map since they need
 	certain common info
 	"""
@@ -28,6 +28,10 @@ class GameObject(object):
 		# set methods used to true in this dict to prevent
 		# double dipping
 		self.methods_used = {}
+
+		# Add this object to the game map
+		game.gamemap.add_object(self)
+
 
 	def step(self, dt):
 		"""Timestep executed every turn.

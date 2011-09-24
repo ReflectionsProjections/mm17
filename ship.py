@@ -5,13 +5,13 @@ import unittest
 import random
 import Constants
 
-from game_obj import GameObject
+from map_obj import MapObject
 from vector import distance, circle_in_rect
 
 # half of dispersion
 angle_fuzz = (2*pi)/16
 
-class Ship(GameObject):
+class Ship(MapObject):
 	"""The class for a Player's ship.  A Player must be authorized to access
 	certain methods. Any method that returns info must do so in a dictionary.
 	"""
