@@ -51,7 +51,7 @@ class GameObject(object):
 	def to_dict(self):
 		"""Returns the current state in JSON serializable representation.
 		
-		@return The current game state in JSON serializable representation
+		@return: The current game state in JSON serializable representation
 		"""
 		
 		state = {'obj_id': id(self),
