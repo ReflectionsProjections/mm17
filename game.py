@@ -156,13 +156,14 @@ class Game(object):
 			'turn': self.turn,
 		}
 
-	def game_info(self):
+	def game_status(self):
 		"""Return basic game status.
 
 		Fields are
 		game_active - true if game is in progress
 		turn - upcoming turn number
-		active_players - list of player names"""
+		active_players - list of player names
+		"""
 		active_players = []
 		for player in self.players.itervalues():
 			if player.alive:
@@ -174,7 +175,7 @@ class Game(object):
 			'active_players': active_players
 		}
 
-	def game_info_all(self, auth):
+	def game_avail_info(self, auth):
 		"""Return game state including objects of player with given auth code.
 
 		@param auth: authCode of the player making the requests."""
@@ -235,7 +236,7 @@ class TestGame(unittest.TestCase):
 			{'game_active':False,
 			'turn':0,
 			'active_players':[]},
-			self.game.game_info())
+			self.game.game_status())
 
 	def testJoining(self):
 
