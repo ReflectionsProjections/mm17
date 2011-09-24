@@ -16,6 +16,7 @@ class Player(object):
 		self.ships = {}
 		self.bases = {}
 		self.refineries = {}
+		self.score = 0
 		self.dicts = [self.ships,
 					  self.bases,
 					  self.refineries]
@@ -28,6 +29,12 @@ class Player(object):
 		if objID not in self.objects.keys():
 			self.objects[objID] = obj
 		return objID
+
+	def _update_score(self):
+		if self.alive:
+			constant = 1
+			shipsScore = (len(self.ships) * constant)
+			self.score += (self.resources + shipsScore)
 
 	def _update_resources(self):
 		self.resources += len(self.refineries)*Constants.resource_pull

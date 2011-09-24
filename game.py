@@ -133,9 +133,11 @@ class Game(object):
 			else:
 				p.alive = False
 
-		# add resources
+		# add resources and update scores
 		for p in self.players.itervalues():
 			p._update_resources()
+			p._update_score()
+
 
 		# take timestep
 		for object in self.game_map.objects.itervalues():
