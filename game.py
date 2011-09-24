@@ -64,7 +64,7 @@ class Game(object):
 		"""
 
 		for player in self.players.itervalues():
-			new_ship = Ship(self, (0,0), player)
+			new_ship = Ship((0,0), player)
 			self.game_map.add_object(new_ship)
 			player.add_object(new_ship)
 

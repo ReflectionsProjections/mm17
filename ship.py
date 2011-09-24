@@ -17,7 +17,7 @@ class Ship(MapObject):
 	"""
 
 	def __init__(self, position, owner):
-		super(Ship, self).__init__(position, owner)
+		super(Ship, self).__init__(position)
 		"""Add a ship to the game.
 
 		@param position: The position to locate the ship
