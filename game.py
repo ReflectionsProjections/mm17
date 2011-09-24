@@ -1,13 +1,17 @@
 #! /usr/bin/env python
 
-from datetime import datetime
 import time
+import thread
+import unittest
+
+from datetime import datetime
 from ship import Ship
 from player import Player
-import thread
+from game_map import Map
 
 class Game(object):
-	"""The main Game class runs the game. This class accumulates
+	"""
+	The main Game class runs the game. This class accumulates
 	and applies orders, provides turn results, and logs data.
 
 	The Game directly stores the log file, the set of players,
@@ -21,11 +25,17 @@ class Game(object):
 	"""
 
 	def __init__(self, game_map, log_file):
-		"""Initialize the game object
-
-		@param game_map: Map object for the game
-		@param log_file: Path to log file. Will be overwritten
 		"""
+		Initialize the game object.
+
+		@type  game_map: game_map object
+		@param game_map: Map object for the game
+
+		@type  log_file: string
+		@param log_file: Path to log file. Existing file at this path
+				will be overwritten.
+		"""
+
 		self.game_map = game_map
 		self.players = {}
 		self.log_file = open(log_file, 'w')
@@ -37,14 +47,21 @@ class Game(object):
 		self.active = False
 
 	def _log(self, message):
-		"""Log a single-line message.
+		"""
+		Log a single-line message. Formatted with a timestamp and a
+		trailing newline.
+		
+		@type  message: string
+		@param message: Message to write out to the log file
+		"""
 
-		Formatted with a timestamp and a trailing newline."""
 		text = "%s: %s\n" % (datetime.now(), message)
 		self.log_file.write(text)
 
 	def _begin(self):
-		"""Create starting units and start the game turn loop."""
+		"""
+		Create starting units and start the game turn loop.
+		"""
 
 		for player in self.players.itervalues():
 			new_ship = Ship(self, (0,0), player)
@@ -56,17 +73,20 @@ class Game(object):
 		self._log("Game started.")
 		# is this a good idea?
 		thread.start_new_thread(self._main, ())
-		return
 
 	def _end(self):
-		"""Stops the game main loop."""
+		"""
+		Stop the game main loop.
+		"""
 		self._log("Game ended.")
 		self.active = False
 
 	def _resolve_turn(self):
-		"""Apply all the orders which have been recieved for this turn,
-		update the game state to the start of the next turn,
-		and calculate reponses for each player."""
+		"""
+		Apply all the orders which have been recieved for this turn,
+		update the game state to the start of the next turn, and
+		calculate reponses for each player.
+		"""
 
 		actions = self.actions[self.turn]
 		results = {}
@@ -123,14 +143,15 @@ class Game(object):
 		self.turn += 1
 		self.actions.append({})
 		self.last_turn_time = time.time()
-		return
 
 	def _main(self):
-		"""Game main thread. Polls for turns being ready.
+		"""
+		Game main thread. Polls for turns being ready.
 
 		Started by _begin(). Calls _end when one player remains.
 		Resolves a turn when timeout passes or all players have
-		submitted moves."""
+		submitted moves.
+		"""
 
 		while self.active == True:
 			alive_players = [x for x in self.players.itervalues() \
@@ -151,18 +172,24 @@ class Game(object):
 	# API Calls
 
 	def last_turn_info(self):
-		"""Current turn as {'turn' : turn}."""
+		"""
+		Get JSON information on the last turn.
+
+		@rtype: dictionary
+		@return: Current turn as {'turn' : turn}.
+		"""
 		return {
 			'turn': self.turn,
 		}
 
 	def game_status(self):
-		"""Return basic game status.
-
-		Fields are
-		game_active - true if game is in progress
-		turn - upcoming turn number
-		active_players - list of player names
+		"""
+		Return basic game status.
+		
+		@rtype: dictionary
+		@return: Dictionary with fields game_active, turn, and
+				active_players, which contain the boolean status of the
+				game, the upcoming turn, and the list of active players.
 		"""
 		active_players = []
 		for player in self.players.itervalues():
@@ -176,9 +203,12 @@ class Game(object):
 		}
 
 	def game_avail_info(self, auth):
-		"""Return game state including objects of player with given auth code.
+		"""
+		Return game state including objects of player with given auth code.
 
-		@param auth: authCode of the player making the requests."""
+		@type  auth: string
+		@param auth: authCode of the player making the requests.
+		"""
 		alive_players = []
 		for player in self.players.itervalues():
 			if player.alive:
@@ -193,10 +223,15 @@ class Game(object):
 		}
 
 	def add_player(self, name, authToken):
-		""" Adds a player to the current game, begin game if now full.
+		"""
+		Adds a player to the current game, begin game if now full.
 
+		@type  name: string
 		@param name: Name of player
-		@param authToken: player token"""
+
+		@type  authToken: string
+		@param authToken: player token
+		"""
 		newPlayer = Player(name, authToken)
 		if len(self.players.keys()) >= self.game_map.max_players:
 			return {'join_success': False,
@@ -213,9 +248,6 @@ class Game(object):
 
 		return {'join_success': True,
 			'message': 'Joined succesfully'}
-
-import unittest
-from game_map import Map
 
 class TestGame(unittest.TestCase):
 	def setUp(self):
