@@ -3,20 +3,17 @@ class GameObject(object):
 	certain common info
 	"""
 	
-	def __init__(self, game, position, owner):
+	def __init__(self, game, position):
 		"""Initializes game object
 
 		@param game: XXX Global game instance
 		@param position: Position of the GameObject on the map
-		@param owner: Owner of the GameObject 
 		"""
 		self.game = game
 		self.position = position
 		self.velocity = (0,0)
 		self.direction = 0
 		self.size = 1
-		self.owner = owner
-		self.alive = True
 
 		# holds all events to be processed on turn handle
 		self.events = []
@@ -55,9 +52,7 @@ class GameObject(object):
 		"""
 		
 		state = {'obj_id': id(self),
-				'owner': self.owner,
 				'position':self.position,
-				'alive': self.alive,
 				'results':self.results[self.game.turn]
 				}
 		return state
