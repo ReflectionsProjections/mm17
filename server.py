@@ -21,39 +21,77 @@ class MMHandler(BaseHTTPRequestHandler):
 
 	# URI Handling Functions
 
+	# TODO: Clean up function names and calling conventions
+
 	def game_info(self, params):
-		""" Handles a request for the game state, which includes
-		active players and whether or not the game has started """
+		"""
+		Handle a request for the game state. Write out to the request
+		handler json data with active players and whether or not the game
+		has started.
+
+		@type  params: parsed URL query paramater dictionary
+		@param params: URL paramater string. No required fields for function
+				to operate.
+		"""
+
 		gameStatus = self.game.game_info()
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
-		return
 
 	def game_info_all(self, params):
-		""" Handles a request for the game state, which includes all 
-		info available to the player """
+		"""
+		Handle a request for the game state. Write out json data with
+		all information available to the player.
+
+		@type  params: parsed URL query paramater dictionary
+		@param params: URL paramater string. Must contain 'auth' field
+				with valid user authentication id.
+		"""
+
 		gameStatus = self.game.game_info_all(params['auth'][0])
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
-		return
 
 	def game_turn_get(self, params):
-		""" Handles a GET request for the game state at the most
-		recent completed turn """
+		"""
+		Handle a request for the last completed turn. Writes out json
+		containing the number of the next game turn.
+
+		@type  params: parsed URL query paramater dictionary
+		@param params: URL paramater string. No required fields for function
+				to operate.
+		"""
+
 		self.respond()
 		output = json.dumps(self.game.last_turn_info())
 		self.wfile.write(output)
-		return
 
 	def game_turn_post(self, input):
-		""" Handles a POST request for the next turn"""
+		"""
+		Handle a POST request for the next turn. Writes out the json
+		containing success status for each requested action.
+
+		@type  input: parsed URL query paramater dictionary
+		@param input: JSON dictionary with the actions to be performed
+				on this turn for the current user. Must contain a valid
+				player authentication token.
+		"""
+
 		self.respond()
 		output = json.dumps(handle_input(input, self.game))
 		self.wfile.write(output)
-		return
 
 	def game_join(self, params):
-		""" Handles a request to join the game """
+		"""
+		Handle a request to join the game. Writes out json data with the
+		name and authentication token of the player if join succeeds or
+		returns HTTP 400 error on join failure.
+
+		@type  params: parsed URL query paramater dictionary
+		@param params: URL paramater string. Requires a valid player
+				name and an authentication token to work.
+		"""
+
 		if 'auth' not in params or 'name' not in params:
 			self.send_error(400, "Auth code or name not provided")
 			return
@@ -64,7 +102,6 @@ class MMHandler(BaseHTTPRequestHandler):
 		successObj = self.game.add_player(name, authCode)
 		self.respond()
 		self.wfile.write(json.dumps(successObj))
-		return
 
 	# These map URIs to handlers depending on request method
 	GET_PATHS = {
@@ -88,23 +125,48 @@ class MMHandler(BaseHTTPRequestHandler):
 	# Other helper functions
 
 	def explode_path(self, parsedURL):
+		"""
+		Seperate a URL path into subcomponents for each directory.
+
+		@type  parsedURL: parsed URL path
+		@param parsedURL: The path to be seperated.
+
+		@rtype: list
+		@return: A list of all the directories in the path.
+		"""
+
 		exploded_path = parsedURL.path[1:].split('/')
 		search_paths = []
 
 		if exploded_path[0] == '':
-			self.send_error(400, "Requests to the root are invalid. Did you mean /game/turn?")
+			self.send_error(400, "Requests to the root are invalid.\
+					Did you mean /game/turn?")
 			return
 
 		for path in exploded_path:
 			if path is not '':
 				search_paths.append(path)
+
 		search_paths.append('')
 		return search_paths
 
 
 	def walk_path(self, search_dict, search_path):
-		""" Walk the PATHS object to find the correct handler based upon
-		the URI queried """
+		"""
+		Walk the PATHS object to find the correct handler based on the
+		URL query sent.
+
+		@type  search_dict: dictionary
+		@param search_dict: Dictionary of different request handlers.
+
+		@type  search_path: list
+		@param search_path: Exploded URL list of path components.
+
+		@rtype: function
+		@return: The server class function that should be used as the
+				handler for the given URL request.
+		"""
+
 		first_item = search_path.pop(0)
 		if first_item in search_dict:
 			if isinstance(search_dict[first_item], dict):
@@ -116,6 +178,16 @@ class MMHandler(BaseHTTPRequestHandler):
 			return None
 
 	def send_error(self, code, text):
+		"""
+		Send out an error to the requestor using JSON.
+
+		@type  code: int
+		@param code: HTTP/1.1 status code to send out.
+
+		@type  text: string
+		@param text: Error message to send out.
+		"""
+
 		# send_error doesn't do JSON responses; we
 		# want json, so here's our own error thing
 		self.send_response(code)
@@ -124,6 +196,9 @@ class MMHandler(BaseHTTPRequestHandler):
 		self.wfile.write(json.dumps({'error': text}))
 
 	def respond(self):
+		"""
+		Send out an HTTP 200 (OK status) and JSON content-type header.
+		"""
 		self.send_response(200)
 		self.send_header('Content-type', 'application/json')
 		self.end_headers()
@@ -131,6 +206,10 @@ class MMHandler(BaseHTTPRequestHandler):
 	# HTTP Request Handlers
 
 	def do_GET(self):
+		"""
+		Process a client's GET request, parsing the URL and passing data
+		to the appropriate handler method, and writing JSON data out.
+		"""
 		parsedURL = urlparse(self.path)
 		params = parse_qs(parsedURL.query)
 
@@ -138,12 +217,15 @@ class MMHandler(BaseHTTPRequestHandler):
 		handler = self.walk_path(self.GET_PATHS, search_paths)
 		if handler is not None:
 			handler(self, params)
-			return
 		else:
 			self.send_error(404, "Unknown resource identifier: %s" % self.path)
-			return
+
 
 	def do_POST(self):
+		"""
+		Process a client's POST request, parsing URL and passing data to
+		appropriate handler methods, and writing JSON data out.
+		"""
 		length = int(self.headers.getheader('content-length'))
 		rfile = self.rfile.read(length)
 		try:
@@ -156,22 +238,19 @@ class MMHandler(BaseHTTPRequestHandler):
 		handler = self.walk_path(self.POST_PATHS, search_paths)
 		if handler is not None:
 			handler(self, input)
-			return
 		else:
 			self.send_error(404, "Unknown resource identifier: %s"\
-						% self.path)
-			return
-
-
+					% self.path)
 
 if __name__ == '__main__':
 	argsys = optparse.OptionParser(description="Mechmania 17 Main Server")
 	argsys.add_option('-p', '--port', metavar='PORT', nargs=1, type='int',
 			default=7000, dest='port', help='Port to listen on')
-	argsys.add_option('--syntest', action='store_true',
-			help='Run syntax test', dest='syntest', default=False)
+	argsys.add_option('--unit-tests', action='store_true',
+			help='Run unit tests', dest='unittest', default=False)
 	(opts, args) = argsys.parse_args()
-	if opts.syntest:
+	if opts.unittest:
+		# TODO: UNIT TESTS!
 		sys.exit(0)
 	port = opts.port
 	print "Starting on port " + str(port) + "..."
