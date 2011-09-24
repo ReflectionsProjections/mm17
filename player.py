@@ -30,7 +30,9 @@ class Player(object):
 		return objID
 
 	def _update_resources(self):
-		self.resources += len(self.refineries)*Constants.resource_pull
+		for refinery in self.refineries:
+			self.resources += Constants.resource_pull
+			self.refinery.asteroid.pull_resources
 
 class PlayerTests(unittest.TestCase):
 	def test_create(self):

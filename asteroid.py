@@ -40,10 +40,11 @@ class Asteroid(MapObject):
 
 class Refinery(object):
 
-	def __init__(self, game, asteroid, owner):
-		self.game = game
+	def __init__(self, asteroid, owner):
 		self.asteroid = asteroid
 		self.owner = owner
+
+		owner.refineries[id(self)] = self
 
 
 	def _to_dict(self):
