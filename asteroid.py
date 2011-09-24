@@ -29,7 +29,7 @@ class Asteroid(MapObject):
 		"""
 		self.resources -= Constants.resource_pull
 
-	def _to_dict(self):
+	def to_dict(self):
 		"""
 		Return the current state in JSON serializable representation.
 
@@ -56,7 +56,7 @@ class Refinery(object):
 		owner.refineries[id(self)] = self
 
 
-	def _to_dict(self):
+	def to_dict(self):
 		"""
 		Return the current state in JSON serializable representation.
 

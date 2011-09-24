@@ -1,6 +1,9 @@
 #! /usr/bin/env python
 import unittest
 import Constants
+from ship import Ship
+from asteroid import Refinery
+from planet import Base
 
 class Player(object):
 	def __init__(self, name, auth_token):
@@ -28,14 +31,20 @@ class Player(object):
 		objID = id(obj)
 		if objID not in self.objects.keys():
 			self.objects[objID] = obj
+		if isinstance(obj, Ship):
+			self.ship[objID] = obj
+		if isinstance(obj, Base):
+			self.bases[objID] = obj
+		if isinstance(obj, Refinery):
+			self.refineries[objID] = obj
 		return objID
 
-	def _update_score(self):
+	def update_score(self):
 		if self.alive:
 			shipsScore = (len(self.ships) * Constants.score_constant)
 			self.score += (self.resources + shipsScore)
 
-	def _update_resources(self):
+	def update_resources(self):
 		for refinery in self.refineries:
 			self.resources += Constants.resource_pull
 			self.refinery.asteroid.pull_resources

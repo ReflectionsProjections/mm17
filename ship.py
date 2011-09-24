@@ -134,7 +134,7 @@ class Ship(MapObject):
 		else:
 			return None
 
-	def _to_dict(self):
+	def to_dict(self):
 		"""
 		Returns dict that can be used by JSON
 		"""

@@ -121,7 +121,7 @@ class Game(object):
 		self.player_results[self.turn] = {}
 		for p in self.players.iterkeys():
 			self.player_results[self.turn][p] = \
-					[object._to_dict() \
+					[object.to_dict() \
 					for object in self.game_map.objects.itervalues() \
 					if object.owner == self.players[p]]
 
@@ -132,12 +132,8 @@ class Game(object):
 					break
 			else:
 				p.alive = False
-
-		# add resources and update scores
-		for p in self.players.itervalues():
 			p._update_resources()
 			p._update_score()
-
 
 		# take timestep
 		for object in self.game_map.objects.itervalues():
@@ -223,7 +219,7 @@ class Game(object):
 			'game_active': self.active,
 			'turn':self.turn,
 			'alive_players': alive_players,
-			'objects': [object._to_dict() for object in\
+			'objects': [object.to_dict() for object in\
 					self.game_map.objects.itervalues()]
 		}
 

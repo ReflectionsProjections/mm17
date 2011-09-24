@@ -26,7 +26,7 @@ class Planet(MapObject):
 		# will contain refrence to base if it contains one
 		self.base = None
 
-	def _to_dict(self):
+	def to_dict(self):
 		"""
 		Return the current state in JSON serializable representation.
 
@@ -87,6 +87,18 @@ class Base(object):
 			(Constants.ship_price / 2)
 		ship._delete()
 		self.owner.resources += resources
+
+	def to_dict(self):
+		"""
+		Return the current state in JSON serializable representation.
+
+		@type: dict
+		@return The current game state in JSON serializable representation.
+		"""
+		state = { 'type':'Base',
+					'id': id(self),
+					'planet':self.planet}
+		return state
 
 
 if __name__ == '__main__':
