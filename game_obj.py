@@ -31,9 +31,9 @@ class GameObject(object):
 	def to_dict(self):
 		"""JSON serializable representation."""
 		state = {'obj_id': id(self),
-			 'owner': self.owner,
-			 'position':self.position,
-			 'alive': self.alive,
-			 'results':self.results[self.game.turn]
-			 }
+				'owner': self.owner,
+				'position':self.position,
+				'alive': self.alive,
+				'results':self.results[self.game.turn]
+				}
 		return state
