@@ -33,9 +33,22 @@ if __name__ == '__main__':
 
 	def _to_dict(self):
 		state = {'type':'asteroid',
-				'id':id(self)
-				'position': self.position
-				'resources' : self.resources
-				'size' : self.size
-				'refinery' : id(self.refinery)}
+					'id':id(self)
+					'position': self.position
+					'resources' : self.resources
+					'size' : self.size
+					'refinery' : id(self.refinery)}
+		return state
+
+class Refinery(object):
+	def __init__(self, game, asteroid)
+	self.game = game
+	self.asteroid = asteroid
+
+
+	def _to_dict(self)
+
+		state = { 'type':'Refinery'
+					'id':id(self)
+					'asteroid':self.asteroid}
 		return state
