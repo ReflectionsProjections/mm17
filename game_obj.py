@@ -4,6 +4,12 @@ class GameObject(object):
 	"""
 	
 	def __init__(self, game, position, owner):
+		"""Initializes game object
+
+		@param game: XXX Global game instance
+		@param position: Position of the GameObject on the map
+		@param owner: Owner of the GameObject 
+		"""
 		self.game = game
 		self.position = position
 		self.velocity = (0,0)
@@ -26,7 +32,7 @@ class GameObject(object):
 	def step(self, dt):
 		"""Timestep executed every turn.
 		
-		@param dt: whatever dt means
+		@param dt: Change in time
 		"""
 		
 		vx, vy = self.velocity
@@ -36,7 +42,7 @@ class GameObject(object):
 	def handle_damage(self, damage_event):
 		"""By default, do nothing.
 		
-		@param damage_event: whatever damage_events are
+		@param damage_event: Whatever damage_events are
 		"""
 		
 		pass
@@ -44,6 +50,7 @@ class GameObject(object):
 	def to_dict(self):
 		"""Returns the current state in JSON serializable representation.
 		
+		@return The current game state in JSON serializable representation
 		"""
 		
 		state = {'obj_id': id(self),
