@@ -21,6 +21,7 @@ class GameObject(object):
 	def step(self, dt):
 		"""Timestep executed every turn."""
 		vx, vy = self.velocity
+		print self.position
 		x, y = self.position
 		self.position = (x + dt*vx, y + dt*vy)
 

@@ -33,7 +33,7 @@ class Game(object):
 	def _begin(self):
 		"""Sets up beginning state and starts the game turn loop."""
 		for player in self.players.itervalues():
-			new_ship = Ship(self, player, (0,0))
+			new_ship = Ship(self, (0,0), player)
 			self.game_map.add_object(new_ship)
 			player.add_object(new_ship)
 		self.active = True
