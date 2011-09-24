@@ -10,6 +10,9 @@ from game import Game
 from gamemap import Map
 from validate import handle_input
 
+import sys
+import argparse
+
 class MMHandler(BaseHTTPRequestHandler):
 	game_time = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
 	game_name = 'logs/game-%s' % game_time
@@ -162,7 +165,15 @@ class MMHandler(BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-	port = 7000
+	argsys = argparse.ArgumentParser(description="Mechmania 17 Main Server")
+	argsys.add_argument('-p', '--port', metavar='PORT', nargs=1, type=int,
+			default=7000, dest='port', help='Port to listen on')
+	argsys.add_argument('--syntest', action='store_true',
+			help='Run syntax test', dest='syntest')
+	args = vars(argsys.parse_args())
+	if args['syntest']:
+		sys.exit(0)
+	port = args['port']
 	print "Starting on port " + str(port) + "..."
 	server = HTTPServer(('', port), MMHandler)
 	server.serve_forever()
