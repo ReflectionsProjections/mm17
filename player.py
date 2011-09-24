@@ -32,8 +32,7 @@ class Player(object):
 
 	def _update_score(self):
 		if self.alive:
-			constant = 1
-			shipsScore = (len(self.ships) * constant)
+			shipsScore = (len(self.ships) * Constants.score_constant)
 			self.score += (self.resources + shipsScore)
 
 	def _update_resources(self):

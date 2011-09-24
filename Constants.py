@@ -13,6 +13,8 @@ max_accel = 5
 asteroid_scale = 10  # asteroid.resources = size * asteroidScale
 resource_pull = 1    # Ammount of resources pulled from factories each turn
 
+""" Constants used in players.py """
+score_constant = 1
 
 if __name__ == '__main__':
 	# No unit tests for constants
