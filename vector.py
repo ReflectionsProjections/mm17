@@ -1,7 +1,8 @@
 #! /usr/bin/env python
 
 import unittest
-from math import fabs
+
+from math import fabs, sqrt
 
 def distance(pos1, pos2):
 	"""Returns the distance between two (x, y) position tuples
@@ -53,7 +54,7 @@ def circle_in_rect(center, radius, rect):
 	center_right_of_side = 0 # must be four to be true
 	for side in sides:
 		# find vector bewtween point and start of side
-		vector = (side[0][0] - center[0], siode[0][1] - center[1])
+		vector = (side[0][0] - center[0], side[0][1] - center[1])
 		# take cross product between vector and side
 		cross_prod = side[1][0]*vector[1] - side[1][1]*vector[0]
 		# if side intersects ciclre, return true

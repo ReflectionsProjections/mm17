@@ -60,6 +60,7 @@ class Ship(MapObject):
 		#self.direction =
 
 	def fire(self, angle):
+		from game_instance import game
 		"""Fire at angle relative to the ship's direction.  The laser is
 		instant and is a rectangle with a width of 10 and a length of
 		self.weapon_strength. Any object that intersects that rectatngle
@@ -71,14 +72,14 @@ class Ship(MapObject):
 		length = self.weapon_strength
 
 		#angle is relative to ship's direction
-		angle += self.angle
+		angle += self.direction
 
 		w = width/2
 		# Four points, counter clockwise
 		p_0 = (self.position[0] + w * cos(angle),
-				self.position + w * -sin(angle))
+				self.position[1] + w * -sin(angle))
 		p_3 = (self.position[0] + w * -cos(angle),
-				self.position + w * sin(angle))
+				self.position[1] + w * sin(angle))
 		p_1 = (p_0[0] + length * cos(angle), p_0[1] + length * sin(angle))
 		p_2 = (p_1[0] + length * cos(angle), p_1[1] + length * sin(angle))
 
@@ -86,8 +87,8 @@ class Ship(MapObject):
 		beam = (p_0, p_1, p_2, p_3)
 
 		within_beam = [] # list for objects in beam
-		for obj in self.game.game_map.objects:
-			if circle_in_rect(beam, obj.position, obj.radius):
+		for obj in game.game_map.objects.itervalues():
+			if circle_in_rect(obj.position, obj.size, beam):
 				within_beam.append(obj)
 
 		if len(within_beam) == 0:
@@ -112,6 +113,7 @@ class Ship(MapObject):
 		"""
 		# Multiply the returned distance by a random value
 		dist = distance(self.position, object.position)
+		angle = hypot(*object.position)
 		if dist < self.scan_range:
 			dist_error = random.uniform(0.5,1.5)
 			dist *= dist_error

@@ -10,18 +10,9 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse
 from urlparse import parse_qs
 
-from time import gmtime, strftime
-from game import Game
-from game_map import Map
 from validate import handle_input
 
-
 class MMHandler(BaseHTTPRequestHandler):
-	game_time = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
-	game_name = 'logs/game-%s' % game_time
-	game_map = Map(1)
-	game = Game(game_map, game_name)
-
 	# URI Handling Functions
 
 	def game_status(self, params):
@@ -35,7 +26,7 @@ class MMHandler(BaseHTTPRequestHandler):
 				to operate.
 		"""
 
-		gameStatus = self.game.game_status()
+		gameStatus = game.game_status()
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
 
@@ -49,7 +40,7 @@ class MMHandler(BaseHTTPRequestHandler):
 				with valid user authentication id.
 		"""
 
-		gameStatus = self.game.game_avail_info(params['auth'][0])
+		gameStatus = game.game_avail_info(params['auth'][0])
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
 
@@ -64,7 +55,7 @@ class MMHandler(BaseHTTPRequestHandler):
 		"""
 
 		self.respond()
-		output = json.dumps(self.game.last_turn_info())
+		output = json.dumps(game.last_turn_info())
 		self.wfile.write(output)
 
 	def game_turn_post(self, input):
@@ -79,7 +70,7 @@ class MMHandler(BaseHTTPRequestHandler):
 		"""
 
 		self.respond()
-		output = json.dumps(handle_input(input, self.game))
+		output = json.dumps(handle_input(input))
 		self.wfile.write(output)
 
 	def game_join(self, params):
@@ -100,7 +91,7 @@ class MMHandler(BaseHTTPRequestHandler):
 		authCode = params['auth'][0]
 		name = params['name'][0]
 
-		successObj = self.game.add_player(name, authCode)
+		successObj = game.add_player(name, authCode)
 		self.respond()
 		self.wfile.write(json.dumps(successObj))
 
@@ -255,6 +246,7 @@ if __name__ == '__main__':
 		sys.argv = sys.argv[:1]
 		unittest.main()
 	port = opts.port
+	from game_instance import game
 	print "Starting on port " + str(port) + "..."
 	server = HTTPServer(('', port), MMHandler)
 	server.serve_forever()

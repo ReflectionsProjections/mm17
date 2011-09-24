@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import unittest
 from numbers import Number
+from game_instance import game
 
-def handle_input(input, game):
+def handle_input(input):
 	"""Handle POST request data and passes to validators.
 	
 	@param input: Dictionary of input values to handle
@@ -91,7 +92,6 @@ def validate_ship_action(action, player, game):
 				a, b = accel[0], accel[1]
 			except:
 				return {'error':'invalid accel values'}
-
 			result = {'obj_id': action['ship_id'],
 					'method': action['command'],
 					'params': action['args']}

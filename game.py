@@ -5,9 +5,8 @@ import thread
 import unittest
 
 from datetime import datetime
-from ship import Ship
 from player import Player
-from game_map import Map
+from ship import Ship
 
 class Game(object):
 	"""
@@ -50,7 +49,7 @@ class Game(object):
 		"""
 		Log a single-line message. Formatted with a timestamp and a
 		trailing newline.
-		
+
 		@type  message: string
 		@param message: Message to write out to the log file
 		"""
@@ -97,7 +96,7 @@ class Game(object):
 		# execute orders
 		for player , actions in actions.iteritems():
 			for action in actions:
-				obj = self.game_map.objects[actions['obj_id']]
+				obj = self.game_map.objects[action['obj_id']]
 				method = getattr(obj, action['method'])
 				method(**action['params'])
 
@@ -116,7 +115,7 @@ class Game(object):
 					scan = ship.scan(other)
 					if scan:
 						ship.events.append(scan)
-				ship.results[self.turn] = self.events[:]
+					ship.results[self.turn] = ship.events[:]
 
 		# Create a massive list of results to return to the player
 		self.player_results[self.turn] = {}
@@ -185,7 +184,7 @@ class Game(object):
 	def game_status(self):
 		"""
 		Return basic game status.
-		
+
 		@rtype: dictionary
 		@return: Dictionary with fields game_active, turn, and
 				active_players, which contain the boolean status of the
@@ -250,6 +249,7 @@ class Game(object):
 			'message': 'Joined succesfully'}
 
 class TestGame(unittest.TestCase):
+	from game_map import Map
 	def setUp(self):
 		self.game_map = Map(2)
 		self.game = Game(self.game_map,"test_log")
