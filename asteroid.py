@@ -1,9 +1,9 @@
+#! /usr/bin/env python
+
 from game_obj import GameObject
 import Constants
 
-# TODO: Fix gameobject to agree with this file and also documentation.
 class Asteroid(GameObject):
-	# XXX: this set of arguments based on the removal of owner in gameobject
 	def __init__(self, game, position, size):
 		super(Asteroid, self).__init__(game, position)
 		self.size = size
@@ -13,3 +13,5 @@ class Asteroid(GameObject):
 	def pullResources():
 		self.resources -= Constants.resource_pull
 
+	if __name__ == '__main__':
+		pass

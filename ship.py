@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 from math import sin, cos, sqrt, pi, hypot, atan2
 import random
 import Constants
@@ -146,3 +148,6 @@ class Ship(GameObject):
 			'velocity': self.velocity,
 			'health': self.health}
 		return state
+
+	if __name__ == '__main__':
+		pass

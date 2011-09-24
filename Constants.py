@@ -1,4 +1,4 @@
-
+#! /usr/bin/env python
 """ Constants used in ship.py  """
 base_size = 10
 base_health = 100
@@ -12,3 +12,7 @@ max_accel = 5
 """ Constants used in asteroid.py """
 asteroid_scale = 10		# asteroid.resources = size * asteroidScale
 resource_pull = 1		# Ammount of resources pulled from factories each turn
+
+
+if __name__ == '__main__':
+    pass
