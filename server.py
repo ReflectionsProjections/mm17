@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 
+import os
+import sys
+import optparse
+import json
+import unittest
+
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-import json, os
 from urlparse import urlparse
 from urlparse import parse_qs
 
@@ -10,8 +15,6 @@ from game import Game
 from game_map import Map
 from validate import handle_input
 
-import sys
-import optparse
 
 class MMHandler(BaseHTTPRequestHandler):
 	game_time = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
@@ -250,8 +253,9 @@ if __name__ == '__main__':
 			help='Run unit tests', dest='unittest', default=False)
 	(opts, args) = argsys.parse_args()
 	if opts.unittest:
-		# TODO: UNIT TESTS!
-		sys.exit(0)
+		# Reset the arguments so that only filename is passed
+		sys.argv = sys.argv[:1]
+		unittest.main()
 	port = opts.port
 	print "Starting on port " + str(port) + "..."
 	server = HTTPServer(('', port), MMHandler)
