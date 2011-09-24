@@ -12,9 +12,11 @@ class MapObject(object):
 		from game_instance import game
 		"""
 		Initializes map object
-		@type position: tuple
+
+		@type  position: tuple
 		@param position: Position of the GameObject on the map
 		"""
+
 		self.position = position
 		self.velocity = (0,0)
 		self.direction = 0
@@ -38,7 +40,7 @@ class MapObject(object):
 	def step(self, dt):
 		"""Timestep executed every turn.
 
-		@type dt: number
+		@type  dt: number
 		@param dt: Change in time
 		"""
 
@@ -51,9 +53,10 @@ class MapObject(object):
 		"""
 		By default, do nothing.
 
-		@type damage_event: dict
+		@type  damage_event: dict
 		@param damage_event: Whatever damage_events are
 		"""
+
 		pass
 
 	def _to_dict(self):
@@ -61,7 +64,9 @@ class MapObject(object):
 		Returns the current state in JSON serializable representation.
 		@return: The current game state in JSON serializable representation
 		"""
+
 		from game_instance import game
+
 		state = {'obj_id': id(self),
 				'position':self.position,
 				'results':self.results[game.turn]
@@ -72,10 +77,12 @@ class MapObject(object):
 	def _delete(self, object):
 		"""Delete object from map dicts and owner dicts.
 
-		@type object: MapObject object
+		@type  object: MapObject object
 		@param object: object to delete from map and owner dicts
 		"""
+
 		from game_instance import game
+
 		for dict in game.game_map.dicts:
 			if id(object) in dict.keys():
 				del dict[object]
@@ -86,5 +93,4 @@ class MapObject(object):
 					del dict[id(object)]
 
 if __name__=='__main__':
-	# TODO: Unit tests
 	unittest.main()
