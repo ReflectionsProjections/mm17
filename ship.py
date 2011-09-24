@@ -134,14 +134,10 @@ class Ship(MapObject):
 		else:
 			return None
 
-	def create_ship(self):
-		"""Temporary method to create a ship near another ship"""
-		new_ship = Ship(self.game, self, (self.position+5,
-				self.position+5))
-		self.game.game_map.add_object(new_ship)
-		self.add_object(new_ship)
-
 	def _to_dict(self):
+		"""
+		Returns dict that can be used by JSON
+		"""
 		state = {'type':'ship',
 					'id':id(self),
 					'owner': self.owner.name,
@@ -150,6 +146,17 @@ class Ship(MapObject):
 					'velocity': self.velocity,
 					'health': self.health}
 		return state
+	
+	def create_refinery(self, asteroid):
+		"""
+		Create a refinery on an asteroid
+
+		@type asteroid: Asteroid object
+		@param asteroid: Asteroid to build refinery on
+		"""
+		new_refinery = Refinery(asteroid, self.owner)
+		resources -= Constants.refinery_price
+		return nee_refinery
 
 if __name__ == '__main__':
 	unittest.main()
