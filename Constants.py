@@ -15,4 +15,5 @@ resource_pull = 1    # Ammount of resources pulled from factories each turn
 
 
 if __name__ == '__main__':
-	unittest.main()
+	# No unit tests for constants
+	pass

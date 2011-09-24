@@ -24,9 +24,7 @@ class MMHandler(BaseHTTPRequestHandler):
 
 	# URI Handling Functions
 
-	# TODO: Clean up function names and calling conventions
-
-	def game_info(self, params):
+	def game_status(self, params):
 		"""
 		Handle a request for the game state. Write out to the request
 		handler json data with active players and whether or not the game
@@ -37,11 +35,11 @@ class MMHandler(BaseHTTPRequestHandler):
 				to operate.
 		"""
 
-		gameStatus = self.game.game_info()
+		gameStatus = self.game.game_status()
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
 
-	def game_info_all(self, params):
+	def game_avail_info(self, params):
 		"""
 		Handle a request for the game state. Write out json data with
 		all information available to the player.
@@ -51,7 +49,7 @@ class MMHandler(BaseHTTPRequestHandler):
 				with valid user authentication id.
 		"""
 
-		gameStatus = self.game.game_info_all(params['auth'][0])
+		gameStatus = self.game.game_avail_info(params['auth'][0])
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
 
@@ -110,8 +108,8 @@ class MMHandler(BaseHTTPRequestHandler):
 	GET_PATHS = {
 		'game': {
 			'info': {
-				'': game_info,
-				'all':game_info_all
+				'': game_status,
+				'all':game_avail_info
 				},
 			'turn': game_turn_get,
 			'join': game_join,
