@@ -214,7 +214,7 @@ class Game(object):
 			'message': 'Joined succesfully'}
 
 import unittest
-from gamemap import Map
+from game_map import Map
 
 class TestGame(unittest.TestCase):
 	def setUp(self):
