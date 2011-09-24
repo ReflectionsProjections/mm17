@@ -14,7 +14,7 @@ class Ship(GameObject):
 	"""
 
 	def __init__(self, game, position, owner):
-		super(Ship, self).__init__(game, position, owner)
+		super(Ship, self).__init__(game, position)
 		"""Add a ship to the game.
 
 		@param game: The game to add the ship to
@@ -23,6 +23,8 @@ class Ship(GameObject):
 		"""
 		self.size = Constants.base_size
 		self.direction = 0
+		self.owner = owner
+		self.alive = True
 		# attribute itialization
 		self.health = Constants.base_health
 		self.scan_range = Constants.scan_range
