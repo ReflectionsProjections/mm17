@@ -84,10 +84,21 @@ class Base(object):
 		@type ship: Ship object
 		@param ship: A ship object to delete within the salvage_radius
 		"""
-		resources = (ship.health/ Contstanst.ship_health)*\
+		resources = (ship.health/ Contstanst.base_health)*\
 			(Constants.ship_price / 2)
 		ship._delete()
 		self.owner.resources += resources
+
+	def repair_ship(self, ship):
+		"""
+		Repair a ship, adding repair_percent ship health per turn used.
+		
+		@type ship: Ship object
+		@param ship: A ship object to add health to
+		"""
+		ship.health += Constants.repair_percent * Constants.base_health
+		if ship.health > Constants.base_health:
+			ship.health = Constants.base_health
 
 	def to_dict(self):
 		"""

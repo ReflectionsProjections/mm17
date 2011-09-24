@@ -5,7 +5,7 @@ from game_instance import game
 
 def handle_input(input):
 	"""Handle POST request data and passes to validators.
-	
+
 	@param input: Dictionary of input values to handle
 	@param game: XXX game instance
 	"""

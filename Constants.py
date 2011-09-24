@@ -16,6 +16,12 @@ resource_pull = 1    # Ammount of resources pulled from factories each turn
 """ Constants used in players.py """
 score_constant = 1
 
+""" Constants used in planet.py """
+planet_scale = 10000
+repair_percent = 0.10
+build_radius = 15
+ship_price = 10
+
 if __name__ == '__main__':
 	# No unit tests for constants
 	pass
