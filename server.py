@@ -7,7 +7,7 @@ from urlparse import parse_qs
 
 from time import gmtime, strftime
 from game import Game
-from gamemap import Map
+from game_map import Map
 from validate import handle_input
 
 import sys
