@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 
-from map_obj import MapObject
-import Constants
 import unittest
+
+import Constants
+from map_obj import MapObject
 
 class Planet(MapObject):
 	"""

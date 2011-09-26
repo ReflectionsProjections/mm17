@@ -4,7 +4,7 @@ from math import sin, cos, sqrt, pi, hypot, atan2
 import unittest
 import random
 import Constants
-
+from player import Player
 from map_obj import MapObject
 from vector import distance, circle_in_rect
 
@@ -34,7 +34,7 @@ class Ship(MapObject):
 		self.weapon_strength = Constants.weapon_strength
 		# max values
 		self.max_velocity = Constants.max_velocity
-		self.max_accel = Constants.max_accel
+ 		self.max_accel = Constants.max_accel
 		self.methods_used = {'thrust':False,'fire':False}
 
 	def thrust(self, accel):
@@ -157,6 +157,30 @@ class Ship(MapObject):
 		new_refinery = Refinery(asteroid, self.owner)
 		resources -= Constants.refinery_price
 		return nee_refinery
+
+class TestShip(unittest.TestCase):
+	def setUp(self):
+		from game_map import Map
+		from game import Game
+		self.game_map = Map(1)
+		self.game = Game(self.game_map,"test_log")
+		self.player = self.game.add_player("test","auth")
+
+	def test_create(self):
+		self.ship = Ship((1,2),self.player)
+		self.assertEquals(self.ship.position, (1,2))
+		self.assertEquals(self.ship.health, Constants.base_health)
+
+
+	def tearDown(self):
+		self.game.active = False
+		# thread should eventually kill itself, if it is running
+		del self.ship
+		del self.player
+		del self.game_map
+		del self.game
+
+
 
 if __name__ == '__main__':
 	unittest.main()

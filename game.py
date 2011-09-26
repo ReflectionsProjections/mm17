@@ -5,8 +5,6 @@ import thread
 import unittest
 
 from datetime import datetime
-from player import Player
-from ship import Ship
 
 class Game(object):
 	"""
@@ -58,6 +56,7 @@ class Game(object):
 		self.log_file.write(text)
 
 	def _begin(self):
+		from ship import Ship
 		"""
 		Create starting units and start the game turn loop.
 		"""
@@ -224,6 +223,7 @@ class Game(object):
 		}
 
 	def add_player(self, name, authToken):
+		from player import Player
 		"""
 		Adds a player to the current game, begin game if now full.
 
@@ -250,53 +250,54 @@ class Game(object):
 		return {'join_success': True,
 			'message': 'Joined succesfully'}
 
-#class TestGame(unittest.TestCase):
-#	def setUp(self):
-#		self.game_map = Map(2)
-#		self.game = Game(self.game_map,"test_log")
-#
-#	def tearDown(self):
-#		self.game.active = False
-#		# thread should eventually kill itself, if it is running
-#		del self.game_map
-#		del self.game
-#
-#	def testLastTurnInfo(self):
-#		self.assertEqual({'turn':0},self.game.last_turn_info())
-#
-#	def testGameInfo(self):
-#		self.assertEqual(
-#			{'game_active':False,
-#			'turn':0,
-#			'active_players':[]},
-#			self.game.game_status())
-#
-#	def testJoining(self):
-#
-#		# game does not start until we have enough players
-#		self.assertFalse(self.game.active)
-#
-#		# adding a player
-#		self.assertTrue(
-#			self.game.add_player('bob','123456')['join_success'])
-#
-#		# game does not start until we have enough players
-#		self.assertFalse(self.game.active)
-#
-#		# duplicate token
-#		self.assertFalse(
-#			self.game.add_player('ted','123456')['join_success'])
-#
-#		# second player
-#		self.assertTrue(
-#			self.game.add_player('goodPasswordMan','123456*7*')['join_success'])
-#
-#		# game should have started
-#		self.assertTrue(self.game.active)
-#
-#		# no more room
-#		self.assertFalse(
-#			self.game.add_player('late','xyzw')['join_success'])
+class TestGame(unittest.TestCase):
+	def setUp(self):
+		from game_map import Map
+		self.game_map = Map(2)
+		self.game = Game(self.game_map,"test_log")
 
+	def tearDown(self):
+		self.game.active = False
+		# thread should eventually kill itself, if it is running
+		del self.game_map
+		del self.game
+
+	def testLastTurnInfo(self):
+		self.assertEqual({'turn':0},self.game.last_turn_info())
+
+	def testGameInfo(self):
+		self.assertEqual(
+			{'game_active':False,
+			'turn':0,
+			'active_players':[]},
+			self.game.game_status())
+
+	def testJoining(self):
+
+		# game does not start until we have enough players
+		self.assertFalse(self.game.active)
+
+		# adding a player
+		self.assertTrue(
+			self.game.add_player('bob','123456')['join_success'])
+
+		# game does not start until we have enough players
+		self.assertFalse(self.game.active)
+
+		# duplicate token
+		self.assertFalse(
+			self.game.add_player('ted','123456')['join_success'])
+
+		# second player
+		self.assertTrue(
+			self.game.add_player('goodPasswordMan','123456*7*')['join_success'])
+
+		# game should have started
+		self.assertTrue(self.game.active)
+
+		# no more room
+		self.assertFalse(
+			self.game.add_player('late','xyzw')['join_success'])
+ 
 if __name__ == '__main__':
 	unittest.main()

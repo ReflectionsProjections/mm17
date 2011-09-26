@@ -1,9 +1,9 @@
 #! /usr/bin/env python
+
 import unittest
+
 import Constants
-from ship import Ship
-from asteroid import Refinery
-from planet import Base
+
 
 class Player(object):
 	def __init__(self, name, auth_token):
@@ -13,6 +13,10 @@ class Player(object):
 		@param name: The name of the new player
 		@param auth_token: Authorization code for the payer (unique)
 		"""
+		from ship import Ship
+		from asteroid import Refinery
+		from planet import Base
+
 		self.name = name
 		self.auth_token = auth_token
 		self.alive = True
@@ -27,6 +31,9 @@ class Player(object):
 					  self.refineries]
 
 	def add_object(self, obj):
+		from ship import Ship
+		from planet import Base
+		from asteroid import Refinery
 		"""
 		Add an object to the player's directory.
 
@@ -89,6 +96,7 @@ class PlayerTests(unittest.TestCase):
 		self.assertTrue(p.auth_token == "world")
 		self.assertTrue(p.alive)
 		self.assertTrue(len(p.objects) == 0)
+
 	def test_add(self):
 		p = Player("a","b")
 		objects = []
@@ -97,6 +105,12 @@ class PlayerTests(unittest.TestCase):
 		for i in objects:
 			p.add_object(i)
 		self.assertTrue(len(p.objects) == 2)
+
+	def test_forfeit(self):
+		p = Player("a","b")
+		p.forfeit()
+		self.assertFalse(p.alive)
+
 
 if __name__ == "__main__":
 	unittest.main()

@@ -2,6 +2,8 @@
 
 import unittest
 
+from game_instance import game
+
 class MapObject(object):
 	"""
 	Base class for all game objects on the map since they need
@@ -9,7 +11,6 @@ class MapObject(object):
 	"""
 
 	def __init__(self, position):
-		from game_instance import game
 		"""
 		Initializes map object
 

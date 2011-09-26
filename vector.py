@@ -95,5 +95,11 @@ def circle_collision(circle1, circle2):
 	else:
 		return False
 
+class VectorTests(unittest.TestCase):
+	def test_distance(self):
+		self.assertEqual(sqrt(10), distance((0,0), (3, 1)))
+		self.assertEqual(1, distance((0,0), (0,1)))
+		self.assertEqual(0, distance((0,1),(0,1)))
+
 if __name__=='__main__':
 	unittest.main()

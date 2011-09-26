@@ -3,9 +3,7 @@
 import unittest
 from math import sqrt
 from random import randrange
-from ship import Ship
-from planet import Planet
-from asteroid import Asteroid
+
 from vector import distance
 
 class Map(object):
@@ -30,6 +28,9 @@ class Map(object):
 				self.asteroids]
 
 	def add_object(self, object):
+		from ship import Ship
+		from planet import Planet
+		from asteroid import Asteroid
 		"""
 		Adds an object to the map's global object dictionary.
 		
