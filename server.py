@@ -113,7 +113,6 @@ class MMHandler(BaseHTTPRequestHandler):
 		},
 	}
 
-
 	# Other helper functions
 
 	def explode_path(self, parsedURL):

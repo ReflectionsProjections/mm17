@@ -6,6 +6,7 @@
 for file in `ls *.py`
 do
 	if [[ "$file" != "server.py" && "$file" != "tester.py" ]]; then
+		echo $file
 		python $file
 		if [ $? -ne 0 ]; then
 			echo "Unit tests failed in file" "$file"

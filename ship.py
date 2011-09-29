@@ -56,8 +56,6 @@ class Ship(MapObject):
 		vel_scale = self.max_velocity/vel_mag
 		self.velocity = (vel_scale * self.velocity[0],
 				vel_scale * self.velocity[1])
-		# XXX: What the fuck was this supposed to do
-		#self.direction =
 
 	def fire(self, angle):
 		from game_instance import game

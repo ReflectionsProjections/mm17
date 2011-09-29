@@ -3,6 +3,7 @@
 import time
 import thread
 import unittest
+import os
 
 from datetime import datetime
 
@@ -51,7 +52,10 @@ class Game(object):
 		@type  message: string
 		@param message: Message to write out to the log file
 		"""
-
+		try:
+			os.mkdir('logs')
+		except OSError:
+			pass
 		text = "%s: %s\n" % (datetime.now(), message)
 		self.log_file.write(text)
 

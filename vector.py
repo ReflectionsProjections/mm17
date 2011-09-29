@@ -13,39 +13,74 @@ def distance(pos1, pos2):
 
 	return sqrt((pos1[0] - pos2[0])**2 + (pos1[1] - pos2[1])**2)
 
-def intersect_circle(center, radius, line):
-	""" Checks to see if a line intersects with a circle.
+def comp(a, b):
+	""" Returns the scalar projection of vector a onto vector b
+	@param a: vector a
+	@param b: vector b
 
-	@param center: (x,y) coordinate of circle center
-	@param radius: radius of circle
+	@type: number
+	@return: scalar projection of a onto b
+	"""
+	# component projection of a onto b
+	comp = (a[0] * b[0] + a[1] * b[1])/(hypot(*b)**2)
+	return comp
+
+def proj(a, b):
+	""" Returns the projection of vector a onto vector b
+	@param a: vector a
+	@param b: vector b
+	
+	@type: tuple
+	@return: vector projection of a onto b
+	"""
+	# component projection of a onto b
+	comp = (a[0] * b[0] + a[1] * b[1])/(hypot(*b)**2)
+	# now multiply that by b
+	proj = (comp * b[0], comp * b[1])
+	return proj
+
+def intersect_circle(circle, line):
+	""" Checks to see if a line intersects with a circle.
+	@param circle: ((x,y), radius) center and radius
 	@param line: ((x, y), (x, y)) start point and vector
 
 	@return: True if the line interesects with the circle
 	"""
+	# start point of line
+	start = line[0]
+	end = (line[0][0] + line[1][0], line[0][1] + line[1][1])
 	# Vector of line
-	line_v = line[1] 
-	# Length of line
-	line_len = hypot(*line_v) 
-	# unit vector of line
-	line_uv = line_v[0]/line_len, line_v[1]/line_len 
-	 # normal unit vector
-	normal = -line_uv[1], line_uv[0]
-	# vector from point to end
-	center_line_v = center[0]-(line[0][0]+line[1][0]),\
-		center[1]-(line[0][1]+line[1][1])
-	# Projection of center_line_v to n (the minimum distance)
-	dist = fabs(center_line_v[0]*normal[0]+center_line_v[1]*normal[1])
-	if dist < radius:
+	line_v = line[1]
+	# Vector of endpoint to start (reverse)
+	neg_line_v = (-line_v[0], -line_v[1])
+	# Vector of start to center
+	center_v = (circle[0][0] - start[0], circle[0][1] - start[1])
+	neg_center_v = (-center_v[0], -center_v[1])
+	# scalar projectections
+	comp1 = comp(center_v, line_v)
+	comp2 = comp(neg_center_v, neg_line_v)
+	# if both positive, then within band
+	if comp1 >= 0 and comp2 >= 0:
+		# now check if mag of ortho vector is greater than radius
+		proj = (comp1*line_v[0], comp1*line_v[1])
+		# find  orthoganl complement
+		ortho_v = (center_v[0] - proj[0], center_v[1] - proj[1])
+		# get the distance from the point to the center
+		dist = hypot(*ortho_v)
+		# and see if we collide or not
+		if dist <= circle[1]:
+			return True
+		else:
+			return False
+	elif distance(start, circle[0]) <= circle[1] or \
+			distance(end, circle[0]) <= circle[1]:
 		return True
-	else:
-		return False
+	else: return False
 
-
-def circle_in_rect(center, radius, rect):
+def circle_in_rect(circle, rect):
 	""" Checks to see if a circle intersects the rectangle.
 
-	@param center: Center point for the circle
-	@param radius: Radius of the circle
+	@param circle: ((x,y), radius) center and radius
 	@param rect: a tuple of fours points, stored CCW
 
 	@return: True if center is in rectangle.
@@ -57,28 +92,17 @@ def circle_in_rect(center, radius, rect):
 			(rect[2], (rect[3][0] - rect[2][0], rect[3][1] - rect[2][1])),
 			(rect[3], (rect[0][0] - rect[3][0], rect[0][1] - rect[3][1]))]
 
-	center_right_of_side = 0 # must be four to be true
+	# See if any of the sides intersect the circle
 	for side in sides:
-		# find side vector
-		(rect[1][0] - rect[0][0], rect[1][1] - rect[0][1])
-		# find vector bewtween point and start of side
-		vector = (side[0][0] - center[0], side[0][1] - center[1])
-		# take cross product between vector and side
-		cross_prod = side[1][0]*vector[1] - side[1][1]*vector[0]
-		# if side intersects ciclre, return true
-		if intersect_circle(center, radius, side):
+		if intersect_circle(circle, side):
 			return True
-		# if the following is true for all sides, center is in rect
-		if cross_prod > 0:
-			center_right_of_side+=1
 
-	# if we have 4, then circle is in rect
-	if center_right_of_side == 4:
-		return True
-	else:
-		return False
-
-
+	# Did not work, so test if circle is entirely in rectangle
+	# if false, it is outside rectangle entirely.
+	for side in sides:
+		disp = (circle[0][0] - side[0][0], circle[0][1] - side[0][1])
+		if comp(disp, side[1]) < 0:
+			return False
 
 def circle_collision(circle1, circle2):
 	"""Checks to see if a circle intersects another circle
@@ -100,6 +124,62 @@ class VectorTests(unittest.TestCase):
 		self.assertEqual(sqrt(10), distance((0,0), (3, 1)))
 		self.assertEqual(1, distance((0,0), (0,1)))
 		self.assertEqual(0, distance((0,1),(0,1)))
+
+	def test_circle_collision(self):
+		circle1 = ((0,0),1)
+		circle2 = ((1,1),1)
+		self.assertTrue(circle_collision(circle1 , circle2))
+		circle3 = ((4,4),1)
+		self.assertFalse(circle_collision(circle2, circle3))
+		self.assertFalse(circle_collision(circle1, circle3))
+
+	def test_circle_in_rect(self):
+		# Testing rectangle
+		rect = ((1,1), (1,-1), (-1,-1), (-1,1))
+		# Inside rect and touching sides
+		circle1 = ((0,0), 1)
+		self.assertTrue(circle_in_rect(circle1, rect))
+		# completly outside
+		circle2 = ((4,4), 2)
+		self.assertFalse(circle_in_rect(circle2, rect))
+		# To the right and touching
+		circle3 = ((2.5, 0), 1.5)
+		self.assertTrue(circle_in_rect(circle3, rect))
+		# Inside, not touching
+		circle4 = ((0,0), 0.5)
+		self.assertFalse(circle_in_rect(circle4, rect))
+		# Corner
+		circle5 = ((1,1),1)
+		self.assertTrue(circle_in_rect(circle5, rect))
+		# Just touching corner
+		circle6 = ((1,2),1)
+		self.assertTrue(circle_in_rect(circle6, rect))
+		circle7 = ((2,2), sqrt(2))
+		self.assertTrue(circle_in_rect(circle7, rect))
+
+
+	def test_intersect_circle(self):
+		circle1 = ((1,1),1)
+		circle2 = ((-1,-1),1)
+		circle3 = ((-10,10),1)
+		line = ((0,0), (2,2))
+		self.assertTrue(intersect_circle(circle1, line))
+		self.assertFalse(intersect_circle(circle3, line))
+		self.assertFalse(intersect_circle(circle2, line))
+
+	def test_comp(self):
+		a = (1, 5)
+		b = (-4, 7)
+		mag = hypot(*b)
+		self.assertEqual(31.0/mag**2, comp(a,b))
+
+	def test_proj(self):
+		a = (7,34)
+		b = (85, 32)
+		c = comp(a, b)
+		p = (c*b[0], c*b[1])
+		self.assertEqual(p, proj(a, b))
+		
 
 if __name__=='__main__':
 	unittest.main()
