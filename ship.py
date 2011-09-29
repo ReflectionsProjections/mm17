@@ -91,12 +91,12 @@ class Ship(MapObject):
 
 		if len(within_beam) == 0:
 			# No object hit
-			self.events.append(("shot", None))
+			self.events.append({'type':'shot','hit': None})
 		else:
 			cmp_dist = lambda a: distance(self.position, a.position)
 			within_beam.sort(key=cmp_dist)
 			# Hit first in line, record id
-			self.events.append(("shot", id(within_beam[0])))
+			self.events.append({'type':'shot', 'hit': id(within_beam[0])})
 			# register damage with hit object
 			dist = distance(self.position, within_beam[0].position)
 			damage_amt = Constants.weapon_strength *(Constants.weapon_range - \
@@ -155,6 +155,17 @@ class Ship(MapObject):
 		new_refinery = Refinery(asteroid, self.owner)
 		resources -= Constants.refinery_price
 		return nee_refinery
+
+	def create_base(self, planet):
+		"""
+		Create a base on a planet
+
+		@type planet: Planet object
+		@param planet: Planet to build your base on
+		"""
+		new_base = Base(planet, self.owner)
+		resources -= Constants.base_price
+		return new_base
 
 class TestShip(unittest.TestCase):
 	def setUp(self):

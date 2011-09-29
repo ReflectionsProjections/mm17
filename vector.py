@@ -179,7 +179,6 @@ class VectorTests(unittest.TestCase):
 		c = comp(a, b)
 		p = (c*b[0], c*b[1])
 		self.assertEqual(p, proj(a, b))
-		
 
 if __name__=='__main__':
 	unittest.main()

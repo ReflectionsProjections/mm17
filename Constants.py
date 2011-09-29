@@ -9,6 +9,9 @@ weapon_strength = 100
 max_velocity = 50
 max_accel = 5
 
+refinery_price = 10
+base_price = 50
+
 """ Constants used in asteroid.py """
 asteroid_scale = 10  # asteroid.resources = size * asteroidScale
 resource_pull = 1    # Ammount of resources pulled from factories each turn

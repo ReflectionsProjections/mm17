@@ -61,6 +61,11 @@ class Base(object):
 		self.planet = planet
 		self.owner = owner
 		self.health = Constants.base_health
+		self.queue = []
+		self.current_action = None
+		owner.bases[id(self)] = self
+
+
 
 	def create_ship(self, position):
 		"""
@@ -101,6 +106,13 @@ class Base(object):
 		if ship.health > Constants.base_health:
 			ship.health = Constants.base_health
 
+	def destroy(self):
+		"""
+		Removes a base from the planet and owner refrences
+		"""
+		self.planet.base = None
+		del self.owner.bases[id(self)]
+
 	def to_dict(self):
 		"""
 		Return the current state in JSON serializable representation.
@@ -110,7 +122,9 @@ class Base(object):
 		"""
 		state = { 'type':'Base',
 					'id': id(self),
-					'planet':self.planet
+					'planet':self.planet,
+				  'queue': self.queue,
+				  'current_action': self.current_action
 				  }
 		return state
 
