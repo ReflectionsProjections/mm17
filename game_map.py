@@ -57,5 +57,32 @@ class Map(object):
 		return [object for object in self.objects.itervalues()
 				if distance(position, object.position) <= range]
 
+class TestGame(unittest.TestCase):
+
+	print("game_map.py")
+
+	def setUp(self):
+		from ship import Ship
+		from player import Player
+		self.m = Map(4)
+		self.p = Player("a", "b")
+		self.s = Ship((1,2), self.p)
+		
+
+	def test_create(self):
+		self.assertTrue(self.m.max_players == 4)
+		self.assertTrue(self.m.origin == (0,0))
+
+
+	def test_add_object(self):
+		self.m.add_object(self.s)
+		self.assertTrue(len(self.m.objects) == 1)
+
+
+	def test_radar(self):
+		self.m.add_object(self.s)
+		self.assertTrue(self.m.radar((1,2), 0)[0] == self.s)
+		self.assertTrue(len(self.m.radar((2,2), 0)) == 0)
+
 if __name__=='__main__':
 	unittest.main()
