@@ -45,6 +45,8 @@ False
 		else:
 			results.append({'success':False, 'message':'bad or no obj_type in action'})
 
+	with game.action_list_lock:
+		game.completed_turns[game.turn][player.auth] = True
 	return results
 
 def validate_ship_action(action, player):
