@@ -142,7 +142,8 @@ class Ship(MapObject):
 				 'alive': self.alive,
 				 'position': self.position,
 				 'velocity': self.velocity,
-				 'health': self.health}
+				 'health': self.health
+				 }
 		return state
 
 	def create_refinery(self, asteroid):
@@ -172,7 +173,7 @@ class TestShip(unittest.TestCase):
 		from game_map import Map
 		from game import Game
 		self.game_map = Map(1)
-		self.game = Game(self.game_map,"test_log")
+		self.game = Game(self.game_map,"test_log", "123456")
 		self.player = self.game.add_player("test","auth")
 
 	def test_create(self):

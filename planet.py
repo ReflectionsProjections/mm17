@@ -34,11 +34,12 @@ class Planet(MapObject):
 		@type: dict
 		@return The current game state in JSON serializable representation.
 		"""
-		state = {
-				'obj_id': id(self),
-				'position': self.position,
-				'size':self.size,
-				'base': id(self.base) if self.base else None
+		state = {'type': 'Planet',
+				 'id': id(self),
+				 'resources': self.resources,
+				 'position': self.position,
+				 'size':self.size,
+				 'base': self.base.to_dict() if self.base else None
 				}
 		return state
 
@@ -58,14 +59,12 @@ class Base(object):
 		@type owner: Player object
 		@param owner: The Player object this base is owned by
 		"""
+		self.built = 10
 		self.planet = planet
 		self.owner = owner
 		self.health = Constants.base_health
-		self.queue = []
 		self.current_action = None
 		owner.bases[id(self)] = self
-
-
 
 	def create_ship(self, position):
 		"""
@@ -121,10 +120,11 @@ class Base(object):
 		@return: The current base state in JSON serializable representation.
 		"""
 		state = { 'type':'Base',
-					'id': id(self),
-					'planet':self.planet,
-				  'queue': self.queue,
-				  'current_action': self.current_action
+				  'id': id(self),
+				  'built': self.built,
+				  'planet':self.planet,
+				  'owner': self.owner.name,
+				  'health': self.health
 				  }
 		return state
 

@@ -37,11 +37,12 @@ class Asteroid(MapObject):
 		@return The current game state in JSON serializable representation.
 		"""
 		state = {'type':'asteroid',
-					'id': id(self),
-					'position': self.position,
-					'resources' : self.resources,
-					'size' : self.size,
-					'refinery' : id(self.refinery)}
+				 'id': id(self),
+				 'position': self.position,
+				 'resources' : self.resources,
+				 'size' : self.size,
+				 'refinery' : self.refinery.to_dict if self.refinery else None
+				 }
 		return state
 
 class Refinery(object):
@@ -52,6 +53,7 @@ class Refinery(object):
 		"""
 		self.asteroid = asteroid
 		self.owner = owner
+		self.built = 5
 
 		owner.refineries[id(self)] = self
 
@@ -61,12 +63,15 @@ class Refinery(object):
 		Return the current state in JSON serializable representation.
 
 		@type: dict
-		@return The current game state in JSON serializable representation.
+		@return The current refinery state in JSON serializable representation.
 		"""
 		state = { 'type':'Refinery',
 				  'id': id(self),
-				  'owner': self.owner,
-				  'asteroid':self.asteroid}
+				  'built': self.built,
+				  'owner': self.owner.name,
+				  'asteroid':self.asteroid,
+				  'health':self.health
+				  }
 		return state
 
 if __name__ == '__main__':

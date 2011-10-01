@@ -44,6 +44,19 @@ class MMHandler(BaseHTTPRequestHandler):
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
 
+	def game_visualizer(self, params):
+		"""
+		Handle a request by the visualizer to get all objects.  Write out
+		all object data to json.
+
+		@type  params: parsed URL query paramater dictionary
+		@param params: URL paramater string. Must contain 'auth' field
+				with valid user authentication id.
+		"""
+		gameStatus = game.game_visualizer(params['auth'][0])
+		self.respond()
+		self.wfile.write(json.dumps(gameStatus))
+
 	def game_turn_get(self, params):
 		"""
 		Handle a request for the last completed turn. Writes out json
@@ -100,7 +113,8 @@ class MMHandler(BaseHTTPRequestHandler):
 		'game': {
 			'info': {
 				'': game_status,
-				'all':game_avail_info
+				'all':game_avail_info,
+				'visualizer':game_visualizer
 				},
 			'turn': game_turn_get,
 			'join': game_join,

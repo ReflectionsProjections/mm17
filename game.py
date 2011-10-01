@@ -22,7 +22,7 @@ class Game(object):
 	a turn, and for resolving a turn.
 	"""
 
-	def __init__(self, game_map, log_file):
+	def __init__(self, game_map, log_file, viz_auth):
 		"""
 		Initialize the game object.
 
@@ -33,7 +33,7 @@ class Game(object):
 		@param log_file: Path to log file. Existing file at this path
 				will be overwritten.
 		"""
-
+		self.viz_auth = viz_auth
 		self.game_map = game_map
 		self.players = {}
 		self.log_file = open(log_file, 'w')
@@ -251,11 +251,24 @@ class Game(object):
 		return {'join_success': True,
 			'message': 'Joined succesfully'}
 
+	def game_visualizer(self, auth):
+		"""
+		Return all objects to the visualizer.
+
+		@return: list of all objects
+		"""
+		if auth != self.viz_auth:
+			return {'message':'not a valid auth code'}
+		else:
+			objects = [x.to_dict() for x in self.game_map.objects.itervalues()]
+			players = [x.to_dict() for x in self.players if x.alive]
+			return {'turn':self.turn, 'objects':objects, 'players':players}
+			
 class TestGame(unittest.TestCase):
 	def setUp(self):
 		from game_map import Map
 		self.game_map = Map(2)
-		self.game = Game(self.game_map,"test_log")
+		self.game = Game(self.game_map,"test_log", "123456")
 
 	def tearDown(self):
 		self.game.active = False

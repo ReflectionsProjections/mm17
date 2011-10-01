@@ -25,6 +25,16 @@ repair_percent = 0.10
 build_radius = 15
 ship_price = 10
 
+""" Constants used in validate.py """
+base_build_radius = 15000
+base_salvage_radius = 15000
+base_repair_radius = 15000
+
+base_build_busy = 5
+base_salvage_busy = 5
+base_repair_busy = 5
+
+
 if __name__ == '__main__':
 	# No unit tests for constants
 	pass

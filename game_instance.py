@@ -7,8 +7,8 @@ try:
 	os.mkdir('logs')
 except OSError:
 	pass
-
+viz_auth = '123456'
 game_time = strftime("%Y-%m-%d-%H:%M:%S", gmtime())
-game_name = 'logs/game-%s' % game_time
+log_file = 'logs/game-%s' % game_time
 game_map = Map(1)
-game = Game(game_map, game_name)
+game = Game(game_map, log_file, viz_auth)
