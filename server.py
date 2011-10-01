@@ -156,7 +156,7 @@ class MMHandler(BaseHTTPRequestHandler):
 		search_paths = []
 
 		if exploded_path[0] == '':
-			self.send_error(400, "Requests to the root are invalid.\
+			self.send_error(403, "Requests to the root are invalid.\
 					Did you mean /game/turn?")
 			return
 
