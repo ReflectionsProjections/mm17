@@ -21,7 +21,7 @@ def handle_input(input):
 
 def validate_actions(player, input):
 	"""Validate actions requested by a player
-
+False
 	@param player: The player requesting these actions
 	@param input: JSON actions to parse
 	@return JSON dump of parse results
@@ -101,7 +101,8 @@ def validate_ship_action(action, player):
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player.auth].append(result)
+			with game.action_list_lock:
+				game.actions[game.turn][player.auth].append(result)
 			ship.methods_used['thrust'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -117,7 +118,8 @@ def validate_ship_action(action, player):
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player.auth].append(result)
+			with game.action_list_lock:
+				game.actions[game.turn][player.auth].append(result)
 			ship.methods_used['fire'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -133,7 +135,8 @@ def validate_ship_action(action, player):
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player.auth].append(result)
+			with game.action_list_lock:
+				game.actions[game.turn][player.auth].append(result)
 			ship.methods_used['scan'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -150,7 +153,8 @@ def validate_ship_action(action, player):
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player.auth].append(result)
+			with game.action_list_lock:
+				game.actions[game.turn][player.auth].append(result)
 			ship.methods_used['create_refinery'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -168,7 +172,8 @@ def validate_ship_action(action, player):
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player.auth].append(result)
+			with game.action_list_lock:
+				game.actions[game.turn][player.auth].append(result)
 			ship.methods_used['create_base'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -238,7 +243,8 @@ def validate_base_action(action, player):
 			result = {'object': base,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player.auth].append(result)
+			with game.action_list_lock:
+				game.actions[game.turn][player.auth].append(result)
 			base.busy = Constants.base_build_busy
 			return {'success' : True, 'message':'success'}
 
@@ -257,8 +263,8 @@ def validate_base_action(action, player):
 			result = {'object': base,
 					  'method': action['command'],
 					  'params': action['args']}
-
-			game.actions[game.turn][player.auth].append(result)
+			with game.action_list_lock:
+				game.actions[game.turn][player.auth].append(result)
 			base.busy = Constants.base_salvage_busy
 			return {'success' : True, 'message':'success'}
 
@@ -280,7 +286,8 @@ def validate_base_action(action, player):
 			result = {'object': base,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player.auth].append(result)
+  			with game.action_list_lock:
+				game.actions[game.turn][player.auth].append(result)
 			base.busy = Constants.base_repair_busy
 			return {'success' : True, 'message':'success'}
  
@@ -288,7 +295,8 @@ def validate_base_action(action, player):
 		result = {'object': base,
 				  'method': action['command'],
 				  'params': action['args']}
-		game.actions[game.turn][player.auth].append(result)
+		with game.action_list_lock:
+			game.actions[game.turn][player.auth].append(result)
 		return {'success' : True, 'message':'success'}
 
 	else:
@@ -337,7 +345,8 @@ def validate_refinery_action(action, player):
 		result = {'object': refinery,
 				  'method': action['command'],
 				  'params': action['args']}
-		game.actions[game.turn][player.auth].append(result)
+		with game.action_list_lock:
+			game.actions[game.turn][player.auth].append(result)
 		return {'success' : True, 'message':'success'}
 	
 	else:
