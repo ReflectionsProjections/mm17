@@ -11,4 +11,4 @@ logs:
 	mkdir logs
 
 docs:
-	epydoc -v *.py
+	epydoc --graph classtree -v *.py
