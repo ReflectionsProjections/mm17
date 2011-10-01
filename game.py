@@ -158,6 +158,7 @@ class Game(object):
 					object.refinery.built -= 1
 				if object.refinery.busy > 0:
 					object.refinery.busy -= 1
+			print alive_players
 
 		# advnace turn and reset timer
 		self.turn += 1
@@ -174,7 +175,7 @@ class Game(object):
 		"""
 
 		while self.active == True:
-			alive_players = [x for x in self.players.itervalues() if x.alive ]
+			alive_players = [x for x in self.players.itervalues() if x.alive]
 			if len(alive_players) <= 1:
 				self._end()
 			turns_submitted = len(self.actions[self.turn])

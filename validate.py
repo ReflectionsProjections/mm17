@@ -11,9 +11,9 @@ def handle_input(input):
 	@param input: Dictionary of input values to handle
 	"""
 	if 'auth' in input.keys():
-		alive_players = [x.auth for x in game.players.iterkeys() if x.alive]
+		alive_players = [x.auth for x in game.players.itervalues() if x.alive]
 		if input['auth'] in alive_players:
-				return validate_actions(game.players[input['auth']], input)
+			return validate_actions(game.players[input['auth']], input)
 		else:
 			return {'success':False, 
 					'message':'bad auth token or non-active player'}
