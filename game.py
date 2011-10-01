@@ -40,12 +40,13 @@ class Game(object):
 		self.players = {}
 		self.log_file = open(log_file, 'w')
 		# List of orders for each turn, dictionaries indexed by player
-		self.actions = [{}]
+		self.action_list_lock = threading.Lock()
+		with self.action_list_lock:
+			self.actions = [{}]
 		# Player results, indexed by players
 		self.player_results = {}
 		self.turn = 0
 		self.active = False
-		self.action_list_lock = threading.Lock()
 
 	def _log(self, message):
 		"""
@@ -178,7 +179,8 @@ class Game(object):
 			alive_players = [x for x in self.players.itervalues() if x.alive]
 			if len(alive_players) <= 1:
 				self._end()
-			turns_submitted = len(self.actions[self.turn])
+			with self.action_list_lock:
+				turns_submitted = len(self.actions[self.turn])
 			if turns_submitted == len(alive_players):
 					self._resolve_turn()
 			#elif time.time() - self.last_turn_time > 2:
