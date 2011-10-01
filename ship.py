@@ -55,7 +55,7 @@ class Ship(MapObject):
 		self.velocity = (x + scale*dx, y + scale*dy)
 		# scale doown to max velocity
 		vel_mag = hypot(*self.velocity)
-		if vel_mag > self.max_velocity:
+		if vel_mag >= self.max_velocity:
 			vel_scale = self.max_velocity/vel_mag
 		else: vel_scale = 1
 		self.velocity = (vel_scale * self.velocity[0],
