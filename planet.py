@@ -62,7 +62,7 @@ class Base(object):
 		self.planet = planet
 		self.owner = owner
 		self.health = Constants.base_health
-		self.current_action = None
+		self.events = []
 		owner.add_object(self)
 
 	def create_ship(self, position):
@@ -124,7 +124,8 @@ class Base(object):
 				  'built': self.built,
 				  'planet':self.planet,
 				  'owner': self.owner.auth,
-				  'health': self.health
+				  'health': self.health,
+				  'events':self.events
 				  }
 		return state
 

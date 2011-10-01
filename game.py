@@ -111,11 +111,14 @@ class Game(object):
 					method(**action['params'])
 		#apply effects
 		for ship in self.game_map.ships.itervalues():
+			for event in ship.events:
+				if event['type'] == 'damage':
+					ship.health -= event['amount']
 			if ship.health <= 0:
 				# kill dead ships
 				ship.alive = False
 				ship.health = 0
-				ship.results[self.turn] = self.events[:]
+				ship.results[self.turn] = ship.events[:]
 				ship.events = [{'status':'destroyed'}]
 			else:
 				# compute radar returns for live ships

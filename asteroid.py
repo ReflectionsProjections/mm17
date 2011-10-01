@@ -22,6 +22,7 @@ class Asteroid(MapObject):
 		self.size = size
 		self.resources = size * Constants.asteroid_scale
 		self.refinery = None
+		self.events = []
 
 	def pull_resources(self):
 		"""
@@ -74,7 +75,8 @@ class Refinery(object):
 				  'built': self.built,
 				  'owner': self.owner.auth,
 				  'asteroid':self.asteroid,
-				  'health':self.health
+				  'health':self.health,
+				  'events':self.events
 				  }
 		return state
 

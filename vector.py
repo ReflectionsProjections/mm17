@@ -55,7 +55,7 @@ def intersect_circle(circle, line):
 	neg_line_v = (-line_v[0], -line_v[1])
 	# Vector of start to center
 	center_v = (circle[0][0] - start[0], circle[0][1] - start[1])
-	neg_center_v = (-center_v[0], -center_v[1])
+	neg_center_v = (circle[0][0] - end[0], circle[0][1] - end[1])
 	# scalar projectections
 	comp1 = comp(center_v, line_v)
 	comp2 = comp(neg_center_v, neg_line_v)
@@ -85,13 +85,11 @@ def circle_in_rect(circle, rect):
 
 	@return: True if center is in rectangle.
 	"""
-
 	# each side has a start point and a vector
 	sides = [(rect[0], (rect[1][0] - rect[0][0], rect[1][1] - rect[0][1])),
 			(rect[1], (rect[2][0] - rect[1][0], rect[2][1] - rect[1][1])),
 			(rect[2], (rect[3][0] - rect[2][0], rect[3][1] - rect[2][1])),
 			(rect[3], (rect[0][0] - rect[3][0], rect[0][1] - rect[3][1]))]
-
 	# See if any of the sides intersect the circle
 	for side in sides:
 		if intersect_circle(circle, side):
@@ -157,6 +155,14 @@ class VectorTests(unittest.TestCase):
 		self.assertTrue(circle_in_rect(circle6, rect))
 		circle7 = ((2,2), sqrt(2))
 		self.assertTrue(circle_in_rect(circle7, rect))
+		
+		rect2 = ((1,0), (5, 3), (4,4), (0,1))
+		# Rotated rect, not touching
+		circle8 = ((-3,3),2)
+		self.assertFalse(circle_in_rect(circle8, rect2))
+		# Rotated rect,  touching
+		circle9 = ((1, 1.5),2)
+		self.assertTrue(circle_in_rect(circle9, rect2))
 
 
 	def test_intersect_circle(self):

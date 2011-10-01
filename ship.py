@@ -66,21 +66,19 @@ class Ship(MapObject):
 						 vel_scale * self.velocity[1])
 		self.direction = atan2(*direction)
 
-	def fire(self, angle):
+	def fire(self, direction):
 		from game_instance import game
 		"""Fire at angle relative to the ship's direction.  The laser is
 		instant and is a rectangle with a width of 10 and a length of
 		self.weapon_strength. Any object that intersects that rectatngle
 		takes damage.
 
-		@param angle: angle relative to ships direction as radians
+		@param direction: vector to fire at 
 		"""
-		width = 10
-		length = self.weapon_strength
-
-		#angle is relative to ship's direction
-		angle += self.direction
-
+		width = Constants.weapon_width
+		length = self.weapon_range
+		
+		angle = atan2(*direction)
 		w = width/2
 		# Four points, counter clockwise
 		p_0 = (self.position[0] + w * cos(angle),
@@ -92,12 +90,11 @@ class Ship(MapObject):
 
 		# rectangle of laser beam
 		beam = (p_0, p_1, p_2, p_3)
-
 		within_beam = [] # list for objects in beam
 		for obj in game.game_map.objects.itervalues():
-			if circle_in_rect((obj.position, obj.size), beam):
+			hit = circle_in_rect((obj.position, obj.size), beam)
+			if hit and obj != self:
 				within_beam.append(obj)
-
 		if len(within_beam) == 0:
 			# No object hit
 			self.events.append({'type':'shot','hit': None})
@@ -152,7 +149,8 @@ class Ship(MapObject):
 				 'position': self.position,
 				 'velocity': self.velocity,
 				 'direction': self.direction,
-				 'health': self.health
+				 'health': self.health,
+				 'events':self.events
 				 }
 		return state
 

@@ -40,7 +40,7 @@ def test_actions():
 				action = {'obj_type':'ship',
 						  'obj_id': id,
 						  'command': 'fire',
-						  'args': { 'angle': pi}}
+						  'args': { 'direction': (1,2)}}
 				data['actions'].append(action)
 				output+= urlopen(url, json.dumps(data)).read() + '\n'
 	return output

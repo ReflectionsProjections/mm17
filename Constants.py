@@ -2,9 +2,10 @@
 """ Constants used in ship.py  """
 base_size = 10
 base_health = 100
-scan_range = 2000
-weapon_range = 1000
-weapon_strength = 100
+scan_range = 200
+weapon_range = 100
+weapon_strength = 10
+weapon_width = 10
 
 max_velocity = 50
 max_accel = 3

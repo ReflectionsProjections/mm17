@@ -115,12 +115,12 @@ def validate_ship_action(action, player, turn):
 	elif action['command'] == 'fire':
 		if ship.methods_used['fire']:
 			return {'success':False, 'message':'fire action already used'}
-		elif 'angle' not in action['args'].keys():
-			return {'success':False, 'message':'fire requires angle arg'}
+		elif 'direction' not in action['args'].keys():
+			return {'success':False, 'message':'fire requires direction arg'}
 		else:
-			angle = action['args']['angle']
-			if not isinstance(angle, Number):
-				return {'success':False, 'message':'angle must be Number'}
+			direction = action['args']['direction']
+			if not isinstance(direction, list):
+				return {'success':False, 'message':'direction must be a list'}
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
