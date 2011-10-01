@@ -11,9 +11,13 @@ def handle_input(input):
 	@param input: Dictionary of input values to handle
 	"""
 	if 'auth' in input.keys():
-		alive_players = [x for x in game.players.keys() if x.alive]
+		alive_players = [x.auth for x in game.players.itervalues() if x.alive]
 		if input['auth'] in alive_players:
-			return validate_actions(game.players[input['auth']], input)
+			if game.busy:
+				return {'success':False, 
+						'message':'game is busy processing, please try again'}
+			else:
+				return validate_actions(game.players[input['auth']], input)
 		else:
 			return {'success':False, 
 					'message':'bad auth token or non-active player'}
@@ -120,7 +124,7 @@ def validate_ship_action(action, player):
 					  'params': action['args']}
 			game.actions[game.turn][player].append(result)
 			ship.methods_used['fire'] = True
-			return {'success' : True}
+			return {'success' : True, 'message':'success'}
 
 	elif action['command'] =='scan':
 		if ship.methods_used['scan']:

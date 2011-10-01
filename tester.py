@@ -28,12 +28,12 @@ def test_actions():
 	for obj in json.loads(test_info_all())['objects']:
 		id = obj['id']
 		action = {'obj_type':'ship',
-				'ship_id': id,
+				'obj_id': id,
 				'command': 'thrust',
 				'args': { 'accel': (1, 1)}}
 		data['actions'].append(action)
 		action = {'obj_type':'ship',
-				'ship_id': id,
+				'obj_id': id,
 				'command': 'fire',
 				'args': { 'angle': pi}}
 		data['actions'].append(action)

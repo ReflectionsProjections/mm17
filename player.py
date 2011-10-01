@@ -6,7 +6,7 @@ import Constants
 
 
 class Player(object):
-	def __init__(self, name, auth_token):
+	def __init__(self, name, auth):
 		"""
 		Create a new player representation.
 		
@@ -18,7 +18,7 @@ class Player(object):
 		from planet import Base
 
 		self.name = name
-		self.auth_token = auth_token
+		self.auth = auth
 		self.alive = True
 		self.resources = 0
 		self.objects = {}
@@ -93,7 +93,7 @@ class PlayerTests(unittest.TestCase):
 	def test_create(self):
 		p = Player("Hello","world")
 		self.assertTrue(p.name == "Hello")
-		self.assertTrue(p.auth_token == "world")
+		self.assertTrue(p.auth == "world")
 		self.assertTrue(p.alive)
 		self.assertTrue(len(p.objects) == 0)
 

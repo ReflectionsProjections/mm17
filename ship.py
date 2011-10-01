@@ -35,7 +35,11 @@ class Ship(MapObject):
 		# max values
 		self.max_velocity = Constants.max_velocity
  		self.max_accel = Constants.max_accel
-		self.methods_used = {'thrust':False,'fire':False}
+		self.methods_used = {'thrust':False,
+							 'fire':False,
+							 'create_base':False,
+							 'create_refinery':False,
+							 'scan':False}
 
 	def thrust(self, accel):
 		"""Sets the velocity based on acceleration and current velocity.
@@ -86,7 +90,7 @@ class Ship(MapObject):
 
 		within_beam = [] # list for objects in beam
 		for obj in game.game_map.objects.itervalues():
-			if circle_in_rect(obj.position, obj.size, beam):
+			if circle_in_rect((obj.position, obj.size), beam):
 				within_beam.append(obj)
 
 		if len(within_beam) == 0:

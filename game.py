@@ -43,6 +43,7 @@ class Game(object):
 		self.player_results = {}
 		self.turn = 0
 		self.active = False
+		self.busy = False
 
 	def _log(self, message):
 		"""
@@ -80,12 +81,12 @@ class Game(object):
 		self.active = False
 
 	def _resolve_turn(self):
+		from ship import Ship
 		"""
 		Apply all the orders which have been recieved for this turn,
 		update the game state to the start of the next turn, and
 		calculate reponses for each player.
 		"""
-
 		actions = self.actions[self.turn]
 		results = {}
 
@@ -136,6 +137,9 @@ class Game(object):
 		for object in self.game_map.objects.itervalues():
 			object.step(1)
 			object.results[self.turn + 1] = []
+			if isinstance(object, Ship):
+				for method in object.methods_used.iterkeys():
+					object.methods_used[method] = False
 
 		# subtract from busy and build counters
 			if hasattr(object, 'base') and object.base != None:
@@ -154,6 +158,7 @@ class Game(object):
 		self.turn += 1
 		self.actions.append({})
 		self.last_turn_time = time.time()
+		self.busy = False
 
 	def _main(self):
 		"""
@@ -169,13 +174,12 @@ class Game(object):
 					if x.alive == True]
 			if alive_players <= 1:
 				self._end()
-			turns_submitted = 0
-			for actions in self.actions[self.turn].itervalues():
-				if actions:
-					turns_submitted+=1
+			turns_submitted = len(self.actions[self.turn])
 			if turns_submitted == len(alive_players):
+				self.busy = True
 				self._resolve_turn()
 			elif time.time() - self.last_turn_time > 2:
+				self.busy = True
 				self._resolve_turn()
 			else:
 				continue
