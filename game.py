@@ -178,9 +178,9 @@ class Game(object):
 			if turns_submitted == len(alive_players):
 				self.busy = True
 				self._resolve_turn()
-			elif time.time() - self.last_turn_time > 2:
-				self.busy = True
-				self._resolve_turn()
+			#elif time.time() - self.last_turn_time > 2:
+			#	self.busy = True
+			#	self._resolve_turn()
 			else:
 				continue
 
