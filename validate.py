@@ -4,7 +4,7 @@ from numbers import Number
 from game_instance import game
 import Constants
 
-def handle_input(input):
+def handle_input(input, turn):
 	"""Handle POST request data and passes to validators.
 
 	@param input: Dictionary of input values to handle
@@ -12,14 +12,14 @@ def handle_input(input):
 	if 'auth' in input.keys():
 		alive_players = [x.auth for x in game.players.itervalues() if x.alive]
 		if input['auth'] in alive_players:
-			return validate_actions(game.players[input['auth']], input)
+			return validate_actions(game.players[input['auth']], input, turn)
 		else:
 			return {'success':False, 
 					'message':'bad auth token or non-active player'}
 	else:
 		return {'success':False, 'message':'no auth token provided'}
 
-def validate_actions(player, input):
+def validate_actions(player, input, turn):
 	"""Validate actions requested by a player
 False
 	@param player: The player requesting these actions
@@ -31,17 +31,17 @@ False
 		return {'success':False, 'message': 'no actions provided'}
 	results = []
 	with game.action_list_lock:
-		game.actions[game.turn][player.auth] = []
+		game.actions[turn][player.auth] = []
 
 	for action in input['actions']:
 		if action['obj_type'] == "ship":
-			results.append(validate_ship_action(action, player))
+			results.append(validate_ship_action(action, player, turn))
 		elif action['obj_type'] == "base":
-			results.append(validate_base_action(action, player))
+			results.append(validate_base_action(action, player, turn))
 		elif action['obj_type'] == "refinery":
-			results.append(validate_refinery_action(action, player))
+			results.append(validate_refinery_action(action, player, turn))
 		elif action['obj_type'] == "player":
-			results.append(validate_player_action(action, player))
+			results.append(validate_player_action(action, player, turn))
 		else:
 			results.append({'success':False, 'message':'bad or no obj_type in action'})
 
@@ -49,7 +49,7 @@ False
 		game.completed_turns[game.turn][player.auth] = True
 	return results
 
-def validate_ship_action(action, player):
+def validate_ship_action(action, player, turn):
 	"""Valide an action performed by a ship
 
 	@param action: Action to validate
@@ -104,7 +104,7 @@ def validate_ship_action(action, player):
 					  'method': action['command'],
 					  'params': action['args']}
 			with game.action_list_lock:
-				game.actions[game.turn][player.auth].append(result)
+				game.actions[turn][player.auth].append(result)
 			ship.methods_used['thrust'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -121,7 +121,7 @@ def validate_ship_action(action, player):
 					  'method': action['command'],
 					  'params': action['args']}
 			with game.action_list_lock:
-				game.actions[game.turn][player.auth].append(result)
+				game.actions[turn][player.auth].append(result)
 			ship.methods_used['fire'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -138,7 +138,7 @@ def validate_ship_action(action, player):
 					  'method': action['command'],
 					  'params': action['args']}
 			with game.action_list_lock:
-				game.actions[game.turn][player.auth].append(result)
+				game.actions[turn][player.auth].append(result)
 			ship.methods_used['scan'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -156,7 +156,7 @@ def validate_ship_action(action, player):
 					  'method': action['command'],
 					  'params': action['args']}
 			with game.action_list_lock:
-				game.actions[game.turn][player.auth].append(result)
+				game.actions[turn][player.auth].append(result)
 			ship.methods_used['create_refinery'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -175,7 +175,7 @@ def validate_ship_action(action, player):
 					  'method': action['command'],
 					  'params': action['args']}
 			with game.action_list_lock:
-				game.actions[game.turn][player.auth].append(result)
+				game.actions[turn][player.auth].append(result)
 			ship.methods_used['create_base'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -246,7 +246,7 @@ def validate_base_action(action, player):
 					  'method': action['command'],
 					  'params': action['args']}
 			with game.action_list_lock:
-				game.actions[game.turn][player.auth].append(result)
+				game.actions[turn][player.auth].append(result)
 			base.busy = Constants.base_build_busy
 			return {'success' : True, 'message':'success'}
 
@@ -266,7 +266,7 @@ def validate_base_action(action, player):
 					  'method': action['command'],
 					  'params': action['args']}
 			with game.action_list_lock:
-				game.actions[game.turn][player.auth].append(result)
+				game.actions[turn][player.auth].append(result)
 			base.busy = Constants.base_salvage_busy
 			return {'success' : True, 'message':'success'}
 
@@ -289,7 +289,7 @@ def validate_base_action(action, player):
 					  'method': action['command'],
 					  'params': action['args']}
   			with game.action_list_lock:
-				game.actions[game.turn][player.auth].append(result)
+				game.actions[turn][player.auth].append(result)
 			base.busy = Constants.base_repair_busy
 			return {'success' : True, 'message':'success'}
  
@@ -298,7 +298,7 @@ def validate_base_action(action, player):
 				  'method': action['command'],
 				  'params': action['args']}
 		with game.action_list_lock:
-			game.actions[game.turn][player.auth].append(result)
+			game.actions[turn][player.auth].append(result)
 		return {'success' : True, 'message':'success'}
 
 	else:
@@ -348,7 +348,7 @@ def validate_refinery_action(action, player):
 				  'method': action['command'],
 				  'params': action['args']}
 		with game.action_list_lock:
-			game.actions[game.turn][player.auth].append(result)
+			game.actions[turn][player.auth].append(result)
 		return {'success' : True, 'message':'success'}
 	
 	else:
