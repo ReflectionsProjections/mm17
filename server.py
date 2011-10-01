@@ -12,6 +12,8 @@ from urlparse import parse_qs
 
 from validate import handle_input
 
+from game_instance import game, game_map
+
 class MMHandler(BaseHTTPRequestHandler):
 	"""
 	Server request handler for Mechmania 17.
@@ -274,14 +276,7 @@ if __name__ == '__main__':
 
 	# Set up the game
 	port = opts.port
-	import game_instance
-	from game_map import Map
-	from game import Game
-	game_instance.game_map = Map(opts.num_players)
-	game_instance.game = Game(game_instance.game_map, game_instance.log_file,
-			game_instance.viz_auth)
-	game_instance.inited = True
-	game = game_instance.game
+	game_map.max_players = opts.num_players
 
 	print "Starting on port " + str(port) + "..."
 	server = HTTPServer(('', port), MMHandler)
