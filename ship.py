@@ -50,7 +50,10 @@ class Ship(MapObject):
 		# test to see if the accel is greater than allowed max
 		mag = hypot(*accel)
 		x, y = self.velocity
-		dx, dy = (accel[0]/mag, accel[1]/mag)
+		if mag != 0:
+			dx, dy = (accel[0]/mag, accel[1]/mag)
+		else:
+			dx, dy = (0, 0)
 		scale = Constants.accel_value
 		self.velocity = (x + scale*dx, y + scale*dy)
 		# scale doown to max velocity

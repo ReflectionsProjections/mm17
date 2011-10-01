@@ -40,7 +40,7 @@ class Game(object):
 		self.players = {}
 		self.log_file = open(log_file, 'w')
 		# List of orders for each turn, dictionaries indexed by player
-		self.action_list_lock = threading.Lock()
+		self.action_list_lock = threading.RLock()
 		with self.action_list_lock:
 			self.actions = [{}]
 		# Player results, indexed by players
