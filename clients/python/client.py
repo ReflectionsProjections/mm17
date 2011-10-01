@@ -76,38 +76,46 @@ class GameClient(object):
 		This is where all the important stuff happens.
 		"""
 		self._waitForNextTurn()
-		print "Turn number %d..." % self.current_turn,
+		#print "Turn number %d..." % self.current_turn,
 		game_state = self._do("game/info/all",{})
 		actions = []
-		target = (0,0)
+		target = (-10001,-10001)
 		for thing in game_state['objects']:
 			if thing['type'] == "ship":
 				if thing['owner'] == self.authcode:
+					accel = (target[0] - thing['position'][0],target[1] - thing['position'][1])
+					#print accel
+					print thing['position']
 					actions.append({
 						"obj_type": "ship",
 						"obj_id": thing['id'],
 						"command": "thrust",
 						"args": { 
-							"accel": (target[0] - thing['position'][0],target[1] - thing['position'][1])
+							"direction": accel,
+							"speed": 3
 							}
 						})
-		print game_state
+		#print game_state
 		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0
-		print result
+		#print result
 		for r in result:
 			if not r['success']:
 				failed += 1
+		"""
 		if failed == 0:
 			print "Done."
 		else:
 			print "Done, but %d actions failed." % failed
+		"""
 	def _waitForNextTurn(self):
 		"""
 		Poll the server for the current turn until we have switched to the next turn.
 		"""
 		_break = False
+		_time  = 0.3
 		while not _break:
+			time.sleep(_time)
 			status = self._do("game/info",{})
 			if not status["game_active"]:
 				if status['turn'] < 1:
@@ -118,6 +126,7 @@ class GameClient(object):
 				_break = True
 			else:
 				print "Turn is %d..." % status['turn']
+				_time *= 2
 		self.current_turn += 1
 	def _do(self, path, args):
 		"""
