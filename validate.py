@@ -4,7 +4,6 @@ from numbers import Number
 from game_instance import game
 import Constants
 
-
 def handle_input(input):
 	"""Handle POST request data and passes to validators.
 
@@ -32,7 +31,7 @@ def validate_actions(player, input):
 		return {'success':False, 'message': 'no actions provided'}
 	results = []
 	with game.action_list_lock:
-		game.actions[game.turn][player] = []
+		game.actions[game.turn][player.auth] = []
 
 	for action in input['actions']:
 		if action['obj_type'] == "ship":
@@ -95,7 +94,6 @@ def validate_ship_action(action, player):
 			return {'success':False, 'message':'accel must be list'}
 		else:
 			accel = action['args']['accel']
-
 			try:
 				(a, b) = (accel[0], accel[1])
 			except:
@@ -103,7 +101,7 @@ def validate_ship_action(action, player):
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player].append(result)
+			game.actions[game.turn][player.auth].append(result)
 			ship.methods_used['thrust'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -119,7 +117,7 @@ def validate_ship_action(action, player):
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player].append(result)
+			game.actions[game.turn][player.auth].append(result)
 			ship.methods_used['fire'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -135,7 +133,7 @@ def validate_ship_action(action, player):
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player].append(result)
+			game.actions[game.turn][player.auth].append(result)
 			ship.methods_used['scan'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -152,7 +150,7 @@ def validate_ship_action(action, player):
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player].append(result)
+			game.actions[game.turn][player.auth].append(result)
 			ship.methods_used['create_refinery'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -170,7 +168,7 @@ def validate_ship_action(action, player):
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player].append(result)
+			game.actions[game.turn][player.auth].append(result)
 			ship.methods_used['create_base'] = True
 			return {'success' : True, 'message':'success'}
 
@@ -240,7 +238,7 @@ def validate_base_action(action, player):
 			result = {'object': base,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player].append(result)
+			game.actions[game.turn][player.auth].append(result)
 			base.busy = Constants.base_build_busy
 			return {'success' : True, 'message':'success'}
 
@@ -259,7 +257,8 @@ def validate_base_action(action, player):
 			result = {'object': base,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player].append(result)
+
+			game.actions[game.turn][player.auth].append(result)
 			base.busy = Constants.base_salvage_busy
 			return {'success' : True, 'message':'success'}
 
@@ -281,7 +280,7 @@ def validate_base_action(action, player):
 			result = {'object': base,
 					  'method': action['command'],
 					  'params': action['args']}
-			game.actions[game.turn][player].append(result)
+			game.actions[game.turn][player.auth].append(result)
 			base.busy = Constants.base_repair_busy
 			return {'success' : True, 'message':'success'}
  
@@ -289,7 +288,7 @@ def validate_base_action(action, player):
 		result = {'object': base,
 				  'method': action['command'],
 				  'params': action['args']}
-		game.actions[game.turn][player].append(result)
+		game.actions[game.turn][player.auth].append(result)
 		return {'success' : True, 'message':'success'}
 
 	else:
@@ -338,7 +337,7 @@ def validate_refinery_action(action, player):
 		result = {'object': refinery,
 				  'method': action['command'],
 				  'params': action['args']}
-		game.actions[game.turn][player].append(result)
+		game.actions[game.turn][player.auth].append(result)
 		return {'success' : True, 'message':'success'}
 	
 	else:
