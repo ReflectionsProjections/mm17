@@ -7,6 +7,7 @@ import json
 import unittest
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from SocketServer import ThreadingMixIn
 from urlparse import urlparse
 from urlparse import parse_qs
 
@@ -262,6 +263,8 @@ class MMHandler(BaseHTTPRequestHandler):
 			self.send_error(404, "Unknown resource identifier: %s"\
 					% self.path)
 
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer): pass
+
 if __name__ == '__main__':
 	argsys = optparse.OptionParser(description="Mechmania 17 Main Server")
 	argsys.add_option('-p', '--port', metavar='PORT', nargs=1, type='int',
@@ -282,5 +285,5 @@ if __name__ == '__main__':
 	game_map.max_players = opts.num_players
 
 	print "Starting on port " + str(port) + "..."
-	server = HTTPServer(('', port), MMHandler)
+	server = ThreadedHTTPServer(('', port), MMHandler)
 	server.serve_forever()
