@@ -99,7 +99,7 @@ def validate_ship_action(action, player):
 				(a, b) = (accel[0], accel[1])
 			except:
 				return {'success':False, 'message':'invalid accel values'}
-			result = {'obj_id': action['obj_id'],
+			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
 			game.actions[game.turn][player].append(result)
@@ -115,7 +115,7 @@ def validate_ship_action(action, player):
 			angle = action['args']['angle']
 			if not isinstance(angle, Number):
 				return {'success':False, 'message':'angle must be int'}
-			result = {'obj_id': action['obj_id'],
+			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
 			game.actions[game.turn][player].append(result)
@@ -131,7 +131,7 @@ def validate_ship_action(action, player):
 			scan_id = action['args']['scan_id']
 			if not isinstance(angle, int):
 				return {'success':False, 'message':'scan_id must be int'}
-			result = {'obj_id': action['obj_id'],
+			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
 			game.actions[game.turn][player].append(result)
@@ -148,7 +148,7 @@ def validate_ship_action(action, player):
 			asteroid = action['args']['asteroid']
 			if not isinstance(angle, int):
 				return {'success':False, 'message':'asteroid must be int'}
-			result = {'obj_id': action['obj_id'],
+			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
 			game.actions[game.turn][player].append(result)
@@ -166,7 +166,7 @@ def validate_ship_action(action, player):
 			planet = action['args']['planet']
 			if not isinstance(angle, Number):
 				return {'success':False, 'message':'angle must be int'}
-			result = {'obj_id': action['obj_id'],
+			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
 			game.actions[game.turn][player].append(result)
@@ -176,7 +176,7 @@ def validate_ship_action(action, player):
 	else:
 		return {'success':False, 'message':'invalid ship command'}
 
-def validate_base_Action(action, player):
+def validate_base_action(action, player):
 	"""
 	Validate an action performed by a base
 
@@ -236,7 +236,7 @@ def validate_base_Action(action, player):
 				(a, b) = (position[0], position[1])
 			except:
 				return {'success':False, 'message':'invalid position values'}
-			result = {'obj_id': action['obj_id'],
+			result = {'object': base,
 					  'method': action['command'],
 					  'params': action['args']}
 			game.actions[game.turn][player].append(result)
@@ -255,7 +255,7 @@ def validate_base_Action(action, player):
 					Constants.base_salvage_radius:
 				return {'success':False, 
 						'message':'too far away to salvage ship'}
-			result = {'obj_id': action['obj_id'],
+			result = {'object': base,
 					  'method': action['command'],
 					  'params': action['args']}
 			game.actions[game.turn][player].append(result)
@@ -277,7 +277,7 @@ def validate_base_Action(action, player):
 			elif ship.health == Constants.base_health:
 				return {'success':False, 
 						'message':'ship already at full health'}
-			result = {'obj_id': action['obj_id'],
+			result = {'object': base,
 					  'method': action['command'],
 					  'params': action['args']}
 			game.actions[game.turn][player].append(result)
@@ -285,7 +285,7 @@ def validate_base_Action(action, player):
 			return {'success' : True, 'message':'success'}
 
 	elif action['command'] == 'destroy':
-		result = {'obj_id': action['obj_id'],
+		result = {'object': base,
 				  'method': action['command'],
 				  'params': action['args']}
 		game.actions[game.turn][player].append(result)
@@ -334,7 +334,7 @@ def validate_refinery_action(action, player):
 		return {'success':False, 'message':'args must be a dictionary'}
 
 	if action['command'] == 'destroy':
-		result = {'obj_id': action['obj_id'],
+		result = {'object': refinery,
 				  'method': action['command'],
 				  'params': action['args']}
 		game.actions[game.turn][player].append(result)
@@ -345,7 +345,7 @@ def validate_refinery_action(action, player):
 	
 
 
-def validate_player_Action(action, player):
+def validate_player_action(action, player):
 	"""
 	Validate an action performed by a player
 

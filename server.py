@@ -68,7 +68,7 @@ class MMHandler(BaseHTTPRequestHandler):
 		"""
 
 		self.respond()
-		output = json.dumps(game.last_turn_info())
+		output = json.dumps(game.turn_number())
 		self.wfile.write(output)
 
 	def game_turn_post(self, input):

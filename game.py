@@ -89,16 +89,15 @@ class Game(object):
 		actions = self.actions[self.turn]
 		results = {}
 
-		for ship in self.game_map.objects.itervalues():
-			ship.events = []
+		for obj in self.game_map.objects.itervalues():
+			obj.events = []
 
 		# execute orders
 		for player , actions in actions.iteritems():
 			for action in actions:
-				obj = self.game_map.objects[action['obj_id']]
-				method = getattr(obj, action['method'])
+				method = getattr(action['object'], action['method'])
 				method(**action['params'])
-
+				
 		#apply effects
 		for ship in self.game_map.objects.itervalues():
 			if ship.health <= 0:
@@ -118,27 +117,38 @@ class Game(object):
 
 		# Create a massive list of results to return to the player
 		self.player_results[self.turn] = {}
-		for p in self.players.iterkeys():
-			self.player_results[self.turn][p] = \
+		for key, value in self.players.iteritems():
+			self.player_results[self.turn][key] = \
 					[object.to_dict() \
 					for object in self.game_map.objects.itervalues() \
-					if object.owner == self.players[p]]
-
-		# kill players with no live units
-		for p in self.players.itervalues():
-			for x in p.objects.itervalues():
+					if object.owner == value]
+			# kill players with no live units
+			for x in value.objects.itervalues():
 				if x.alive:
 					break
 			else:
-				p.alive = False
+				value.alive = False
 			# update resources and scores
-			p.update_resources()
-			p.update_score()
+			value.update_resources()
+			value.update_score()
 
 		# take timestep
 		for object in self.game_map.objects.itervalues():
 			object.step(1)
 			object.results[self.turn + 1] = []
+
+		# subtract from busy and build counters
+			if hasattr(object, 'base') and object.base != None:
+				if object.base.built > 0:
+					object.base.built -= 1
+				if object.base.busy > 0:
+					object.base.busy -= 1
+
+			if hasattr(object, 'refinery') and object.refinery != None:
+				if object.refinery.built > 0:
+					object.refinery.built -= 1
+				if object.refinery.busy > 0:
+					object.refinery.busy -= 1
 
 		# advnace turn and reset timer
 		self.turn += 1
@@ -172,15 +182,15 @@ class Game(object):
 
 	# API Calls
 
-	def last_turn_info(self):
+	def turn_number(self):
 		"""
-		Get JSON information on the last turn.
+		Get turn number.
 
 		@rtype: dictionary
 		@return: Current turn as {'turn' : turn}.
 		"""
 		return {
-			'turn': self.turn,
+			'turn': self.turn
 		}
 
 	def game_status(self):
@@ -276,8 +286,8 @@ class TestGame(unittest.TestCase):
 		del self.game_map
 		del self.game
 
-	def testLastTurnInfo(self):
-		self.assertEqual({'turn':0},self.game.last_turn_info())
+	def test_turn_number(self):
+		self.assertEqual({'turn':0},self.game.turn_number())
 
 	def testGameInfo(self):
 		self.assertEqual(
