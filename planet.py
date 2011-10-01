@@ -20,7 +20,7 @@ class Planet(MapObject):
 		@type  size: int
 		@param size: Size of the Planet
 		"""
-		super(Planet, self).__init__(game, position)
+		super(Planet, self).__init__(position)
 
 		self.size = size
 		self.resources = size * Constants.planet_scale
@@ -49,7 +49,7 @@ class Base(object):
 	create ships, etc.
 	"""
 
-	def __init___(self, planet, owner):
+	def __init__(self, planet, owner):
 		"""
 		Construct a base.
 
@@ -60,11 +60,12 @@ class Base(object):
 		@param owner: The Player object this base is owned by
 		"""
 		self.built = 10
+		self.alive = True
 		self.planet = planet
 		self.owner = owner
 		self.health = Constants.base_health
 		self.current_action = None
-		owner.bases[id(self)] = self
+		owner.add_object(self)
 
 	def create_ship(self, position):
 		"""
@@ -109,8 +110,9 @@ class Base(object):
 		"""
 		Removes a base from the planet and owner refrences
 		"""
+		self.alive = False
 		self.planet.base = None
-		del self.owner.bases[id(self)]
+
 
 	def to_dict(self):
 		"""

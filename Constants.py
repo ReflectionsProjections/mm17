@@ -25,6 +25,13 @@ repair_percent = 0.10
 build_radius = 15
 ship_price = 10
 
+""" Constants used in game.py """
+x_range = range(-20000,20000,1000)
+y_range = range(-20000,20000,1000)
+player_starts = []
+for x in range(len(x_range)):
+	player_starts.append((x_range[x], y_range[x]))
+
 """ Constants used in validate.py """
 base_build_radius = 15000
 base_salvage_radius = 15000

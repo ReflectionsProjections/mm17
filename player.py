@@ -44,9 +44,9 @@ class Player(object):
 			self.objects[objID] = obj
 		if isinstance(obj, Ship):
 			self.ships[objID] = obj
-		if isinstance(obj, Base):
+		elif isinstance(obj, Base):
 			self.bases[objID] = obj
-		if isinstance(obj, Refinery):
+		elif isinstance(obj, Refinery):
 			self.refineries[objID] = obj
 		return objID
 

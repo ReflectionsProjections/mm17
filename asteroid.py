@@ -28,6 +28,10 @@ class Asteroid(MapObject):
 		Remove a constant amount of resources from the asteroid.
 		"""
 		self.resources -= Constants.resource_pull
+		if self.resources <= 0:
+			if self.refinery:
+				del refinery.owner.refineries[id(self)]
+			self._delete()
 
 	def to_dict(self):
 		"""

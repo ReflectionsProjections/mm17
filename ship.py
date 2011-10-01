@@ -40,6 +40,8 @@ class Ship(MapObject):
 							 'create_base':False,
 							 'create_refinery':False,
 							 'scan':False}
+		owner.add_object(self)
+
 
 	def thrust(self, accel):
 		"""Sets the velocity based on acceleration and current velocity.
@@ -180,7 +182,8 @@ class TestShip(unittest.TestCase):
 		from game import Game
 		self.game_map = Map(1)
 		self.game = Game(self.game_map,"test_log", "123456")
-		self.player = self.game.add_player("test","auth")
+		self.game.add_player("test","auth")
+		self.player = self.game.players['auth']
 
 	def test_create(self):
 		self.ship = Ship((1,2),self.player)

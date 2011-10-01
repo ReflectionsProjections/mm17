@@ -2,10 +2,12 @@
 
 import time
 import thread
+import threading
 import unittest
 import os
 
 from datetime import datetime
+import Constants
 
 class Game(object):
 	"""
@@ -43,7 +45,7 @@ class Game(object):
 		self.player_results = {}
 		self.turn = 0
 		self.active = False
-		self.busy = False
+		self.action_list_lock = threading.Lock()
 
 	def _log(self, message):
 		"""
@@ -58,14 +60,19 @@ class Game(object):
 
 	def _begin(self):
 		from ship import Ship
+		from planet import Planet, Base
 		"""
 		Create starting units and start the game turn loop.
 		"""
-
+		positions = Constants.player_starts
+		x = 0
 		for player in self.players.itervalues():
-			new_ship = Ship((0,0), player)
-			self.game_map.add_object(new_ship)
-			player.add_object(new_ship)
+			planet = Planet(positions[x], Constants.planet_scale)
+			base = Base(planet, player)
+			ship_position = ((positions[x][0]+Constants.planet_scale),
+							 (positions[x][1]+Constants.planet_scale))
+			new_ship = Ship(ship_position, player)
+			x += 1
 
 		self.active = True
 		self.last_turn_time = time.time()
@@ -87,7 +94,8 @@ class Game(object):
 		update the game state to the start of the next turn, and
 		calculate reponses for each player.
 		"""
-		actions = self.actions[self.turn]
+		with self.action_list_lock:
+			actions = self.actions[self.turn]
 		results = {}
 
 		for obj in self.game_map.objects.itervalues():
@@ -100,7 +108,7 @@ class Game(object):
 				method(**action['params'])
 				
 		#apply effects
-		for ship in self.game_map.objects.itervalues():
+		for ship in self.game_map.ships.itervalues():
 			if ship.health <= 0:
 				# kill dead ships
 				ship.alive = False
@@ -121,13 +129,10 @@ class Game(object):
 		for key, value in self.players.iteritems():
 			self.player_results[self.turn][key] = \
 					[object.to_dict() \
-					for object in self.game_map.objects.itervalues() \
-					if object.owner == value]
+					for object in value.objects.itervalues()]
 			# kill players with no live units
-			for x in value.objects.itervalues():
-				if x.alive:
-					break
-			else:
+			live_units = [x for x in value.objects.itervalues() if x.alive]
+			if len(live_units) == 0:
 				value.alive = False
 			# update resources and scores
 			value.update_resources()
@@ -158,7 +163,6 @@ class Game(object):
 		self.turn += 1
 		self.actions.append({})
 		self.last_turn_time = time.time()
-		self.busy = False
 
 	def _main(self):
 		"""
@@ -170,14 +174,13 @@ class Game(object):
 		"""
 
 		while self.active == True:
-			alive_players = [x for x in self.players.itervalues() \
-					if x.alive == True]
-			if alive_players <= 1:
+			alive_players = [x for x in self.players.itervalues() if x.alive ]
+			if len(alive_players) <= 1:
 				self._end()
 			turns_submitted = len(self.actions[self.turn])
 			if turns_submitted == len(alive_players):
-				self.busy = True
-				self._resolve_turn()
+				with self.action_list_lock:
+					self._resolve_turn()
 			#elif time.time() - self.last_turn_time > 2:
 			#	self.busy = True
 			#	self._resolve_turn()
@@ -228,6 +231,8 @@ class Game(object):
 		for player in self.players.itervalues():
 			if player.alive:
 				alive_players.append(player.name)
+		if auth not in self.players.keys():
+			return {'success':'false','message':'bad auth'}
 		player = self.players[auth]
 		return {
 			'game_active': self.active,

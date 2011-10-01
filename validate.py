@@ -11,8 +11,8 @@ def handle_input(input):
 	@param input: Dictionary of input values to handle
 	"""
 	if 'auth' in input.keys():
-		alive_players = [x.auth for x in game.players.itervalues() if x.alive]
-		if input['auth'] in alive_players.keys():
+		alive_players = [x.auth for x in game.players.iterkeys() if x.alive]
+		if input['auth'] in alive_players:
 				return validate_actions(game.players[input['auth']], input)
 		else:
 			return {'success':False, 
@@ -41,7 +41,7 @@ def validate_actions(player, input):
 		elif action['obj_type'] == "refinery":
 			results.append(validate_refinery_action(action, player))
 		elif action['obj_type'] == "player":
-			results.append(vali date_player_action(action, player))
+			results.append(validate_player_action(action, player))
 		else:
 			results.append({'success':False, 'message':'bad or no obj_type in action'})
 
@@ -374,6 +374,7 @@ def validate_player_action(action, player):
 
 class UnitTests(unittest.TestCase):
 	def test_main(self):
+		print "hello world"
 		self.assertTrue(True)
 
 if __name__ == "__main__":

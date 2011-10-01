@@ -3,7 +3,8 @@ import unittest
 from urllib2 import urlopen
 import json
 from math import pi
-players = {'one':'asdfg'}
+players = {'one':'asdfg',
+		   'two':'adad'}
 
 def test_join():
 	output = ""
@@ -21,24 +22,27 @@ def test_info_all():
 		return urlopen(url).read()
 
 def test_actions():
-	url = "http://localhost:7000/game/turn"
-	data = {'auth':'asdfg',
-			'actions':[]}
-
-	for obj in json.loads(test_info_all())['objects']:
-		id = obj['id']
-		action = {'obj_type':'ship',
-				'obj_id': id,
-				'command': 'thrust',
-				'args': { 'accel': (1, 1)}}
-		data['actions'].append(action)
-		action = {'obj_type':'ship',
-				'obj_id': id,
-				'command': 'fire',
-				'args': { 'angle': pi}}
-		data['actions'].append(action)
-	return urlopen(url, json.dumps(data)).read()
-
+	output = ""
+	for key, value in players.items():
+		url = "http://localhost:7000/game/turn/"+str(json.loads(test_info())['turn'])
+		data = {'auth' : value,
+				'actions':[]}
+		
+		for obj in json.loads(test_info_all())['objects']:
+			if obj['type'] == 'ship' and obj['owner'] == key:
+				id = obj['id']
+				action = {'obj_type':'ship',
+						  'obj_id': id,
+						  'command': 'thrust',
+						  'args': { 'accel': (1, 1)}}
+				data['actions'].append(action)
+				action = {'obj_type':'ship',
+						  'obj_id': id,
+						  'command': 'fire',
+						  'args': { 'angle': pi}}
+				data['actions'].append(action)
+				output+= urlopen(url, json.dumps(data)).read() + '\n'
+	return output
 if __name__ == '__main__':
 	print test_join()
 	print test_info()

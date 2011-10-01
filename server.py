@@ -51,7 +51,7 @@ class MMHandler(BaseHTTPRequestHandler):
 	def game_visualizer(self, params):
 		"""
 		Handle a request by the visualizer to get all objects.  Write out
-		all object data to json.
+		all object data to json.information on the last turn
 
 		@type  params: parsed URL query paramater dictionary
 		@param params: URL paramater string. Must contain 'auth' field
@@ -70,7 +70,7 @@ class MMHandler(BaseHTTPRequestHandler):
 		@param params: URL paramater string. No required fields for function
 				to operate.
 		"""
-
+		
 		self.respond()
 		output = json.dumps(game.turn_number())
 		self.wfile.write(output)
@@ -85,9 +85,15 @@ class MMHandler(BaseHTTPRequestHandler):
 				on this turn for the current user. Must contain a valid
 				player authentication token.
 		"""
-
+		parsedURL = urlparse(self.path)
+		requested_turn = int(self.explode_path(parsedURL)[-2])
+		if requested_turn != game.turn:
+			output = {"success":False, 
+					  "message":"must request current turn"}
+		else:
+			output = handle_input(input)
 		self.respond()
-		output = json.dumps(handle_input(input))
+		output = json.dumps(output)
 		self.wfile.write(output)
 
 	def game_join(self, params):
@@ -118,7 +124,7 @@ class MMHandler(BaseHTTPRequestHandler):
 			'info': {
 				'': game_status,
 				'all':game_avail_info,
-				'visualizer':game_visualizer
+				'visualizer':game_visualizer,
 				},
 			'turn': game_turn_get,
 			'join': game_join,
