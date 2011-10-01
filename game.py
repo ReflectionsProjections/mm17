@@ -40,12 +40,14 @@ class Game(object):
 		self.players = {}
 		self.log_file = open(log_file, 'w')
 		# List of orders for each turn, dictionaries indexed by player
-		self.action_list_lock = threading.RLock()
+		self.action_list_lock = threading.Lock()
 		with self.action_list_lock:
 			self.actions = [{}]
 			self.completed_turns = [{}]
 		# Player results, indexed by players
-		self.player_results = {}
+		self.player_result_lock = threading.Lock()
+		with self.player_result_lock:
+			self.player_results = {}
 		self.turn = 0
 		self.active = False
 
@@ -110,40 +112,46 @@ class Game(object):
 					method = getattr(action['object'], action['method'])
 					method(**action['params'])
 		#apply effects
-		for ship in self.game_map.ships.itervalues():
-			for event in ship.events:
+		refineries = [x.refinery for x in \
+						  self.game_map.asteroids.itervalues() if x.refinery]
+		bases = [x.base for x in self.game_map.planets.itervalues() if x.base]
+		ownables = refineries + bases + self.game_map.ships.values()
+		for obj in ownables:
+			for event in obj.events:
 				if event['type'] == 'damage':
-					ship.health -= event['amount']
-			if ship.health <= 0:
-				# kill dead ships
-				ship.alive = False
-				ship.health = 0
-				ship.results[self.turn] = ship.events[:]
-				ship.events = [{'status':'destroyed'}]
+					obj.health -= event['amount']
+			if obj.health <= 0:
+				# kill dead objects
+				obj.alive = False
+				obj.velocity = (0,0)
+				obj.health = 0
+				obj.events = [{'status':'destroyed'}]
+				obj.results[self.turn] = obj.events[:]
 			else:
 				# compute radar returns for live ships
-				nearships = self.game_map.radar(ship.position, ship.scan_range)
+				nearships = self.game_map.radar(obj.position, obj.scan_range)
 				for other in nearships:
 					if other != self:
-						ship.events.append({'type':'radar',
+						obj.events.append({'type':'radar',
 											'id': id(other),
 											'position':other.position})
-				ship.results[self.turn] = ship.events[:]
+				obj.results[self.turn] = obj.events[:]
 
 		# Create a massive list of results to return to the player
-		self.player_results[self.turn] = {}
-		for key, value in self.players.iteritems():
-			self.player_results[self.turn][key] = \
+		with self.player_result_lock:
+			self.player_results[self.turn] = {}
+			for key, value in self.players.iteritems():
+				self.player_results[self.turn][key] = \
 					[object.to_dict() \
-					for object in value.objects.itervalues()]
+						 for object in value.objects.itervalues()]
 			# kill players with no live units
-			live_units = [x for x in value.objects.itervalues() if x.alive]
-			if len(live_units) == 0:
-				value.alive = False
-			# update resources and scores
-			value.update_resources()
-			value.update_score()
-
+				live_units = [x for x in value.objects.itervalues() if x.alive]
+				if len(live_units) == 0:
+					value.alive = False
+# update resources and scores
+					value.update_resources()
+					value.update_score()
+					
 		# take timestep
 		for object in self.game_map.objects.itervalues():
 			object.step(1)
@@ -227,6 +235,16 @@ class Game(object):
 			'turn':self.turn,
 			'active_players': active_players
 		}
+
+	def game_turn_get(self, auth, turn):
+		"""
+		Returns the player_results from the requested turn.
+		"""
+		if turn > 0 and turn < self.turn:
+			with self.player_result_lock:
+				return player_results[turn - 1][auth]
+		else:
+			{'success':False, 'message':'invalid turn number'}
 
 	def game_avail_info(self, auth):
 		"""
