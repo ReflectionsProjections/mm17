@@ -12,11 +12,7 @@ def handle_input(input):
 	"""
 	if 'auth' in input.keys():
 		alive_players = [x.auth for x in game.players.itervalues() if x.alive]
-		if input['auth'] in alive_players:
-			if game.busy:
-				return {'success':False, 
-						'message':'game is busy processing, please try again'}
-			else:
+		if input['auth'] in alive_players.keys():
 				return validate_actions(game.players[input['auth']], input)
 		else:
 			return {'success':False, 
@@ -30,7 +26,7 @@ def validate_actions(player, input):
 	@param player: The player requesting these actions
 	@param input: JSON actions to parse
 	@return JSON dump of parse results
-	"""
+	""" 
 
 	if 'actions' not in input:
 		return {'success':False, 'message': 'no actions provided'}
@@ -45,7 +41,7 @@ def validate_actions(player, input):
 		elif action['obj_type'] == "refinery":
 			results.append(validate_refinery_action(action, player))
 		elif action['obj_type'] == "player":
-			results.append(validate_player_action(action, player))
+			results.append(vali date_player_action(action, player))
 		else:
 			results.append({'success':False, 'message':'bad or no obj_type in action'})
 
@@ -133,7 +129,7 @@ def validate_ship_action(action, player):
 			return {'success':False, 'message':'scan requires scan_id arg'}
 		else:
 			scan_id = action['args']['scan_id']
-			if not isinstance(angle, int):
+			if not isinstance(scan_id, int):
 				return {'success':False, 'message':'scan_id must be int'}
 			result = {'object': ship,
 					  'method': action['command'],
@@ -150,7 +146,7 @@ def validate_ship_action(action, player):
 					'message':'create_refinery requires asteroid arg'}
 		else:
 			asteroid = action['args']['asteroid']
-			if not isinstance(angle, int):
+			if not isinstance(asteroid, int):
 				return {'success':False, 'message':'asteroid must be int'}
 			result = {'object': ship,
 					  'method': action['command'],
@@ -168,7 +164,7 @@ def validate_ship_action(action, player):
 					'message':'create_base requires planet arg'}
 		else:
 			planet = action['args']['planet']
-			if not isinstance(angle, Number):
+			if not isinstance(planet, Number):
 				return {'success':False, 'message':'angle must be int'}
 			result = {'object': ship,
 					  'method': action['command'],
@@ -187,7 +183,7 @@ def validate_base_action(action, player):
 	@param action: Action to validate
 	@param player: The player that requested the action
 	"""
-	# make sure a base action has all required keys
+	# make sure a base action h as all required keys
 	attrs = ['command', 'obj_id', 'args']
 	for attr in attrs:
 		if attr not in action.keys():
@@ -287,7 +283,7 @@ def validate_base_action(action, player):
 			game.actions[game.turn][player].append(result)
 			base.busy = Constants.base_repair_busy
 			return {'success' : True, 'message':'success'}
-
+ 
 	elif action['command'] == 'destroy':
 		result = {'object': base,
 				  'method': action['command'],
