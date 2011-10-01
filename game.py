@@ -158,7 +158,6 @@ class Game(object):
 					object.refinery.built -= 1
 				if object.refinery.busy > 0:
 					object.refinery.busy -= 1
-			print alive_players
 
 		# advnace turn and reset timer
 		self.turn += 1
@@ -180,7 +179,6 @@ class Game(object):
 				self._end()
 			turns_submitted = len(self.actions[self.turn])
 			if turns_submitted == len(alive_players):
-				with self.action_list_lock:
 					self._resolve_turn()
 			#elif time.time() - self.last_turn_time > 2:
 			#	self.busy = True

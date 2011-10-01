@@ -27,11 +27,12 @@ def validate_actions(player, input):
 	@param input: JSON actions to parse
 	@return JSON dump of parse results
 	""" 
-
+	
 	if 'actions' not in input:
 		return {'success':False, 'message': 'no actions provided'}
 	results = []
-	game.actions[game.turn][player] = []
+	with game.action_list_lock:
+		game.actions[game.turn][player] = []
 
 	for action in input['actions']:
 		if action['obj_type'] == "ship":
