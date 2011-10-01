@@ -161,7 +161,8 @@ class Game(object):
 
 		# advnace turn and reset timer
 		self.turn += 1
-		self.actions.append({})
+		with self.action_list_lock:
+			self.actions.append({})
 		self.last_turn_time = time.time()
 
 	def _main(self):

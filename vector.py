@@ -107,7 +107,7 @@ def circle_in_rect(circle, rect):
 
 def circle_collision(circle1, circle2):
 	"""Checks to see if a circle intersects another circle
-
+False
 	@param circle1: ((x,y), radius) center and radius
 	@param circle2: Second circle to check
 
