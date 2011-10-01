@@ -145,7 +145,10 @@ class GameClient(object):
 		"""
 		Start the client.
 		"""
-		print self._do("game/join",{"name":self.name})
+		result = self._do("game/join",{"name":self.name})
+		if not result['join_success']:
+			print "Failed to join game: %s" % result['message']
+			sys.exit(1)
 		self.running = True
 		while self.running:
 			self._loop()
