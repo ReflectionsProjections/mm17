@@ -88,16 +88,20 @@ def validate_ship_action(action, player, turn):
 	if action['command'] == 'thrust':
 		if ship.methods_used['thrust']:
 			return {'success':False, 'message':'thrust action already used'}
-		if 'accel' not in action['args'].keys():
-			return {'success':False, 'message':'thrust requires accel arg'}
-		elif not isinstance(action['args']['accel'], list):
-			return {'success':False, 'message':'accel must be list'}
+		if 'direction' not in action['args'].keys():
+			return {'success':False, 'message':'thrust requires direction arg'}
+		elif not isinstance(action['args']['direction'], list):
+			return {'success':False, 'message':'direction must be list'}	
+		elif 'speed' not in action['args'].keys():
+			return {'success':False, 'message':'thrust requires speed arg'}
+		elif not isinstance(action['args']['speed'], Number):
+			return {'success':False, 'message':'speed must be Number'}
 		else:
-			accel = action['args']['accel']
+			accel = action['args']['direction']
 			try:
 				(a, b) = (accel[0], accel[1])
 			except:
-				return {'success':False, 'message':'invalid accel values'}
+				return {'success':False, 'message':'invalid direction values'}
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
@@ -114,7 +118,7 @@ def validate_ship_action(action, player, turn):
 		else:
 			angle = action['args']['angle']
 			if not isinstance(angle, Number):
-				return {'success':False, 'message':'angle must be int'}
+				return {'success':False, 'message':'angle must be Number'}
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
@@ -352,8 +356,6 @@ def validate_refinery_action(action, player):
 	else:
 		return {'success':False, 'message':'invalid refinery command'}
 	
-
-
 def validate_player_action(action, player):
 	"""
 	Validate an action performed by a player

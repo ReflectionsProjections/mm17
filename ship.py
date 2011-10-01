@@ -33,6 +33,7 @@ class Ship(MapObject):
 		self.weapon_range = Constants.weapon_range
 		self.weapon_strength = Constants.weapon_strength
 		# max values
+		self.max_accel = Constants.max_accel
 		self.max_velocity = Constants.max_velocity
 		self.methods_used = {'thrust':False,
 							 'fire':False,
@@ -42,19 +43,19 @@ class Ship(MapObject):
 		owner.add_object(self)
 
 
-	def thrust(self, accel):
+	def thrust(self, direction, speed):
 		"""Sets the velocity based on acceleration and current velocity.
 
 		@param accel: (x,y) acceleration tuple
 		"""
 		# test to see if the accel is greater than allowed max
-		mag = hypot(*accel)
+		mag = hypot(*direction)
 		x, y = self.velocity
 		if mag != 0:
-			dx, dy = (accel[0]/mag, accel[1]/mag)
+			dx, dy = (direction[0]/mag, direction[1]/mag)
 		else:
 			dx, dy = (0, 0)
-		scale = Constants.accel_value
+		scale = self.max_accel if speed > self.max_accel else speed
 		self.velocity = (x + scale*dx, y + scale*dy)
 		# scale doown to max velocity
 		vel_mag = hypot(*self.velocity)
@@ -63,7 +64,7 @@ class Ship(MapObject):
 		else: vel_scale = 1
 		self.velocity = (vel_scale * self.velocity[0],
 						 vel_scale * self.velocity[1])
-		self.direction = atan2(*accel)
+		self.direction = atan2(*direction)
 
 	def fire(self, angle):
 		from game_instance import game

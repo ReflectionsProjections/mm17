@@ -34,7 +34,8 @@ def test_actions():
 				action = {'obj_type':'ship',
 						  'obj_id': id,
 						  'command': 'thrust',
-						  'args': { 'accel': (1, 1)}}
+						  'args': { 'direction': (1, 1),
+								'speed':10}}
 				data['actions'].append(action)
 				action = {'obj_type':'ship',
 						  'obj_id': id,
