@@ -79,22 +79,25 @@ class GameClient(object):
 		print "Turn number %d..." % self.current_turn,
 		game_state = self._do("game/info/all",{})
 		actions = []
+		target = (0,0)
 		for thing in game_state['objects']:
 			if thing['type'] == "ship":
-				actions.append({
-					"obj_type": "ship",
-					"obj_id": thing['id'],
-					"command": "thrust",
-					"args": { 
-						"accel": (1,1)
-						}
-					})
-		result = self._post("game/turn",{'actions': actions})
+				if thing['owner'] == self.authcode:
+					actions.append({
+						"obj_type": "ship",
+						"obj_id": thing['id'],
+						"command": "thrust",
+						"args": { 
+							"accel": (target[0] - thing['position'][0],target[1] - thing['position'][1])
+							}
+						})
+		print game_state
+		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0
+		print result
 		for r in result:
 			if not r['success']:
 				failed += 1
-				return
 		if failed == 0:
 			print "Done."
 		else:
@@ -105,10 +108,9 @@ class GameClient(object):
 		"""
 		_break = False
 		while not _break:
-			time.sleep(0.2)
 			status = self._do("game/info",{})
 			if not status["game_active"]:
-				if status['turn'] < 0:
+				if status['turn'] < 1:
 					continue
 				print "Game has ended. Stopping."
 				sys.exit(0)
@@ -149,6 +151,8 @@ class GameClient(object):
 		if not result['join_success']:
 			print "Failed to join game: %s" % result['message']
 			sys.exit(1)
+		else:
+			print "Joined: %s" % result['message']
 		self.running = True
 		while self.running:
 			self._loop()
@@ -156,5 +160,5 @@ class GameClient(object):
 
 if __name__ == "__main__":
 	code = raw_input("Auth code? ") # Wait for an auth code
-	c = GameClient("http://localhost:7000", "NAME HERE", code) # Initialize the client
+	c = GameClient("http://localhost:7000", sys.argv[1], code) # Initialize the client
 	c.start() # Start playing
