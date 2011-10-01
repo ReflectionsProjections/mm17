@@ -103,6 +103,7 @@ def circle_in_rect(circle, rect):
 		disp = (circle[0][0] - side[0][0], circle[0][1] - side[0][1])
 		if comp(disp, side[1]) < 0:
 			return False
+	return True
 
 def circle_collision(circle1, circle2):
 	"""Checks to see if a circle intersects another circle
@@ -147,7 +148,7 @@ class VectorTests(unittest.TestCase):
 		self.assertTrue(circle_in_rect(circle3, rect))
 		# Inside, not touching
 		circle4 = ((0,0), 0.5)
-		self.assertFalse(circle_in_rect(circle4, rect))
+		self.assertTrue(circle_in_rect(circle4, rect))
 		# Corner
 		circle5 = ((1,1),1)
 		self.assertTrue(circle_in_rect(circle5, rect))
