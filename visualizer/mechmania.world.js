@@ -1,10 +1,12 @@
-function World ()
+var MechMania = {};
+
+MechMania.World = function ()
 {
 	this.starfield = [];	// [[x,y,r],...]
 	this.starfieldSize = 0;
 }
 
-World.prototype.generateStarfield = function(meanSpacing, stdevSpacing, nStars)
+MechMania.World.prototype.generateStarfield = function(meanSpacing, stdevSpacing, nStars)
 {
 	var dimStars = Math.ceil(Math.sqrt(nStars));
 
@@ -33,7 +35,7 @@ World.prototype.generateStarfield = function(meanSpacing, stdevSpacing, nStars)
 	}
 }
 
-World.prototype.renderStarfield = function(scale, originX, originY, canvas, context)
+MechMania.World.prototype.renderStarfield = function(scale, originX, originY, canvas, context)
 {
 	var blockRepeatX = 1 + canvas.width / (scale * this.starfieldSize);	// real space spanned by the screen divided by real space spanned by the starfield
 	var blockRepeatY = 1 + canvas.height / (scale * this.starfieldSize);
