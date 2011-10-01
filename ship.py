@@ -120,24 +120,22 @@ class Ship(MapObject):
 		# Multiply the returned distance by a random value
 		dist = distance(self.position, object.position)
 		angle = hypot(*object.position)
-		if dist < self.scan_range:
-			dist_error = random.uniform(0.5,1.5)
-			dist *= dist_error
-			dx = object.position[0] - self.position[0]
-			dy = object.position[1] - self.position[1]
-			if dist == 0:
-				return angle, dist
-			else:
-				angle = atan2(dy, dx)
-				angle_error = random.uniform(-angle_fuzz,angle_fuzz)
-				angle += angle_error
-				if angle < -pi:
-					angle += 2*pi
-				elif angle > pi:
-					angle -= 2*pi
-				return {'angle':angle, 'distance':dist}
+		dist_error = random.uniform(0.5,1.5)
+		dist *= dist_error
+		dx = object.position[0] - self.position[0]
+		dy = object.position[1] - self.position[1]
+		if dist == 0:
+			return angle, dist
 		else:
-			return None
+			angle = atan2(dy, dx)
+			angle_error = random.uniform(-angle_fuzz, angle_fuzz)
+			angle += angle_error
+			if angle < -pi:
+				angle += 2*pi
+			elif angle > pi:
+				angle -= 2*pi
+				return {'angle':angle, 'distance':dist}
+			
 
 	def to_dict(self):
 		"""

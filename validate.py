@@ -134,10 +134,17 @@ def validate_ship_action(action, player, turn):
 			return {'success':False, 'message':'scan action already used'}
 		elif 'scan_id' not in action['args'].keys():
 			return {'success':False, 'message':'scan requires scan_id arg'}
+		elif not isinstance(action['args']['scan_id'], int):
+			return {'success':False, 'message':'scan_id must be int'}
 		else:
 			scan_id = action['args']['scan_id']
-			if not isinstance(scan_id, int):
-				return {'success':False, 'message':'scan_id must be int'}
+			if scan_id not in game.game_map.objects.keys():
+				return {'success':False, 'message':'planet not found'}
+			planet =  game.game_map.objects['keys']
+			if distance(planet.position, ship.position) > Constants.scan_radius:
+				return {'success':False, 'message':'not in range'}
+			if planet.base != None:
+				return {'success':False, 'message':'planet already has base'}
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
@@ -173,8 +180,8 @@ def validate_ship_action(action, player, turn):
 					'message':'create_base requires planet arg'}
 		else:
 			planet = action['args']['planet']
-			if not isinstance(planet, Number):
-				return {'success':False, 'message':'angle must be int'}
+			if not isinstance(planet, int):
+				return {'success':False, 'message':'planet must be int'}
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': action['args']}
