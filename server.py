@@ -13,6 +13,10 @@ from urlparse import parse_qs
 from validate import handle_input
 
 class MMHandler(BaseHTTPRequestHandler):
+	"""
+	Server request handler for Mechmania 17.
+	"""
+
 	# URI Handling Functions
 
 	def game_status(self, params):
@@ -251,6 +255,9 @@ if __name__ == '__main__':
 	argsys = optparse.OptionParser(description="Mechmania 17 Main Server")
 	argsys.add_option('-p', '--port', metavar='PORT', nargs=1, type='int',
 			default=7000, dest='port', help='Port to listen on')
+	argsys.add_option('-n', '--num-players', metavar='PLAYERNUM', nargs=1,
+			type='int', default=1, dest='num_players',
+			help='Number of players who will join the game')
 	argsys.add_option('--unit-tests', action='store_true',
 			help='Run unit tests', dest='unittest', default=False)
 	(opts, args) = argsys.parse_args()
@@ -258,8 +265,18 @@ if __name__ == '__main__':
 		# Reset the arguments so that only filename is passed
 		sys.argv = sys.argv[:1]
 		unittest.main()
+
+	# Set up the game
 	port = opts.port
-	from game_instance import game
+	import game_instance
+	from game_map import Map
+	from game import Game
+	game_instance.game_map = Map(opts.num_players)
+	game_instance.game = Game(game_instance.game_map, game_instance.log_file,
+			game_instance.viz_auth)
+	game_instance.inited = True
+	game = game_instance.game
+
 	print "Starting on port " + str(port) + "..."
 	server = HTTPServer(('', port), MMHandler)
 	server.serve_forever()
