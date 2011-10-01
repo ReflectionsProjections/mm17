@@ -103,11 +103,11 @@ class Game(object):
 			obj.events = []
 
 		# execute orders
-		for player , actions in actions.iteritems():
-			for action in actions:
-				method = getattr(action['object'], action['method'])
-				method(**action['params'])
-				
+		with self.action_list_lock:
+			for player , actions in actions.iteritems():
+				for action in actions:
+					method = getattr(action['object'], action['method'])
+					method(**action['params'])
 		#apply effects
 		for ship in self.game_map.ships.itervalues():
 			if ship.health <= 0:
@@ -161,9 +161,9 @@ class Game(object):
 					object.refinery.busy -= 1
 
 		# advnace turn and reset timer
-		self.turn += 1
 		with self.action_list_lock:
 			self.actions.append({})
+			self.turn += 1
 		self.last_turn_time = time.time()
 
 	def _main(self):

@@ -21,6 +21,9 @@ class MMHandler(BaseHTTPRequestHandler):
 
 	# URI Handling Functions
 
+	def log_message(self,  *args, **kwargs):
+		pass
+
 	def game_status(self, params):
 		"""
 		Handle a request for the game state. Write out to the request
