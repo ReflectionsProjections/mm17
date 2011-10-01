@@ -256,7 +256,7 @@ if __name__ == '__main__':
 	argsys.add_option('-p', '--port', metavar='PORT', nargs=1, type='int',
 			default=7000, dest='port', help='Port to listen on')
 	argsys.add_option('-n', '--num-players', metavar='PLAYERNUM', nargs=1,
-			type='int', default=1, dest='num_players',
+			type='int', default=2, dest='num_players',
 			help='Number of players who will join the game')
 	argsys.add_option('--unit-tests', action='store_true',
 			help='Run unit tests', dest='unittest', default=False)
