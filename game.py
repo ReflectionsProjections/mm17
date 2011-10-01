@@ -124,10 +124,11 @@ class Game(object):
 				# compute radar returns for live ships
 				nearships = self.game_map.radar(ship.position, ship.scan_range)
 				for other in nearships:
-					scan = ship.scan(other)
-					if scan:
-						ship.events.append(scan)
-					ship.results[self.turn] = ship.events[:]
+					if other != self:
+						ship.events.append({'type':'radar',
+											'id': id(other),
+											'position':other.position})
+				ship.results[self.turn] = ship.events[:]
 
 		# Create a massive list of results to return to the player
 		self.player_results[self.turn] = {}

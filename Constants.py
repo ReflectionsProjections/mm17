@@ -3,7 +3,7 @@
 base_size = 10
 base_health = 100
 scan_range = 200
-weapon_range = 100
+weapon_range = 1000
 weapon_strength = 10
 weapon_width = 10
 

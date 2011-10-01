@@ -77,7 +77,7 @@ class Ship(MapObject):
 		"""
 		width = Constants.weapon_width
 		length = self.weapon_range
-		
+
 		angle = atan2(*direction)
 		w = width/2
 		# Four points, counter clockwise
@@ -104,8 +104,9 @@ class Ship(MapObject):
 			# Hit first in line, record id
 			self.events.append({'type':'shot', 'hit': id(within_beam[0])})
 			# register damage with hit object
+			diagonal = distance(self.position, p_2)
 			dist = distance(self.position, within_beam[0].position)
-			damage_amt = Constants.weapon_strength *(Constants.weapon_range - \
+			damage_amt = Constants.weapon_strength *(diagonal - \
 					dist)/Constants.weapon_range
 			within_beam[0].events.append({'type':'damage',
 					'amount':damage_amt,
@@ -134,7 +135,7 @@ class Ship(MapObject):
 					angle += 2*pi
 				elif angle > pi:
 					angle -= 2*pi
-				return angle, dist
+				return {'angle':angle, 'distance':dist}
 		else:
 			return None
 
