@@ -374,7 +374,6 @@ def validate_player_action(action, player):
 
 class UnitTests(unittest.TestCase):
 	def test_main(self):
-		print "hello world"
 		self.assertTrue(True)
 
 if __name__ == "__main__":
