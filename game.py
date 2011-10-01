@@ -43,6 +43,7 @@ class Game(object):
 		self.action_list_lock = threading.RLock()
 		with self.action_list_lock:
 			self.actions = [{}]
+			self.completed_turns = [{}]
 		# Player results, indexed by players
 		self.player_results = {}
 		self.turn = 0
@@ -163,6 +164,7 @@ class Game(object):
 		# advnace turn and reset timer
 		with self.action_list_lock:
 			self.actions.append({})
+			self.completed_turns.append({})
 			self.turn += 1
 		self.last_turn_time = time.time()
 
@@ -180,7 +182,7 @@ class Game(object):
 			if len(alive_players) <= 1:
 				self._end()
 			with self.action_list_lock:
-				turns_submitted = len(self.actions[self.turn])
+				turns_submitted = len(self.completed_turns[self.turn])
 			if turns_submitted == len(alive_players):
 					self._resolve_turn()
 			#elif time.time() - self.last_turn_time > 2:
