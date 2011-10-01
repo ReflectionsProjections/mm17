@@ -23,13 +23,13 @@ def test_info_all():
 
 def test_actions():
 	output = ""
+	derp = json.loads(test_info_all())
 	for key, value in players.items():
 		url = "http://localhost:7000/game/turn/"+str(json.loads(test_info())['turn'])
 		data = {'auth' : value,
 				'actions':[]}
-		
-		for obj in json.loads(test_info_all())['objects']:
-			if obj['type'] == 'ship' and obj['owner'] == key:
+		for obj in derp['objects']:
+			if obj['type'] == 'ship' and obj['owner'] == value:
 				id = obj['id']
 				action = {'obj_type':'ship',
 						  'obj_id': id,
