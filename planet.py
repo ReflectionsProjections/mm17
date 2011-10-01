@@ -23,7 +23,6 @@ class Planet(MapObject):
 		super(Planet, self).__init__(position)
 
 		self.size = size
-		self.resources = size * Constants.planet_scale
 		# will contain refrence to base if it contains one
 		self.base = None
 
@@ -36,7 +35,6 @@ class Planet(MapObject):
 		"""
 		state = {'type': 'Planet',
 				 'id': id(self),
-				 'resources': self.resources,
 				 'position': self.position,
 				 'size':self.size,
 				 'base': self.base.to_dict() if self.base else None
