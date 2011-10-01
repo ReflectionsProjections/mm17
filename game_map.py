@@ -59,8 +59,6 @@ class Map(object):
 
 class TestGame(unittest.TestCase):
 
-	print("game_map.py")
-
 	def setUp(self):
 		from ship import Ship
 		from player import Player
