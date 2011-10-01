@@ -1,62 +1,116 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>MechMania 17</title>
+		<title>MechMania 17 | Visualizer</title>
 		
 		<script type="text/javascript" src="jquery.min.js"></script>
-		<script type="text/javascript" src="mechmania.js"></script>
+		<script type="text/javascript" src="jquery.mousewheel.min.js"></script>
+		<script type="text/javascript" src="mechmania2.js"></script>
 		
 		<link rel="stylesheet" type="text/css" href="reset.css" />
 		
 		<style type="text/css">
-			body {
+			body
+			{
 				overflow: hidden;
+			}
+
+			#canvasScreen
+			{
+				position: absolute;
+				left: 0px;
+				top: 0px;
 			}
 		</style>
 	</head>
 	
 	<body>
-		<canvas id="mainCanvas">
-		</canvas>
+		<canvas id="canvasScreen"></canvas>
 		
 		<script type="text/javascript">
-			var camera = new Camera(0, 0, 1000, 1000);
-			var world = new World(2000, 2000);
-			
-			var canvas = $("#mainCanvas").get(0);
-			var context = null;
-			
-			function resizeCanvas()
-			{
-				canvas.width = document.width;
-				canvas.height = document.height;
-				
-				// TODO: this is a stub
-				camera.width = canvas.width;
-				camera.height = canvas.height;
-			}
-			
-			function run()
-			{
-				world.render(context, camera);
-			}
-			
+			var canvas = $('#canvasScreen').get(0);
+			var context = canvas.getContext('2d');
+
+			var world = new World();
+			var originX = 0;
+			var originY = 0;
+			var scale = 1;
+			var framePeriod = 500;
+
+			var mouseDownX = 0;
+			var mouseDownY = 0;
+			var mouseDowned = false;
+
 			function init()
 			{
-				resizeCanvas();
-				
-				if(canvas.getContext)
-				{
-					world.init();
-					context = canvas.getContext("2d");
-					run();
-				}
+				world.generateStarfield(150, 3000, 100);
+
+				resize();
+				loop();
 			}
-			
-			$(window).ready(function ()
+
+			function resize()
 			{
-				init();
+				canvas.width = $(window).width();
+				canvas.height = $(window).height();
+			}
+
+			function loop()
+			{
+				render();
+				//setTimeout('loop()', framePeriod);
+			}
+
+			function render()
+			{
+				world.renderStarfield(scale, originX, originY, canvas, context);
+
+				context.font = "12px sans-serif";
+				context.fillStyle = "#ffffff";
+				context.fillText("origin (" + originX + ", " + originY + "), scale=" + scale, 0, 12);
+			}
+
+			$(window).mousedown(function (event)
+			{
+				mouseDowned = true;
+				mouseDownX = event.pageX;
+				mouseDownY = event.pageY;
 			});
+
+			$(window).mousemove(function (event)
+			{
+				if(mouseDowned)
+				{
+					var dX = mouseDownX - event.pageX;
+					var dY = mouseDownY - event.pageY;
+
+					mouseDownX = event.pageX;
+					mouseDownY = event.pageY;
+
+					originX += dX;
+					originY += dY;
+					
+					render();
+				}
+			});
+
+			$(window).mouseup(function (event)
+			{
+				mouseDowned = false;
+			});
+
+			$(window).mousewheel(function (event, delta)
+			{
+				// Transform delta from (-1,1; +) => (R > 0; *) with fixed point 0->1
+				scale *= Math.exp(delta);
+
+				// TODO: center scaling around the mouse...what is the geometric relation
+
+				render();
+			});
+
+			$(window).ready(init);
+			$(window).resize(resize);
 		</script>
 	</body>
 </html>

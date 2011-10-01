@@ -15,7 +15,9 @@ function pointInRect(x, y, r)
 	return true;
 }
 
-// Classes
+//
+// Camera Class
+//
 
 function Camera (x, y, width, height) {
 	this.x = x;
@@ -24,10 +26,16 @@ function Camera (x, y, width, height) {
 	this.height = height;
 }
 
+//
+// World Class
+//
+
 function World (width, height) {
 	this.width = width;
 	this.height = height;
 	this.starfield = [];
+	this.players = [];
+	this.objects = [];
 }
 
 World.prototype.init = function ()
@@ -40,6 +48,12 @@ World.prototype.init = function ()
 			this.starfield.push([Math.random()*this.width, Math.random()*this.height, layer]);
 		}
 	}
+};
+
+World.prototype.subRenderMinimap = function (context, alignment, scale)
+{
+	// TODO: Render minimap, alignments must be (left|right),(top,bottom)
+	// Scale is fractional size of the minimap with relation to the full window
 };
 
 World.prototype.render = function (context, camera)
@@ -63,3 +77,7 @@ World.prototype.render = function (context, camera)
 		}
 	}
 };
+
+//
+// VisualObject Class
+//
