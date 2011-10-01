@@ -145,7 +145,7 @@ class Ship(MapObject):
 		"""
 		state = {'type':'ship',
 				 'id':id(self),
-				 'owner': self.owner.name,
+				 'owner': self.owner.auth,
 				 'alive': self.alive,
 				 'position': self.position,
 				 'velocity': self.velocity,

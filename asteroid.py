@@ -72,7 +72,7 @@ class Refinery(object):
 		state = { 'type':'Refinery',
 				  'id': id(self),
 				  'built': self.built,
-				  'owner': self.owner.name,
+				  'owner': self.owner.auth,
 				  'asteroid':self.asteroid,
 				  'health':self.health
 				  }

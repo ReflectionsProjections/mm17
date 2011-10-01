@@ -123,7 +123,7 @@ class Base(object):
 				  'id': id(self),
 				  'built': self.built,
 				  'planet':self.planet,
-				  'owner': self.owner.name,
+				  'owner': self.owner.auth,
 				  'health': self.health
 				  }
 		return state
