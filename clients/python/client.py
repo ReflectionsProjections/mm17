@@ -80,21 +80,36 @@ class GameClient(object):
 		game_state = self._do("game/info/all",{})
 		actions = []
 		target = (-10001,-10001)
+		me = None
+		print game_state
 		for thing in game_state['objects']:
 			if thing['type'] == "ship":
 				if thing['owner'] == self.authcode:
-					accel = (target[0] - thing['position'][0],target[1] - thing['position'][1])
-					#print accel
-					print thing['position']
-					actions.append({
-						"obj_type": "ship",
-						"obj_id": thing['id'],
-						"command": "thrust",
-						"args": { 
-							"direction": accel,
-							"speed": 3
-							}
-						})
+					me = thing
+				else:
+					them = thing
+		if me:
+			accel = (target[0] - me['position'][0],target[1] - me['position'][1])
+			actions.append({
+				"obj_type": "ship",
+				"obj_id": me['id'],
+				"command": "thrust",
+				"args": { 
+					"direction": accel,
+					"speed": 3
+					}
+				})
+			if them:
+				direct = (them['position'][0] - me['position'][0], them['position'][1] - me['position'][1])
+				actions.append({
+					"obj_type": "ship",
+					"obj_id": me['id'],
+					"command": "fire",
+					"args": {
+							"direction": direct
+						}
+					})
+				print "Shooting at ", direct
 		#print game_state
 		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0
