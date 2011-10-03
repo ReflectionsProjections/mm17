@@ -47,10 +47,12 @@ class Game(object):
 			self.completed_turns = [{}]
 		# Player results, indexed by players
 		self.player_result_lock = threading.Lock()
+		self.lasers_shot_lock = threading.Lock()
 		with self.player_result_lock:
 			self.player_results = {}
 		self.turn = 0
 		self.active = False
+		self.lasers_shot = []
 
 	def _log(self, message):
 		"""
@@ -170,6 +172,8 @@ class Game(object):
 			self.actions.append({})
 			self.completed_turns.append({})
 			self.turn += 1
+		with self.lasers_shot_lock:
+			self.lasers_shot.append([])
 		self.last_turn_time = time.time()
 
 	def _main(self):

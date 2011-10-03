@@ -79,8 +79,8 @@ def map_maker(players):
 		ship = Ship((x+size*1.1, y+size), player)
 		i += 1
 	for x in range(player_count*10):
-		x = randrange(0, 1.5*modifier)
-		y = randrange(0, 1.5*modifier)
+		x = randrange(-1.5*modifier, 1.5*modifier)
+		y = randrange(-1.5*modifier, 1.5*modifier)
 		size = randrange(100,500)
 		asteroid = Asteroid((x,y),size)
 		

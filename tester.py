@@ -5,28 +5,28 @@ import json
 from math import pi
 players = {'one':'234567',
 		   'two':'345678'}
-
+port = 6969
 def test_join():
 	output = ""
 	for name, auth in players.items():
-		url = "http://localhost:7000/game/join?name="+name+"&auth="+auth
+		url = "http://localhost:6969/game/join?name="+name+"&auth="+auth
 		output += urlopen(url).read() + '\n'
 	return output
 
 def test_info():
-		url = "http://localhost:7000/game/info"
+		url = "http://localhost:6969/game/info"
 		return urlopen(url).read()
 
 def test_info_all():
 	for name, auth in players.items():
-		url = "http://localhost:7000/game/info/all?auth="+auth
+		url = "http://localhost:6969/game/info/all?auth="+auth
 		return urlopen(url).read()
 
 def test_actions():
 	output = ""
 	derp = json.loads(test_info_all())
 	for key, value in players.items():
-		url = "http://localhost:7000/game/turn/"+str(json.loads(test_info())['turn'])
+		url = "http://localhost:6969/game/turn/"+str(json.loads(test_info())['turn'])
 		data = {'auth' : value,
 				'actions':[]}
 		for obj in derp['objects']:
