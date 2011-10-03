@@ -24,7 +24,7 @@ class Game(object):
 	a turn, and for resolving a turn.
 	"""
 
-	def __init__(self, game_map, log_file, allowed_auths):
+	def __init__(self, game_map, log_file):
 		"""
 		Initialize the game object.
 
@@ -35,9 +35,9 @@ class Game(object):
 		@param log_file: Path to log file. Existing file at this path
 				will be overwritten.
 		"""
-		self.viz_auth = allowed_auths.pop(0)
-		self.allowed_auths = allowed_auths
 		self.game_map = game_map
+		self.allowed_auths = []
+		self.viz_auth = ''
 		self.players = {}
 		self.log_file = open(log_file, 'w')
 		# List of orders for each turn, dictionaries indexed by player
@@ -271,6 +271,7 @@ class Game(object):
 		return {
 			'game_active': self.active,
 			'turn':self.turn,
+			'you': id(player),
 			'alive_players': alive_players,
 			'objects': [object.to_dict() for object in\
 					player.objects.itervalues()]
@@ -324,7 +325,7 @@ class TestGame(unittest.TestCase):
 	def setUp(self):
 		from game_map import Map
 		self.game_map = Map(2)
-		self.game = Game(self.game_map,"test_log", ['123456','234567','345678'])
+		self.game = Game(self.game_map,"test_log")
 
 	def tearDown(self):
 		self.game.active = False
@@ -342,32 +343,6 @@ class TestGame(unittest.TestCase):
 			'active_players':[]},
 			self.game.game_status())
 
-	def testJoining(self):
-
-		# game does not start until we have enough players
-		self.assertFalse(self.game.active)
-
-		# adding a player
-		self.assertTrue(
-			self.game.add_player('bob','234567')['join_success'])
-
-		# game does not start until we have enough players
-		self.assertFalse(self.game.active)
-
-		# duplicate token
-		self.assertFalse(
-			self.game.add_player('ted','234567')['join_success'])
-
-		# second player
-		self.assertTrue(
-			self.game.add_player('goodPasswordMan','345678')['join_success'])
-
-		# game should have started
-		self.assertTrue(self.game.active)
-
-		# no more room
-		self.assertFalse(
-			self.game.add_player('late','xyzw')['join_success'])
  
 if __name__ == '__main__':
 	unittest.main()

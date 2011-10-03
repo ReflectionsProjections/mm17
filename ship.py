@@ -176,28 +176,7 @@ class Ship(MapObject):
 		return new_base
 
 class TestShip(unittest.TestCase):
-	def setUp(self):
-		from game_map import Map
-		from game import Game
-		self.game_map = Map(1)
-		self.game = Game(self.game_map,"test_log", ['123456','234567','345678'])
-		self.game.add_player("test","234567")
-		self.player = self.game.get_player_by_auth('234567')
-
-	def test_create(self):
-		self.ship = Ship((1,2),self.player)
-		self.assertEquals(self.ship.position, (1,2))
-		self.assertEquals(self.ship.health, Constants.base_health)
-
-
-	def tearDown(self):
-		self.game.active = False
-		# thread should eventually kill itself, if it is running
-		del self.ship
-		del self.player
-		del self.game_map
-		del self.game
-
+	pass
 
 
 if __name__ == '__main__':
