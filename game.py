@@ -139,12 +139,13 @@ class Game(object):
 					[object.to_dict() \
 						 for object in value.objects.itervalues()]
 			# kill players with no live units
-				live_units = [x for x in value.ships.values() if x.alive] + [x for x in value.bases.values() if x.alive]
-				if len(live_units) == 0:
+				live_bases = [x for x in value.bases.values() if x.alive]
+				live_ships = [x for x in value.ships.values() if x.alive] 
+				if len(live_ships) == 0 and len(live_bases) == 0:
 					value.alive = False
-# update resources and scores
-					value.update_resources()
-					value.update_score()
+				# update resources and scores
+				value.update_resources()
+				value.update_score()
 					
 		# take timestep
 		for object in self.game_map.objects.itervalues():
