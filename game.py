@@ -119,7 +119,7 @@ class Game(object):
 				obj.alive = False
 				obj.velocity = (0,0)
 				obj.health = 0
-				obj.events = [{'status':'destroyed'}]
+				obj.events.append({'type':'status','status':'destroyed'})
 				obj.results[self.turn] = obj.events[:]
 			else:
 				# compute radar returns for live ships
