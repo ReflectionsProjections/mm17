@@ -92,6 +92,12 @@ class Refinery(object):
 				  }
 		return state
 
+	def destroy(self):
+		"""
+		Removes a refinery from the planet and owner refrences
+		"""
+		self._delete()
+
 	def _delete(self):
 		"""Delete object from map dicts and owner dicts.
 
