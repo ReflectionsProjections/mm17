@@ -47,15 +47,16 @@ class Map(object):
 				self.asteroids[objID] = object
 		return objID
 
-	def radar(self, position, range):
+	def radar(self, object):
 		"""
 		Returns all objects within a certain radius of a position
 		
 		@param position: Position of the object to get radar
 		@param range: Range of the radar
 		"""
-		return [object for object in self.objects.itervalues()
-				if distance(position, object.position) <= Constants.scan_range]
+		return [x for x in self.objects.itervalues()
+				if distance(object.position, x.position) <= \
+					Constants.scan_range and x is not object]
 
 def map_maker(players):
 	from game_instance import Game
@@ -104,12 +105,6 @@ class TestGame(unittest.TestCase):
 	def test_add_object(self):
 		self.m.add_object(self.s)
 		self.assertTrue(len(self.m.objects) == 1)
-
-
-	def test_radar(self):
-		self.m.add_object(self.s)
-		self.assertTrue(self.m.radar((1,2), 0)[0] == self.s)
-		self.assertTrue(len(self.m.radar((2,2), 0)) == 1)
 
 if __name__=='__main__':
 	unittest.main()

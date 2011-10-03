@@ -123,7 +123,7 @@ class Game(object):
 				obj.results[self.turn] = obj.events[:]
 			else:
 				# compute radar returns for live ships
-				nearships = self.game_map.radar(obj.position, obj.scan_range)
+				nearships = self.game_map.radar(obj)
 				for other in nearships:
 					if other != self:
 						obj.events.append({'type':'radar',
