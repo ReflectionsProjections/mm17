@@ -224,10 +224,11 @@ def validate_base_action(action, player, turn):
 		return {'success':False, 'message':'invalid base id'}
 
 	# check if base exists
+	base = None
 	for planet in game.game_map.planets.itervalues():
 		if obj_id == id(planet.base):
 			base = planet.base
-	else:
+	if base == None:
 		return {'success':False, 'message': 'base does not exist'}
 
 	# make sure the player owns the base
