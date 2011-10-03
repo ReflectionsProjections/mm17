@@ -169,6 +169,8 @@ def validate_ship_action(action, player, turn):
 		elif 'asteroid' not in action['args'].keys():
 			return {'success':False, 
 					'message':'create_refinery requires asteroid arg'}
+		elif player.resources < Constants.refinery_price:
+			return {'success':False, 'message':'not enough resources!'}
 		else:
 			asteroid = action['args']['asteroid']
 			if not isinstance(asteroid, int):
@@ -254,6 +256,8 @@ def validate_base_action(action, player, turn):
 					'message':'create_ship requires position arg'}
 		elif not isinstance(action['args']['position'], list):
 			return {'success':False, 'message':'position must be list'}
+		elif player.resources < Constants.ship_price:
+			return {'success':False, 'message':'not enough resources!'}
 		position = action['args']['position']
 		if distance(position, base.position) > \
 				Constants.base_build_radius:
