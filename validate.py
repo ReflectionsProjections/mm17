@@ -188,9 +188,10 @@ def validate_ship_action(action, player, turn):
 			return {'success':False, 
 					'message':'create_base requires planet arg'}
 		else:
-			planet = action['args']['planet']
+			planet_id = action['args']['planet']
 			if not isinstance(planet, int):
 				return {'success':False, 'message':'planet must be int'}
+			planet
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': extract(['planet'], action['args'])}
@@ -202,7 +203,7 @@ def validate_ship_action(action, player, turn):
 	else:
 		return {'success':False, 'message':'invalid ship command'}
 
-def validate_base_action(action, player):
+def validate_base_action(action, player, turn):
 	"""
 	Validate an action performed by a base
 
@@ -324,7 +325,7 @@ def validate_base_action(action, player):
 	else:
 		return {'success':False, 'message':'invalid base command'}
 
-def validate_refinery_action(action, player):
+def validate_refinery_action(action, player, turn):
 	"""
 	Validate an action performed by a refinery
 
@@ -374,7 +375,7 @@ def validate_refinery_action(action, player):
 	else:
 		return {'success':False, 'message':'invalid refinery command'}
 	
-def validate_player_action(action, player):
+def validate_player_action(action, player, turn):
 	"""
 	Validate an action performed by a player
 
