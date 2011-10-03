@@ -2,6 +2,7 @@
 import unittest
 from numbers import Number
 from game_instance import game
+from vector import distance
 import Constants
 
 
