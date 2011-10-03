@@ -69,6 +69,7 @@ class GameClient(object):
 		self.running = False     #: Whether the client should continue to run
 		self.current_turn = -1   #: The current turn, or -1 for "game hasn't started"
 		self.objects = {}        #: Objects that the client knows about
+		self.me = 0              #: Your for ownership identifiers
 	def _loop(self):
 		"""
 		Game Loop
@@ -79,12 +80,14 @@ class GameClient(object):
 		#print "Turn number %d..." % self.current_turn,
 		game_state = self._do("game/info/all",{})
 		actions = []
-		target = (-10001,-10001)
+		target = (0,0)
 		me = None
+		them = None
 		print game_state
+		self.me = game_state['you']
 		for thing in game_state['objects']:
 			if thing['type'] == "ship":
-				if thing['owner'] == self.authcode:
+				if thing['owner'] == self.me:
 					me = thing
 				else:
 					them = thing
