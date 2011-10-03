@@ -4,6 +4,14 @@ from numbers import Number
 from game_instance import game
 import Constants
 
+
+def extract(keys, dict):
+	answer = {}
+	for k in keys:
+		answer[k] = dict[k]
+	return answer
+
+
 def handle_input(input, turn):
 	"""Handle POST request data and passes to validators.
 
