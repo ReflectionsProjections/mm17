@@ -94,7 +94,7 @@ def validate_ship_action(action, player, turn):
 
 	# make sure args is a dict
 	if not isinstance(action['args'], dict):
-		return {'success':False, 'message':'args must be a dictionary'}
+		return {'success':False, 'message':'args must be a object'}
 
 	# validate commands
 	if action['command'] == 'thrust':
@@ -172,9 +172,15 @@ def validate_ship_action(action, player, turn):
 		elif player.resources < Constants.refinery_price:
 			return {'success':False, 'message':'not enough resources!'}
 		else:
-			asteroid = action['args']['asteroid']
-			if not isinstance(asteroid, int):
+			asteroid_id = action['args']['asteroid']
+			if not isinstance(asteroid_id, int):
 				return {'success':False, 'message':'asteroid must be int'}
+			asteroid = game.game_map.asteroids[asteroid_id]
+			if distance(ship.position, asteroid.position) > \
+					Constants.ship_build_radius:
+				return {'success':False, 'message':'too far away from asteroid'}
+			if asteroid.refinery:
+				return {'success':False, 'message':'asteroid already has a refinery'}
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': extract(['asteroid'], action['args'])}
@@ -192,9 +198,14 @@ def validate_ship_action(action, player, turn):
 					'message':'create_base requires planet arg'}
 		else:
 			planet_id = action['args']['planet']
-			if not isinstance(planet, int):
+			if not isinstance(planet_id, int):
 				return {'success':False, 'message':'planet must be int'}
-			planet
+			planet = game.game_map.planets[planet_id]
+			if distance(ship.position, planet.position) > \
+					Constants.ship_build_radius:
+				return {'success':False, 'message':'too far away from planet'}
+			if planet.base:
+				return {'success':False, 'message':'planet already has a base'}
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': extract(['planet'], action['args'])}
@@ -248,7 +259,7 @@ def validate_base_action(action, player, turn):
 
 	# make sure args is a dict
 	if not isinstance(action['args'], dict):
-		return {'success':False, 'message':'args must be a dictionary'}
+		return {'success':False, 'message':'args must be a object'}
 
 	if action['command'] == 'create_ship':
 		if 'position' not in action['args'].keys():
@@ -368,7 +379,7 @@ def validate_refinery_action(action, player, turn):
 
 	# make sure args is a dict
 	if not isinstance(action['args'], dict):
-		return {'success':False, 'message':'args must be a dictionary'}
+		return {'success':False, 'message':'args must be a object'}
 
 	if action['command'] == 'destroy':
 		result = {'object': refinery,
