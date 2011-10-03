@@ -58,7 +58,6 @@ class Base(object):
 		@param owner: The Player object this base is owned by
 		"""
 		self.built = 10
-		self.alive = True
 		self.planet = planet
 		self.owner = owner
 		self.position = self.planet.position
@@ -121,8 +120,7 @@ class Base(object):
 		"""
 		Removes a base from the planet and owner refrences
 		"""
-		self.alive = False
-		self.planet.base = None
+		self._delete()
 
 	def _delete(self):
 		"""Delete object from map dicts and owner dicts.

@@ -6,7 +6,6 @@ scan_range = 2000
 weapon_range = 1000
 weapon_strength = 10
 weapon_width = 100
-
 max_velocity = 200
 max_accel = 20
 
@@ -42,6 +41,8 @@ base_repair_radius = 15000
 base_build_busy = 5
 base_salvage_busy = 5
 base_repair_busy = 5
+
+ship_build_radius = 10000
 
 
 if __name__ == '__main__':

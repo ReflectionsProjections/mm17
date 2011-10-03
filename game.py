@@ -121,10 +121,13 @@ class Game(object):
 				# compute radar returns for live ships
 				nearships = self.game_map.radar(obj)
 				for other in nearships:
-					if other != self:
-						obj.events.append({'type':'radar',
-											'id': id(other),
-											'position':other.position})
+					obj.events.append({'type':'radar',
+									   'obj_type': other.__class__.__name__,
+									   'id': id(other),
+									   'position':other.position,
+									   'health':other.health if\
+										   hasattr(other, 'health') else\
+										   None})
 				obj.results[self.turn] = obj.events[:]
 
 		# Create a massive list of results to return to the player
@@ -135,9 +138,7 @@ class Game(object):
 					[object.to_dict() \
 						 for object in value.objects.itervalues()]
 			# kill players with no live units
-				live_bases = [x for x in value.bases.values() if x.alive]
-				live_ships = [x for x in value.ships.values() if x.alive] 
-				if len(live_ships) == 0 and len(live_bases) == 0:
+				if len(value.ships) == 0 and len(value.bases) == 0:
 					value.alive = False
 				# update resources and scores
 				value.update_resources()
@@ -161,8 +162,6 @@ class Game(object):
 			if hasattr(object, 'refinery') and object.refinery != None:
 				if object.refinery.built > 0:
 					object.refinery.built -= 1
-				if object.refinery.busy > 0:
-					object.refinery.busy -= 1
 
 		# advnace turn and reset timer
 		with self.action_list_lock:
@@ -290,13 +289,13 @@ class Game(object):
 		@param authToken: player token
 		"""
 		if self.get_player_by_auth(auth):
-			return {'join_success': False,
+			return {'success': False,
 				'message': 'Already joined'}
 		if auth not in self.allowed_auths:
-			return {'join_success': False,
+			return {'success': False,
 				'message': 'Not a valid auth code.'}
 		if len(self.players.keys()) >= self.game_map.max_players:
-			return {'join_success': False,
+			return {'success': False,
 				'message': 'Game full'}
 
 		new_player = Player(name, auth)
@@ -306,7 +305,7 @@ class Game(object):
 		if len(self.players.keys()) == self.game_map.max_players:
 			self._begin()
 		self.allowed_auths.remove(auth)
-		return {'join_success': True,
+		return {'success': True,
 			'message': 'Joined succesfully'}
 
 	def game_visualizer(self, auth):

@@ -26,7 +26,6 @@ class Ship(MapObject):
 		self.size = Constants.base_size
 		self.direction = 0
 		self.owner = owner
-		self.alive = True
 		# attribute itialization
 		self.health = Constants.base_health
 		self.scan_range = Constants.scan_range
@@ -97,10 +96,7 @@ class Ship(MapObject):
 		for obj in game.game_map.objects.itervalues():
 			hit = circle_in_rect((obj.position, obj.size), beam)
 			if hit and obj != self:
-				if hasattr(obj,'alive'):
-					if obj.alive: within_beam.append(obj)
-				else:
-					within_beam.append(obj)
+				within_beam.append(obj)
 		if len(within_beam) == 0:
 			# No object hit
 			self.events.append({'type':'shot','hit': None})
@@ -157,7 +153,6 @@ class Ship(MapObject):
 		state = {'type':'Ship',
 				 'id':id(self),
 				 'owner': id(self.owner),
-				 'alive': self.alive,
 				 'position': self.position,
 				 'velocity': self.velocity,
 				 'direction': self.direction,
