@@ -105,7 +105,7 @@ class Ship(MapObject):
 			cmp_dist = lambda a: distance(self.position, a.position)
 			within_beam.sort(key=cmp_dist)
 			# Hit first in line, record id
-			self.events.append({'type':'shot', 'hit': id(within_beam[0])})
+			self.events.append({'type':'shot', 'hit': id(within_beam[0]),'obj_type':within_beam[0].__class__.__name__})
 			# register damage with hit object
 			diagonal = distance(self.position, p_2)
 			dist = distance(self.position, within_beam[0].position)
