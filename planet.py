@@ -122,8 +122,8 @@ class Base(object):
 		state = { 'type':'Base',
 				  'id': id(self),
 				  'built': self.built,
-				  'planet':self.planet,
-				  'owner': self.owner.auth,
+				  'planet':self.planet.to_dict(),
+				  'owner': id(self.owner),
 				  'health': self.health,
 				  'events':self.events
 				  }

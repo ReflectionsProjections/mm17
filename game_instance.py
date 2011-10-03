@@ -17,4 +17,5 @@ inited = False
 # These values should be inited somewhere else
 # XXX: Old test cases rely on them being inited here
 game_map = Map(2)
-game = Game(game_map, log_file, viz_auth)
+allowed_auths = ['123456','234567','345678']
+game = Game(game_map, log_file, allowed_auths)

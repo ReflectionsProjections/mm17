@@ -143,7 +143,7 @@ class Ship(MapObject):
 		"""
 		state = {'type':'ship',
 				 'id':id(self),
-				 'owner': self.owner.auth,
+				 'owner': id(self.owner),
 				 'alive': self.alive,
 				 'position': self.position,
 				 'velocity': self.velocity,
@@ -180,9 +180,9 @@ class TestShip(unittest.TestCase):
 		from game_map import Map
 		from game import Game
 		self.game_map = Map(1)
-		self.game = Game(self.game_map,"test_log", "123456")
-		self.game.add_player("test","auth")
-		self.player = self.game.players['auth']
+		self.game = Game(self.game_map,"test_log", ['123456','234567','345678'])
+		self.game.add_player("test","234567")
+		self.player = self.game.get_player_by_auth('234567')
 
 	def test_create(self):
 		self.ship = Ship((1,2),self.player)

@@ -12,7 +12,8 @@ def handle_input(input, turn):
 	if 'auth' in input.keys():
 		alive_players = [x.auth for x in game.players.itervalues() if x.alive]
 		if input['auth'] in alive_players:
-			return validate_actions(game.players[input['auth']], input, turn)
+			player = game.get_player_by_auth(input['auth'])
+			return validate_actions(game.players[id(player)], input, turn)
 		else:
 			return {'success':False, 
 					'message':'bad auth token or non-active player'}

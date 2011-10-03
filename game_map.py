@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import unittest
-from math import sqrt
+from math import sqrt, pi, cos, sin
 from random import randrange
 
 from vector import distance
@@ -44,7 +44,7 @@ class Map(object):
 			if isinstance(object, Planet):
 				self.planets[objID] = object
 			if isinstance(object, Asteroid):
-				self.asteroidss[objID] = object
+				self.asteroids[objID] = object
 		return objID
 
 	def radar(self, position, range):
@@ -56,6 +56,35 @@ class Map(object):
 		"""
 		return [object for object in self.objects.itervalues()
 				if distance(position, object.position) <= range]
+
+def map_maker(players):
+	from game_instance import Game
+	from planet import Planet, Base
+	from asteroid import Asteroid
+	from ship import Ship
+	"""
+	Adds initial planets, bases, and ships to the map.
+	"""
+	player_count = len(players)
+	origin = (0,0)
+	modifier = player_count * 5000
+	angle = 2*pi/player_count
+	i = 0
+	for player in players.itervalues():
+		x = modifier*cos((angle*i)/player_count)
+		y = modifier*sin((angle*i)/player_count)
+		size = randrange(5000,10000,1000)
+		planet = Planet((x,y),size)
+		base = Base(planet, player)
+		ship = Ship((x+2*size, y+2*size), player)
+		i += 1
+	for x in range(player_count*10):
+		x = randrange(0, 1.5*modifier)
+		y = randrange(0, 1.5*modifier)
+		size = randrange(100,500)
+		asteroid = Asteroid((x,y),size)
+		
+
 
 class TestGame(unittest.TestCase):
 

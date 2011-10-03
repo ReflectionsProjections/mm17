@@ -24,7 +24,7 @@ class Game(object):
 	a turn, and for resolving a turn.
 	"""
 
-	def __init__(self, game_map, log_file, viz_auth):
+	def __init__(self, game_map, log_file, allowed_auths):
 		"""
 		Initialize the game object.
 
@@ -35,7 +35,8 @@ class Game(object):
 		@param log_file: Path to log file. Existing file at this path
 				will be overwritten.
 		"""
-		self.viz_auth = viz_auth
+		self.viz_auth = allowed_auths.pop(0)
+		self.allowed_auths = allowed_auths
 		self.game_map = game_map
 		self.players = {}
 		self.log_file = open(log_file, 'w')
@@ -60,24 +61,15 @@ class Game(object):
 		@param message: Message to write out to the log file
 		"""
 		text = "%s: %s\n" % (datetime.now(), message)
+
 		self.log_file.write(text)
 
 	def _begin(self):
-		from ship import Ship
-		from planet import Planet, Base
+		from game_map import map_maker
 		"""
 		Create starting units and start the game turn loop.
 		"""
-		positions = Constants.player_starts
-		x = 0
-		for player in self.players.itervalues():
-			planet = Planet(positions[x], Constants.planet_scale)
-			base = Base(planet, player)
-			ship_position = ((positions[x][0]+Constants.planet_scale),
-							 (positions[x][1]+Constants.planet_scale))
-			new_ship = Ship(ship_position, player)
-			x += 1
-
+		map_maker(self.players)
 		self.active = True
 		self.last_turn_time = time.time()
 		self._log("Game started.")
@@ -203,6 +195,19 @@ class Game(object):
 			else:
 				continue
 
+	def get_player_by_auth(self, auth):
+		"""
+		Get player object via their auth code.
+		@param auth: auth string
+		@rtype: Player object
+		@return: Player object or None
+		"""
+		players = [x for x in self.players.values() if x.auth == auth]
+		if len(players) > 0:
+			return players[0]
+		else:
+			return None
+
 	# API Calls
 
 	def turn_number(self):
@@ -241,10 +246,13 @@ class Game(object):
 		Returns the player_results from the requested turn.
 		"""
 		if turn > 0 and turn < self.turn:
+			player = self.get_player_by_auth(auth)
+			if player == None:
+				return {'success':False, 'message':'bad auth'}
 			with self.player_result_lock:
-				return player_results[turn - 1][auth]
+				return player_results[turn - 1][id(player)]
 		else:
-			{'success':False, 'message':'invalid turn number'}
+			return {'success':False, 'message':'invalid turn number'}
 
 	def game_avail_info(self, auth):
 		"""
@@ -257,18 +265,18 @@ class Game(object):
 		for player in self.players.itervalues():
 			if player.alive:
 				alive_players.append(player.name)
-		if auth not in self.players.keys():
-			return {'success':'false','message':'bad auth'}
-		player = self.players[auth]
+		player = self.get_player_by_auth(auth)
+		if player == None:
+			return {'success':False, 'message':'bad auth'}
 		return {
 			'game_active': self.active,
 			'turn':self.turn,
 			'alive_players': alive_players,
 			'objects': [object.to_dict() for object in\
-					self.game_map.objects.itervalues()]
+					player.objects.itervalues()]
 		}
 
-	def add_player(self, name, authToken):
+	def add_player(self, name, auth):
 		from player import Player
 		"""
 		Adds a player to the current game, begin game if now full.
@@ -279,20 +287,23 @@ class Game(object):
 		@type  authToken: string
 		@param authToken: player token
 		"""
-		newPlayer = Player(name, authToken)
+		if self.get_player_by_auth(auth):
+			return {'join_success': False,
+				'message': 'Already joined'}
+		if auth not in self.allowed_auths:
+			return {'join_success': False,
+				'message': 'Not a valid auth code.'}
 		if len(self.players.keys()) >= self.game_map.max_players:
 			return {'join_success': False,
 				'message': 'Game full'}
-		if authToken in self.players.keys():
-			return {'join_success': False,
-				'message': 'Already joined'}
 
-		self.players[authToken] = newPlayer
+		new_player = Player(name, auth)
+		self.players[id(new_player)] = new_player
 		self._log(name + " joined the game.")
 
 		if len(self.players.keys()) == self.game_map.max_players:
 			self._begin()
-
+		self.allowed_auths.remove(auth)
 		return {'join_success': True,
 			'message': 'Joined succesfully'}
 
@@ -306,14 +317,14 @@ class Game(object):
 			return {'message':'not a valid auth code'}
 		else:
 			objects = [x.to_dict() for x in self.game_map.objects.itervalues()]
-			players = [x.to_dict() for x in self.players if x.alive]
+			players = [x.to_dict() for x in self.players.values() if x.alive]
 			return {'turn':self.turn, 'objects':objects, 'players':players}
 			
 class TestGame(unittest.TestCase):
 	def setUp(self):
 		from game_map import Map
 		self.game_map = Map(2)
-		self.game = Game(self.game_map,"test_log", "123456")
+		self.game = Game(self.game_map,"test_log", ['123456','234567','345678'])
 
 	def tearDown(self):
 		self.game.active = False
@@ -338,18 +349,18 @@ class TestGame(unittest.TestCase):
 
 		# adding a player
 		self.assertTrue(
-			self.game.add_player('bob','123456')['join_success'])
+			self.game.add_player('bob','234567')['join_success'])
 
 		# game does not start until we have enough players
 		self.assertFalse(self.game.active)
 
 		# duplicate token
 		self.assertFalse(
-			self.game.add_player('ted','123456')['join_success'])
+			self.game.add_player('ted','234567')['join_success'])
 
 		# second player
 		self.assertTrue(
-			self.game.add_player('goodPasswordMan','123456*7*')['join_success'])
+			self.game.add_player('goodPasswordMan','345678')['join_success'])
 
 		# game should have started
 		self.assertTrue(self.game.active)

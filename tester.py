@@ -3,8 +3,8 @@ import unittest
 from urllib2 import urlopen
 import json
 from math import pi
-players = {'one':'asdfg',
-		   'two':'adad'}
+players = {'one':'234567',
+		   'two':'345678'}
 
 def test_join():
 	output = ""
@@ -18,7 +18,8 @@ def test_info():
 		return urlopen(url).read()
 
 def test_info_all():
-		url = "http://localhost:7000/game/info/all?auth=asdfg"
+	for name, auth in players.items():
+		url = "http://localhost:7000/game/info/all?auth="+auth
 		return urlopen(url).read()
 
 def test_actions():

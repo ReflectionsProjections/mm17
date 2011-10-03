@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-
+from game_instance import game
 from map_obj import MapObject
 import Constants
 import unittest
@@ -18,7 +18,7 @@ class Asteroid(MapObject):
 		@type  size: int
 		@param size: Size of the Asteroid
 		"""
-		super(Asteroid, self).__init__(game, position)
+		super(Asteroid, self).__init__(position)
 		self.size = size
 		self.resources = size * Constants.asteroid_scale
 		self.refinery = None
@@ -73,8 +73,8 @@ class Refinery(object):
 		state = { 'type':'Refinery',
 				  'id': id(self),
 				  'built': self.built,
-				  'owner': self.owner.auth,
-				  'asteroid':self.asteroid,
+				  'owner': id(self.owner),
+				  'asteroid':self.asteroid.to_dict(),
 				  'health':self.health,
 				  'events':self.events
 				  }
