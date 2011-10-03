@@ -40,7 +40,7 @@ function draw(data) {
 				ctx.fillText(players[o.owner + "_"].name,p[0]+toViewSize(100),p[1]+toViewSize(30));
 				ctx.strokeStyle = "rgb(0,255,0)";
 				ctx.fillStyle = "rgba(0,255,0,0.7)";
-				healthMeter(ctx, p[0], p[1] - toViewSize(150), o.health);
+				healthMeter(ctx, p[0], p[1] - toViewSize(200), o.health);
 			} else if (o.type == "Planet") {
 				var p = toView(o.position[0],o.position[1]);
 				if (o.base) {
