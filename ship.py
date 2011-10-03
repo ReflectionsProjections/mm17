@@ -108,12 +108,17 @@ class Ship(MapObject):
 			cmp_dist = lambda a: distance(self.position, a.position)
 			within_beam.sort(key=cmp_dist)
 			# Hit first in line, record id
-			self.events.append({'type':'shot', 'hit': id(within_beam[0]),'obj_type':within_beam[0].__class__.__name__})
+			hit = within_beam[0]
+			if hasattr(hit, 'base') and hit.base != None:
+				hit = hit.base
+			if hasattr(hit, 'refinery') and hit.base != None:
+				hit = hit.refinery
+			self.events.append({'type':'shot', 'hit': id(hit),'obj_type':hit.__class__.__name__})
 			# register damage with hit object
 			diagonal = distance(self.position, p_2)
-			dist = distance(self.position, within_beam[0].position)
+			dist = distance(self.position, hit.position)
 			damage_amt = Constants.weapon_strength
-			within_beam[0].events.append({'type':'damage',
+			hit.events.append({'type':'damage',
 										  'amount':damage_amt,
 										  'hit_by':id(self)})
 		with game.lasers_shot_lock:
