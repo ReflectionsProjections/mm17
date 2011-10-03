@@ -24,14 +24,26 @@ function draw(data) {
 		ctx.fillText("Players (" + data.players.length.toString() + ")", 2, 26);
 		/* Players */
 		for (i in data.players) {
-			ctx.fillText(data.players[i].name + "  [" + data.players[i].resources + "]", 2, 40 + 13 * i);
+			p = data.players[i];
+			if (p.alive) { 
+				ctx.fillStyle = "rgb(0,255,0)";
+			} else {
+				ctx.fillStyle = "rgb(255,0,0)";
+			}
+			ctx.fillText(p.name + "  [o:" + p.resources + " b:" + p.bases.length + " r:" + p.refineries.length + " s:" + p.ships.length + "]", 2, 40 + 13 * i);
 		}
 		for (i in data.objects) {
 			var o = data.objects[i];
 			if (o.type == "ship") {
+				if (o.health == 0)
+					continue;
 				var p = toView(o.position[0],o.position[1]);
 				ctx.fillStyle = "rgb(0,255,0)";
-				circle(ctx,p[0],p[1],2);
+				circle(ctx,p[0],p[1],toViewSize(100));
+				ctx.fillStyle = "rgb(0,0,0)";
+				ctx.fillText(Math.floor(o.health),p[0]+5,p[1]-4);
+				ctx.fillStyle = "rgb(0,255,0)";
+				ctx.fillText(Math.floor(o.health),p[0]+4,p[1]-5);
 			} else if (o.type == "Planet") {
 				var p = toView(o.position[0],o.position[1]);
 				ctx.fillStyle = "rgb(0,0,255)";
@@ -47,8 +59,9 @@ function draw(data) {
 			var p = toView(o.start[0],o.start[1]);
 			var q = o.direction;
 			ctx.moveTo(p[0],p[1]);
-			ctx.lineTo(p[0]+toViewSize(q[0]),p[1]+toViewSize(q[1]));
+			ctx.lineTo(p[0]+toViewSize(q[0]),p[1]-toViewSize(q[1]));
 			ctx.strokeStyle = "rgb(255,0,0)";
+			ctx.lineWidth = toViewSize(50);
 			ctx.stroke();
 		}
 	}

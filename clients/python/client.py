@@ -47,7 +47,7 @@ WITH THE SOFTWARE.
 """
 
 
-import json, time, sys
+import json, time, sys, math
 from urllib2 import urlopen
 from urllib  import urlencode
 
@@ -83,36 +83,36 @@ class GameClient(object):
 		target = (0,0)
 		me = None
 		them = None
-		print game_state
+		#print game_state
 		self.me = game_state['you']
 		for thing in game_state['objects']:
-			if thing['type'] == "ship":
-				if thing['owner'] == self.me:
-					me = thing
-				else:
-					them = thing
-		if me:
-			accel = (target[0] - me['position'][0],target[1] - me['position'][1])
-			actions.append({
-				"obj_type": "ship",
-				"obj_id": me['id'],
-				"command": "thrust",
-				"args": { 
-					"direction": accel,
-					"speed": 100
-					}
-				})
-			if them:
-				direct = (them['position'][0] - me['position'][0], them['position'][1] - me['position'][1])
+			if thing['type'] == 'ship':
+				accel = (target[0] - thing['position'][0],target[1] - thing['position'][1])
 				actions.append({
 					"obj_type": "ship",
-					"obj_id": me['id'],
-					"command": "fire",
-					"args": {
-							"direction": direct
+					"obj_id": thing['id'],
+					"command": "thrust",
+					"args": { 
+						"direction": accel,
+						"speed": 100
 						}
 					})
-				print "Shooting at ", direct
+				me = thing
+				for it in me['events']:
+					if it['type'] == 'radar':
+						accel = (it['position'][0] - me['position'][0],it['position'][1] - me['position'][1])
+						if math.hypot(*accel) < 1000:
+							actions.append({
+								"obj_type": "ship",
+								"obj_id": me['id'],
+								"command": "fire",
+								"args": {
+										"direction": accel
+									}
+								})
+					elif it['type'] == 'shot':
+						if it['hit']:
+							print "== Shot Hit:",it['hit'],"=="
 		#print game_state
 		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0
