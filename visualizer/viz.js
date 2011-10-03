@@ -102,9 +102,6 @@ function draw(data) {
 			}
 			ctx.fillText(p.name + "  [o:" + p.resources + " b:" + p.bases.length + " r:" + p.refineries.length + " s:" + p.ships.length + "]", 2, 40 + 13 * i);
 		}
-		var p = toView(0,0);
-		ship(ctx, p[0],p[1], t);
-		t += 0.01;
 	}
 }
 
