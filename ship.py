@@ -154,7 +154,7 @@ class Ship(MapObject):
 		"""
 		Returns dict that can be used by JSON
 		"""
-		state = {'type':'ship',
+		state = {'type':'Ship',
 				 'id':id(self),
 				 'owner': id(self.owner),
 				 'alive': self.alive,

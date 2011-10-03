@@ -44,13 +44,13 @@ False
 		game.actions[turn][player.auth] = []
 
 	for action in input['actions']:
-		if action['obj_type'] == "ship":
+		if action['obj_type'] == "Ship":
 			results.append(validate_ship_action(action, player, turn))
-		elif action['obj_type'] == "base":
+		elif action['obj_type'] == "Base":
 			results.append(validate_base_action(action, player, turn))
-		elif action['obj_type'] == "refinery":
+		elif action['obj_type'] == "Refinery":
 			results.append(validate_refinery_action(action, player, turn))
-		elif action['obj_type'] == "player":
+		elif action['obj_type'] == "Player":
 			results.append(validate_player_action(action, player, turn))
 		else:
 			results.append({'success':False, 'message':'bad or no obj_type in action'})

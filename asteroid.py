@@ -41,7 +41,7 @@ class Asteroid(MapObject):
 		@type: dict
 		@return The current game state in JSON serializable representation.
 		"""
-		state = {'type':'asteroid',
+		state = {'type':'Asteroid',
 				 'id': id(self),
 				 'position': self.position,
 				 'resources' : self.resources,
