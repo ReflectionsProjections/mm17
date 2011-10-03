@@ -73,7 +73,7 @@ def map_maker(players):
 	for player in players.itervalues():
 		x = modifier*cos((angle*i))
 		y = modifier*sin((angle*i))
-		size = randrange(5000,10000,1000)
+		size = randrange(500,1000,100)
 		planet = Planet((x,y),size)
 		base = Base(planet, player)
 		ship = Ship((x+size*1.1, y+size), player)
