@@ -19,6 +19,7 @@ resource_pull = 1    # Ammount of resources pulled from factories each turn
 
 """ Constants used in players.py """
 score_constant = 1
+start_resources = 200
 
 """ Constants used in planet.py """
 planet_scale = 10000
