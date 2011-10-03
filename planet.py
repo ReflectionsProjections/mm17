@@ -90,7 +90,7 @@ class Base(object):
 			mag = hypot(*position)
 			position = (position[0]*(build_radius/mag),
 						position[1]*(build_radius/mag))
-		new_ship = Ship(position, self.planet.owner)
+		new_ship = Ship(position, self.owner)
 		self.planet.owner.resources -= Constants.ship_price
 		return new_ship
 
