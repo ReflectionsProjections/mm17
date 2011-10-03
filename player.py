@@ -26,7 +26,8 @@ class Player(object):
 		self.bases = {}
 		self.refineries = {}
 		self.score = 0
-		self.dicts = [self.ships,
+		self.dicts = [self.objects,
+					  self.ships,
 					  self.bases,
 					  self.refineries]
 
