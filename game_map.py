@@ -71,8 +71,8 @@ def map_maker(players):
 	angle = 2*pi/player_count
 	i = 0
 	for player in players.itervalues():
-		x = modifier*cos((angle*i)/player_count)
-		y = modifier*sin((angle*i)/player_count)
+		x = modifier*cos((angle*i))
+		y = modifier*sin((angle*i))
 		size = randrange(5000,10000,1000)
 		planet = Planet((x,y),size)
 		base = Base(planet, player)
