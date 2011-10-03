@@ -91,7 +91,7 @@ class Base(object):
 			position = (position[0]*(build_radius/mag),
 						position[1]*(build_radius/mag))
 		new_ship = Ship(position, self.owner)
-		self.planet.owner.resources -= Constants.ship_price
+		self.owner.resources -= Constants.ship_price
 		return new_ship
 
 	def salvage_ship(self, ship):
