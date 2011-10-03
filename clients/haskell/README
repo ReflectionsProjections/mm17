@@ -1,0 +1,6 @@
+cabal install should install MM17/Client
+
+On EWS, you need to bootstrap cabal-install yourself
+
+it will not build Main, that should work
+with ghc --make once the library is installed
