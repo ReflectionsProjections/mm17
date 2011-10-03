@@ -78,7 +78,9 @@ class Ship(MapObject):
 		width = Constants.weapon_width
 		length = self.weapon_range
 		mag = hypot(*direction)
-		normalized = (direction[0]*(length/mag),direction[1]*(length/mag))
+		if mag != 0:
+			normalized = (direction[0]*(length/mag),direction[1]*(length/mag))
+		else: normalized = (0,0)
 		angle = atan2(*direction)
 		w = width/2
 		# Four points, counter clockwise
