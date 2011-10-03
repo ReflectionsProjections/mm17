@@ -95,10 +95,13 @@ class Game(object):
 		with self.action_list_lock:
 			actions = self.actions[self.turn]
 		results = {}
-
+		refineries = [x.refinery for x in \
+						  self.game_map.asteroids.itervalues() if x.refinery]
+		bases = [x.base for x in self.game_map.planets.itervalues() if x.base]
 		for obj in self.game_map.objects.itervalues():
 			obj.events = []
-
+		for obj in bases + refineries:
+			obj.events = []
 		# execute orders
 		with self.action_list_lock:
 			for player , actions in actions.iteritems():
@@ -106,9 +109,6 @@ class Game(object):
 					method = getattr(action['object'], action['method'])
 					method(**action['params'])
 		#apply effects
-		refineries = [x.refinery for x in \
-						  self.game_map.asteroids.itervalues() if x.refinery]
-		bases = [x.base for x in self.game_map.planets.itervalues() if x.base]
 		ownables = refineries + bases + self.game_map.ships.values()
 		for obj in ownables:
 			for event in obj.events:

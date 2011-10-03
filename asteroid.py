@@ -46,7 +46,7 @@ class Asteroid(MapObject):
 				 'position': self.position,
 				 'resources' : self.resources,
 				 'size' : self.size,
-				 'refinery' : self.refinery.to_dict if self.refinery else None
+				 'refinery' : id(self.refinery) if self.refinery else 0
 				 }
 		return state
 
