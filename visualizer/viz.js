@@ -26,7 +26,7 @@ function draw(data) {
 		}
 		for (i in data.objects) {
 			var o = data.objects[i];
-			if (o.type == "ship") {
+			if (o.type == "Ship") {
 				if (o.health == 0)
 					continue;
 				var p = toView(o.position[0],o.position[1]);
@@ -56,7 +56,7 @@ function draw(data) {
 				circle(ctx,p[0],p[1],toViewSize(o.size));
 				ctx.stroke();
 				ctx.strokeStyle = "rgba(0,0,0,0)";
-			} else if (o.type == "asteroid") {
+			} else if (o.type == "Asteroid") {
 				var p = toView(o.position[0],o.position[1]);
 				if (o.refinery) {
 					ctx.strokeStyle = "rgba(0,255,0,1)";
@@ -74,10 +74,12 @@ function draw(data) {
 			var o = data.lasers[i];
 			var p = toView(o.start[0],o.start[1]);
 			var q = o.direction;
+			ctx.beginPath();
 			ctx.moveTo(p[0],p[1]);
 			ctx.lineTo(p[0]+toViewSize(q[0]),p[1]-toViewSize(q[1]));
-			ctx.strokeStyle = "rgb(255,0,0)";
+			ctx.strokeStyle = "rgba(255,0,0,0.7)";
 			ctx.lineWidth = toViewSize(50);
+			ctx.lineCap = "round";
 			ctx.stroke();
 			ctx.strokeStyle = "rgba(0,0,0,0)";
 		}
@@ -121,6 +123,11 @@ function healthMeter(ctx, cx, cy, val) {
 	ctx.lineWidth = toViewSize(10);
 	ctx.strokeRect(cx-toViewSize(200),cy-toViewSize(40),toViewSize(400),toViewSize(80));
 	ctx.fillRect(cx-toViewSize(200),cy-toViewSize(40),toViewSize(4 * val),toViewSize(80));
+}
+
+function ship(ctx, cx, cy, angle) {
+	ctx.beginPath();
+	ctx.moveTo(cx + Math.cos(angle) * toViewSize(200),cy - Math.sin(angle) * toViewSize(200));
 }
 
 /*
