@@ -4,6 +4,7 @@ var screen_scale = 60000;
 var screen_x = 0;
 var screen_y = 0;
 var last_draw = 0;
+var t = 0.0;
 
 function draw(data) {
 	if (data) {
@@ -20,6 +21,8 @@ function draw(data) {
 		ctx.fillRect(0,0,w,h);
 		var players = Array();
 		var n_players = 0;
+		ctx.lineCap = "round";
+		ctx.lineJoin = "round";
 		for (i in data.players) {
 			players[data.players[i].id + "_"] = data.players[i];
 			n_players++;
@@ -30,8 +33,8 @@ function draw(data) {
 				if (o.health == 0)
 					continue;
 				var p = toView(o.position[0],o.position[1]);
-				ctx.fillStyle = "rgb(0,255,0)";
-				circle(ctx,p[0],p[1],toViewSize(100));
+				//circle(ctx,p[0],p[1],toViewSize(100));
+				ship(ctx,p[0],p[1],o.direction);
 				ctx.fillStyle = "rgb(0,255,0)";
 				ctx.font = Math.max(toViewSize(100),8) + "pt monospace";
 				ctx.fillText(players[o.owner + "_"].name,p[0]+toViewSize(100),p[1]+toViewSize(30));
@@ -79,7 +82,6 @@ function draw(data) {
 			ctx.lineTo(p[0]+toViewSize(q[0]),p[1]-toViewSize(q[1]));
 			ctx.strokeStyle = "rgba(255,0,0,0.7)";
 			ctx.lineWidth = toViewSize(50);
-			ctx.lineCap = "round";
 			ctx.stroke();
 			ctx.strokeStyle = "rgba(0,0,0,0)";
 		}
@@ -100,6 +102,9 @@ function draw(data) {
 			}
 			ctx.fillText(p.name + "  [o:" + p.resources + " b:" + p.bases.length + " r:" + p.refineries.length + " s:" + p.ships.length + "]", 2, 40 + 13 * i);
 		}
+		var p = toView(0,0);
+		ship(ctx, p[0],p[1], t);
+		t += 0.01;
 	}
 }
 
@@ -125,9 +130,21 @@ function healthMeter(ctx, cx, cy, val) {
 	ctx.fillRect(cx-toViewSize(200),cy-toViewSize(40),toViewSize(4 * val),toViewSize(80));
 }
 
+function s(ctx, cx, cy, angle, x, y) {
+	ctx.lineTo(cx + Math.cos(angle) * toViewSize(x) - Math.sin(angle) * toViewSize(y), cy + Math.sin(angle) * toViewSize(x) + Math.cos(angle) * toViewSize(y));
+	return 
+}
 function ship(ctx, cx, cy, angle) {
+	angle += Math.PI;
+	ctx.strokeStyle = "rgba(0,255,0,1.0)";
+	ctx.lineWidth = toViewSize(20);
 	ctx.beginPath();
-	ctx.moveTo(cx + Math.cos(angle) * toViewSize(200),cy - Math.sin(angle) * toViewSize(200));
+	ctx.moveTo(cx - Math.sin(angle) * toViewSize(200),cy + Math.cos(angle) * toViewSize(200));
+	s(ctx,cx,cy,angle, -100, -100);
+	s(ctx,cx,cy,angle, 0, -50);
+	s(ctx,cx,cy,angle, 100, -100);
+	s(ctx,cx,cy,angle, 0, 200);
+	ctx.stroke();
 }
 
 /*
