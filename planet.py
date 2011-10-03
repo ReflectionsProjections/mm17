@@ -37,7 +37,7 @@ class Planet(MapObject):
 				 'id': id(self),
 				 'position': self.position,
 				 'size':self.size,
-				 'base': self.base.to_dict() if self.base else None
+				 'base': id(self.base) if self.base else 0
 				}
 		return state
 
@@ -64,6 +64,7 @@ class Base(object):
 		self.health = Constants.base_health
 		self.events = []
 		owner.add_object(self)
+		self.planet.base = self
 
 	def create_ship(self, position):
 		"""
