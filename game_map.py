@@ -76,7 +76,7 @@ def map_maker(players):
 		size = randrange(5000,10000,1000)
 		planet = Planet((x,y),size)
 		base = Base(planet, player)
-		ship = Ship((x+2*size, y+2*size), player)
+		ship = Ship((x+size*1.1, y+size*1.1), player)
 		i += 1
 	for x in range(player_count*10):
 		x = randrange(0, 1.5*modifier)
