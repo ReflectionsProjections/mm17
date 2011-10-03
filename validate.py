@@ -107,7 +107,7 @@ def validate_ship_action(action, player, turn):
 				return {'success':False, 'message':'invalid direction values'}
 			result = {'object': ship,
 					  'method': action['command'],
-					  'params': action['args']}
+					  'params': extract(['direction', 'speed'], action['args'])}
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			ship.methods_used['thrust'] = True
@@ -124,7 +124,7 @@ def validate_ship_action(action, player, turn):
 				return {'success':False, 'message':'direction must be a list'}
 			result = {'object': ship,
 					  'method': action['command'],
-					  'params': action['args']}
+					  'params':  extract(['direction'], action['args'])}
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			ship.methods_used['fire'] = True
@@ -148,7 +148,7 @@ def validate_ship_action(action, player, turn):
 				return {'success':False, 'message':'planet already has base'}
 			result = {'object': ship,
 					  'method': action['command'],
-					  'params': action['args']}
+					  'params': extract(['scan_id'], action['args'])}
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			ship.methods_used['scan'] = True
@@ -166,7 +166,7 @@ def validate_ship_action(action, player, turn):
 				return {'success':False, 'message':'asteroid must be int'}
 			result = {'object': ship,
 					  'method': action['command'],
-					  'params': action['args']}
+					  'params': extract(['asteroid'], action['args'])}
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			ship.methods_used['create_refinery'] = True
@@ -185,7 +185,7 @@ def validate_ship_action(action, player, turn):
 				return {'success':False, 'message':'planet must be int'}
 			result = {'object': ship,
 					  'method': action['command'],
-					  'params': action['args']}
+					  'params': extract(['planet'], action['args'])}
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			ship.methods_used['create_base'] = True
@@ -256,7 +256,7 @@ def validate_base_action(action, player):
 				return {'success':False, 'message':'invalid position values'}
 			result = {'object': base,
 					  'method': action['command'],
-					  'params': action['args']}
+					  'params':extract(['position'], action['args']) }
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			base.busy = Constants.base_build_busy
@@ -276,7 +276,7 @@ def validate_base_action(action, player):
 						'message':'too far away to salvage ship'}
 			result = {'object': base,
 					  'method': action['command'],
-					  'params': action['args']}
+					  'params': extract(['ship_id'], action['args'])}
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			base.busy = Constants.base_salvage_busy
@@ -299,7 +299,7 @@ def validate_base_action(action, player):
 						'message':'ship already at full health'}
 			result = {'object': base,
 					  'method': action['command'],
-					  'params': action['args']}
+					  'params': extract(['ship_id'], action['args'])}
   			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			base.busy = Constants.base_repair_busy
@@ -308,7 +308,7 @@ def validate_base_action(action, player):
 	elif action['command'] == 'destroy':
 		result = {'object': base,
 				  'method': action['command'],
-				  'params': action['args']}
+				  'params': {}}
 		with game.action_list_lock:
 			game.actions[turn][player.auth].append(result)
 		return {'success' : True, 'message':'success'}
@@ -358,7 +358,7 @@ def validate_refinery_action(action, player):
 	if action['command'] == 'destroy':
 		result = {'object': refinery,
 				  'method': action['command'],
-				  'params': action['args']}
+				  'params': []}
 		with game.action_list_lock:
 			game.actions[turn][player.auth].append(result)
 		return {'success' : True, 'message':'success'}
