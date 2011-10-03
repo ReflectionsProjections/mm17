@@ -19,20 +19,11 @@ function draw(data) {
 		ctx.fillStyle = "rgb(0,0,0)";
 		ctx.fillRect(0,0,w,h);
 		ctx.font = "10pt monospace";
-		ctx.fillStyle = "rgb(0,255,0)";
-		ctx.fillText("Turn " + data.turn.toString(), 2, 10);
-		ctx.fillText("Players (" + data.players.length.toString() + ")", 2, 26);
-		/* Players */
 		var players = Array();
+		var n_players = 0;
 		for (i in data.players) {
-			p = data.players[i];
-			players[p.id + "_"] = p;
-			if (p.alive) { 
-				ctx.fillStyle = "rgb(0,255,0)";
-			} else {
-				ctx.fillStyle = "rgb(255,0,0)";
-			}
-			ctx.fillText(p.name + "  [o:" + p.resources + " b:" + p.bases.length + " r:" + p.refineries.length + " s:" + p.ships.length + "]", 2, 40 + 13 * i);
+			players[data.players[i].id + "_"] = data.players[i];
+			n_players++;
 		}
 		for (i in data.objects) {
 			var o = data.objects[i];
@@ -52,11 +43,15 @@ function draw(data) {
 				if (o.base) {
 					ctx.strokeStyle = "rgba(0,255,0,1)";
 					ctx.lineWidth = toViewSize(200);
+					var d = toViewSize(o.size + 110);
+					ctx.fillText(Math.floor(o.base.health).toString() + " " + o.id,p[0]+d,p[1]-5);
+					ctx.fillText(players[o.base.owner + "_"].name,p[0]+d,p[1]+7);
 				} else {
 					ctx.strokeStyle = "rgba(0,0,0,0)";
 				}
 				circle(ctx,p[0],p[1],toViewSize(o.size));
 				ctx.stroke();
+				ctx.strokeStyle = "rgba(0,0,0,0)";
 			} else if (o.type == "asteroid") {
 				var p = toView(o.position[0],o.position[1]);
 				if (o.refinery) {
@@ -68,6 +63,7 @@ function draw(data) {
 				ctx.fillStyle = "rgb(255,0,255)";
 				circle(ctx,p[0],p[1],toViewSize(o.size));
 				ctx.stroke();
+				ctx.strokeStyle = "rgba(0,0,0,0)";
 			}
 		}
 		for (i in data.lasers) {
@@ -80,6 +76,22 @@ function draw(data) {
 			ctx.lineWidth = toViewSize(50);
 			ctx.stroke();
 			ctx.strokeStyle = "rgba(0,0,0,0)";
+		}
+		ctx.fillStyle = "rgba(0,0,0,0.5)";
+		ctx.fillRect(0,0,350,36 + n_players * 13);
+		ctx.fillStyle = "rgb(0,255,0)";
+		ctx.fillText("Turn " + data.turn.toString(), 2, 12);
+		ctx.fillText("[" + Math.floor(screen_x) + "," + Math.floor(screen_y) + "]", 200, 12);
+		ctx.fillText("Players (" + data.players.length.toString() + ")", 2, 26);
+		/* Players */
+		for (i in data.players) {
+			p = data.players[i];
+			if (p.alive) { 
+				ctx.fillStyle = "rgb(0,255,0)";
+			} else {
+				ctx.fillStyle = "rgb(255,0,0)";
+			}
+			ctx.fillText(p.name + "  [o:" + p.resources + " b:" + p.bases.length + " r:" + p.refineries.length + " s:" + p.ships.length + "]", 2, 40 + 13 * i);
 		}
 	}
 }
