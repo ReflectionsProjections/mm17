@@ -5,7 +5,7 @@ base_health = 100
 scan_range = 2000
 weapon_range = 1000
 weapon_strength = 10
-weapon_width = 10
+weapon_width = 100
 
 max_velocity = 200
 max_accel = 20
