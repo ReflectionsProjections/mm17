@@ -66,6 +66,16 @@ class Base(object):
 		self.events = []
 		owner.add_object(self)
 		self.planet.base = self
+		# holds all events to be processed on turn handle
+		self.events = []
+
+		# holds results from turns to be returned to user
+		# dict of lists accessed like results[turn]
+		self.results = {0: []}
+
+		# set methods used to true in this dict to prevent
+		# double dipping
+		self.methods_used = {}
 
 	def create_ship(self, position):
 		"""

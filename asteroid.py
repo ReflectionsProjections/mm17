@@ -59,6 +59,17 @@ class Refinery(object):
 		self.asteroid = asteroid
 		self.owner = owner
 		self.built = 5
+		self.position = asteroid.position
+		# holds all events to be processed on turn handle
+		self.events = []
+
+		# holds results from turns to be returned to user
+		# dict of lists accessed like results[turn]
+		self.results = {0: []}
+
+		# set methods used to true in this dict to prevent
+		# double dipping
+		self.methods_used = {}
 
 		owner.refineries[id(self)] = self
 
