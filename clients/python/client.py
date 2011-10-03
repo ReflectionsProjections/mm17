@@ -80,7 +80,7 @@ class GameClient(object):
 		#print "Turn number %d..." % self.current_turn,
 		game_state = self._do("game/info/all",{})
 		actions = []
-		target = (0,0)
+		target = (-9000,0)
 		me = None
 		them = None
 		#print game_state
@@ -113,19 +113,27 @@ class GameClient(object):
 					elif it['type'] == 'shot':
 						if it['hit']:
 							print "== Shot Hit:",it['hit'],it['obj_type'],"=="
+			elif thing['type'] == 'Base':
+				actions.append({
+					"obj_type": "base",
+					"obj_id": thing['id'],
+					"command": "create_ship",
+					"args": {
+						"position": thing['position']
+						}
+					})
 		#print game_state
 		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0
 		#print result
 		for r in result:
 			if not r['success']:
+				print r['message'];
 				failed += 1
-		"""
 		if failed == 0:
 			print "Done."
 		else:
 			print "Done, but %d actions failed." % failed
-		"""
 	def _waitForNextTurn(self):
 		"""
 		Poll the server for the current turn until we have switched to the next turn.
