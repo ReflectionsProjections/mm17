@@ -88,10 +88,6 @@ def validate_ship_action(action, player, turn):
 	if ship.owner != player:
 		return {'success':False, 'message':'not authenticated for that ship'}
 
-	# check to see if ship is alive
-	if ship.alive == False:
-		return {'success':False, 'message':'ship has been destroyed'}
-
 	# make sure args is a dict
 	if not isinstance(action['args'], dict):
 		return {'success':False, 'message':'args must be a dictionary'}
