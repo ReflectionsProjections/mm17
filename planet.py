@@ -4,7 +4,7 @@ import unittest
 from vector import distance
 import Constants
 from map_obj import MapObject
-
+from ship import Ship
 class Planet(MapObject):
 	"""
 	A planet that can be captured. A base can be built here by a ship.
