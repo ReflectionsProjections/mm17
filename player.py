@@ -74,6 +74,7 @@ class Player(object):
 		@return: The current player state to JSON serializable representation.
 		"""
 		state = { 'type':'Player',
+				  'alive':self.alive,
 				  'name':self.name,
 				  'id': id(self),
 				  'resources': self.resources,
