@@ -54,6 +54,22 @@ class MMHandler(BaseHTTPRequestHandler):
 		self.respond()
 		self.wfile.write(json.dumps(gameStatus))
 
+	def viz(self, params):
+		"""
+		Display the visualizer
+		"""
+		parsedURL = urlparse(self.path)
+		xpath = parsedURL.path.replace("/viz/","./visualizer/")
+		xpath = xpath.replace("..",".")
+		f = open(xpath)
+		if f:
+			self.send_response(200)
+			self.end_headers()
+			self.wfile.write(f.read())
+		else:
+			self.send_error(404, "Vad visualizer file path")
+
+
 	def game_visualizer(self, params):
 		"""
 		Handle a request by the visualizer to get all objects.  Write out
@@ -126,6 +142,7 @@ class MMHandler(BaseHTTPRequestHandler):
 
 	# These map URIs to handlers depending on request method
 	GET_PATHS = {
+		'viz': viz,
 		'game': {
 			'info': {
 				'': game_status,
