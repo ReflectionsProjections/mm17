@@ -318,19 +318,10 @@ class Game(object):
 		if auth != self.viz_auth:
 			return {'message':'not a valid auth code'}
 		else:
-			objects = []
-			for x in self.game_map.objects.itervalues():
-				if hasattr(x, 'alive'):
-					if x.alive: objects.append(x.to_dict())
-				else: objects.append(x.to_dict())
-			players = []
-			for p in self.players.values():
-				dict = p.to_dict()
-				dict['ships'] = [id(x) for x in p.ships.values() if x.alive]
-				players.append(dict)
 			return {'turn':self.turn, 
-					'objects':objects, 
-					'players':players, 
+					'objects':[o.to_dict() for o in\
+								   self.game_map.objects.values()], 
+					'players':[p.to_dict() for p in self.players.values()], 
 					'lasers':self.lasers_shot[self.turn - 1]}
 			
 class TestGame(unittest.TestCase):

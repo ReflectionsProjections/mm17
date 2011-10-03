@@ -86,11 +86,11 @@ class MapObject(object):
 		for dict in game.game_map.dicts:
 			if id(self) in dict.keys():
 				del dict[id(self)]
-		if hasattr(object, 'owner'):
-			owner = object.owner
+		if hasattr(self, 'owner'):
+			owner = self.owner
 			for dict in owner.dicts:
-				if id(object) in dict.keys():
-					del dict[id(object)]
+				if id(self) in dict.keys():
+					del dict[id(self)]
 
 if __name__=='__main__':
 	unittest.main()
