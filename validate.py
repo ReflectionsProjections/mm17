@@ -44,16 +44,20 @@ False
 		game.actions[turn][player.auth] = []
 
 	for action in input['actions']:
-		if action['obj_type'] == "Ship":
-			results.append(validate_ship_action(action, player, turn))
-		elif action['obj_type'] == "Base":
-			results.append(validate_base_action(action, player, turn))
-		elif action['obj_type'] == "Refinery":
-			results.append(validate_refinery_action(action, player, turn))
-		elif action['obj_type'] == "Player":
-			results.append(validate_player_action(action, player, turn))
-		else:
-			results.append({'success':False, 'message':'bad or no obj_type in action'})
+		try:
+			if action['obj_type'] == "Ship":
+				results.append(validate_ship_action(action, player, turn))
+			elif action['obj_type'] == "Base":
+				results.append(validate_base_action(action, player, turn))
+			elif action['obj_type'] == "Refinery":
+				results.append(validate_refinery_action(action, player, turn))
+			elif action['obj_type'] == "Player":
+				results.append(validate_player_action(action, player, turn))
+			else:
+				results.append({'success':False, 'message':'bad or no obj_type in action'})
+		except Exception, e:
+			print e
+			results.append({'success':False, 'message':'action caused server error'})
 
 	with game.action_list_lock:
 		game.completed_turns[game.turn][player.auth] = True
