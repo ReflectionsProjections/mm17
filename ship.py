@@ -153,6 +153,7 @@ class Ship(MapObject):
 				 'velocity': self.velocity,
 				 'direction': self.direction,
 				 'health': self.health,
+				 'size': self.size,
 				 'events':self.events
 				 }
 		return state
