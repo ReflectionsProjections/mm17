@@ -278,7 +278,7 @@ class Game(object):
 			'you': id(player),
 			'alive_players': alive_players,
 			'objects': [object.to_dict() for object in\
-					player.objects.itervalues()]
+					player.objects.itervalues()],
 		}
 
 	def add_player(self, name, auth):
@@ -323,7 +323,7 @@ class Game(object):
 		else:
 			objects = [x.to_dict() for x in self.game_map.objects.itervalues()]
 			players = [x.to_dict() for x in self.players.values() if x.alive]
-			return {'turn':self.turn, 'objects':objects, 'players':players}
+			return {'turn':self.turn, 'objects':objects, 'players':players, 'lasers':self.lasers_shot[self.turn]}
 			
 class TestGame(unittest.TestCase):
 	def setUp(self):
