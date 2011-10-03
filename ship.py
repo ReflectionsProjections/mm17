@@ -109,11 +109,10 @@ class Ship(MapObject):
 			# register damage with hit object
 			diagonal = distance(self.position, p_2)
 			dist = distance(self.position, within_beam[0].position)
-			damage_amt = Constants.weapon_strength *(diagonal - \
-					dist)/Constants.weapon_range
+			damage_amt = Constants.weapon_strength
 			within_beam[0].events.append({'type':'damage',
-					'amount':damage_amt,
-					'hit_by':id(self)})
+										  'amount':damage_amt,
+										  'hit_by':id(self)})
 		with game.lasers_shot_lock:
 			game.lasers_shot[game.turn].append({'start': self.position, 
 												'direction':normalized})
