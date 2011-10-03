@@ -327,9 +327,11 @@ class Game(object):
 				if hasattr(x, 'alive'):
 					if x.alive: objects.append(x.to_dict())
 				else: objects.append(x.to_dict())
+			players = []
 			for p in self.players.values():
 				dict = p.to_dict()
 				dict['ships'] = [id(x) for x in p.ships if x.alive]
+				players.append(dict)
 			return {'turn':self.turn, 
 					'objects':objects, 
 					'players':players, 
