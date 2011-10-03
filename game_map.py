@@ -54,9 +54,14 @@ class Map(object):
 		@param position: Position of the object to get radar
 		@param range: Range of the radar
 		"""
-		return [x for x in self.objects.itervalues()
+		pings = []
+		for x in self.objects.itervalues():
+			if hasattr(x, 'owner') and x.owner != object.owner:
 				if distance(object.position, x.position) <= \
-					Constants.scan_range and x is not object]
+					Constants.scan_range:
+					pings.append(x)
+		return pings
+
 
 def map_maker(players):
 	from game_instance import Game
@@ -85,8 +90,6 @@ def map_maker(players):
 		y = randrange(-1.5*modifier, 1.5*modifier)
 		size = randrange(100,500)
 		asteroid = Asteroid((x,y),size)
-		
-
 
 class TestGame(unittest.TestCase):
 
