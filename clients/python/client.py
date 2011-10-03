@@ -99,7 +99,7 @@ class GameClient(object):
 				"command": "thrust",
 				"args": { 
 					"direction": accel,
-					"speed": 3
+					"speed": 100
 					}
 				})
 			if them:
