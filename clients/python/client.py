@@ -79,8 +79,7 @@ class GameClient(object):
 		self._waitForNextTurn()
 		#print "Turn number %d..." % self.current_turn,
 		game_state = self._do("game/info/all",{})
-		print "\n/game/info/all/\n"
-		print game_state
+		#print game_state
 		actions = []
 		target = (-9000,0)
 		me = None
@@ -127,8 +126,6 @@ class GameClient(object):
 		#print game_state
 		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0
-		print "\n/game/turn/num POST \n"
-		print result
 		for r in result:
 			if not r['success']:
 				print r['message'];
