@@ -43,16 +43,31 @@ function draw(data) {
 				ctx.fillStyle = "rgb(0,255,0)";
 				circle(ctx,p[0],p[1],toViewSize(100));
 				ctx.fillStyle = "rgb(0,255,0)";
-				ctx.fillText(Math.floor(o.health).toString() + " " + o.id,p[0]+20,p[1]-5);
-				ctx.fillText(players[o.owner + "_"].name,p[0]+20,p[1]+7);
+				var d = toViewSize(110);
+				ctx.fillText(Math.floor(o.health).toString() + " " + o.id,p[0]+d,p[1]-5);
+				ctx.fillText(players[o.owner + "_"].name,p[0]+d,p[1]+7);
 			} else if (o.type == "Planet") {
 				var p = toView(o.position[0],o.position[1]);
 				ctx.fillStyle = "rgb(0,0,255)";
+				if (o.base) {
+					ctx.strokeStyle = "rgba(0,255,0,1)";
+					ctx.lineWidth = toViewSize(200);
+				} else {
+					ctx.strokeStyle = "rgba(0,0,0,0)";
+				}
 				circle(ctx,p[0],p[1],toViewSize(o.size));
+				ctx.stroke();
 			} else if (o.type == "asteroid") {
 				var p = toView(o.position[0],o.position[1]);
+				if (o.refinery) {
+					ctx.strokeStyle = "rgba(0,255,0,1)";
+					ctx.lineWidth = toViewSize(100);
+				} else {
+					ctx.strokeStyle = "rgba(0,0,0,0)";
+				}
 				ctx.fillStyle = "rgb(255,0,255)";
 				circle(ctx,p[0],p[1],toViewSize(o.size));
+				ctx.stroke();
 			}
 		}
 		for (i in data.lasers) {
@@ -121,8 +136,8 @@ $(window).mousemove(function (event) {
 		mouseDownX = event.pageX;
 		mouseDownY = event.pageY;
 
-		screen_x += dX * screen_scale / 1000;
-		screen_y += dY * screen_scale / 1000;
+		screen_x += dX * screen_scale / h;
+		screen_y += dY * screen_scale / h;
 		draw(last_draw);
 	}
 });
