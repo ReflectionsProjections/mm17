@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import unittest
-
+from vector import distance
 import Constants
 from map_obj import MapObject
 
