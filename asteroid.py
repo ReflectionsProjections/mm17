@@ -59,6 +59,7 @@ class Refinery(object):
 		self.asteroid = asteroid
 		self.owner = owner
 		self.built = 5
+		self.busy = 0
 		self.position = asteroid.position
 		# holds all events to be processed on turn handle
 		self.events = []

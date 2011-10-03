@@ -64,6 +64,7 @@ class Base(object):
 		self.position = self.planet.position
 		self.health = Constants.base_health
 		self.events = []
+		self.busy = 0
 		owner.add_object(self)
 		self.planet.base = self
 		# holds all events to be processed on turn handle
