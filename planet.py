@@ -37,7 +37,7 @@ class Planet(MapObject):
 				 'id': id(self),
 				 'position': self.position,
 				 'size':self.size,
-				 'base': id(self.base) if self.base else 0
+				 'base': self.base.to_dict() if self.base else None
 				}
 		return state
 
@@ -136,7 +136,7 @@ class Base(object):
 				  'id': id(self),
 				  'built': self.built,
 				  'position': self.position,
-				  'planet':self.planet.to_dict(),
+				  'planet':id(self.planet),
 				  'owner': id(self.owner),
 				  'health': self.health,
 				  'events':self.events

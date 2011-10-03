@@ -46,7 +46,7 @@ class Asteroid(MapObject):
 				 'position': self.position,
 				 'resources' : self.resources,
 				 'size' : self.size,
-				 'refinery' : id(self.refinery) if self.refinery else 0
+				 'refinery' : self.refinery.to_dict() if self.refinery else None
 				 }
 		return state
 
@@ -86,7 +86,7 @@ class Refinery(object):
 				  'id': id(self),
 				  'built': self.built,
 				  'owner': id(self.owner),
-				  'asteroid':self.asteroid.to_dict(),
+				  'asteroid':id(self.asteroid),
 				  'health':self.health,
 				  'events':self.events
 				  }
