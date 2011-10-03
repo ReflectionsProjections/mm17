@@ -61,6 +61,7 @@ class Base(object):
 		self.alive = True
 		self.planet = planet
 		self.owner = owner
+		self.position = self.planet.position
 		self.health = Constants.base_health
 		self.events = []
 		owner.add_object(self)
@@ -123,6 +124,7 @@ class Base(object):
 		state = { 'type':'Base',
 				  'id': id(self),
 				  'built': self.built,
+				  'position': self.position,
 				  'planet':self.planet.to_dict(),
 				  'owner': id(self.owner),
 				  'health': self.health,
