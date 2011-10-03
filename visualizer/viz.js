@@ -18,7 +18,6 @@ function draw(data) {
 		canvas.height = h;
 		ctx.fillStyle = "rgb(0,0,0)";
 		ctx.fillRect(0,0,w,h);
-		ctx.font = "10pt monospace";
 		var players = Array();
 		var n_players = 0;
 		for (i in data.players) {
@@ -34,21 +33,26 @@ function draw(data) {
 				ctx.fillStyle = "rgb(0,255,0)";
 				circle(ctx,p[0],p[1],toViewSize(100));
 				ctx.fillStyle = "rgb(0,255,0)";
-				var d = toViewSize(110);
-				ctx.fillText(Math.floor(o.health).toString() + " " + o.id,p[0]+d,p[1]-5);
-				ctx.fillText(players[o.owner + "_"].name,p[0]+d,p[1]+7);
+				ctx.font = Math.max(toViewSize(100),8) + "pt monospace";
+				ctx.fillText(players[o.owner + "_"].name,p[0]+toViewSize(100),p[1]+toViewSize(30));
+				ctx.strokeStyle = "rgb(0,255,0)";
+				ctx.fillStyle = "rgba(0,255,0,0.7)";
+				healthMeter(ctx, p[0], p[1] - toViewSize(150), o.health);
 			} else if (o.type == "Planet") {
 				var p = toView(o.position[0],o.position[1]);
-				ctx.fillStyle = "rgb(0,0,255)";
 				if (o.base) {
+					ctx.strokeStyle = "rgb(0,0,255)";
+					ctx.fillStyle = "rgba(0,0,255,0.7)";
+					healthMeter(ctx, p[0], p[1] - toViewSize(o.size + 170), o.base.health);
 					ctx.strokeStyle = "rgba(0,255,0,1)";
 					ctx.lineWidth = toViewSize(200);
-					var d = toViewSize(o.size + 110);
-					ctx.fillText(Math.floor(o.base.health).toString() + " " + o.id,p[0]+d,p[1]-5);
-					ctx.fillText(players[o.base.owner + "_"].name,p[0]+d,p[1]+7);
+					ctx.fillStyle = "rgb(0,0,255)";
+					ctx.font = Math.max(toViewSize(200),8) + "pt monospace";
+					ctx.fillText(players[o.base.owner + "_"].name,p[0]+toViewSize(o.size + 110),p[1]);
 				} else {
 					ctx.strokeStyle = "rgba(0,0,0,0)";
 				}
+				ctx.fillStyle = "rgb(0,0,255)";
 				circle(ctx,p[0],p[1],toViewSize(o.size));
 				ctx.stroke();
 				ctx.strokeStyle = "rgba(0,0,0,0)";
@@ -77,6 +81,7 @@ function draw(data) {
 			ctx.stroke();
 			ctx.strokeStyle = "rgba(0,0,0,0)";
 		}
+		ctx.font = "10pt monospace";
 		ctx.fillStyle = "rgba(0,0,0,0.5)";
 		ctx.fillRect(0,0,350,36 + n_players * 13);
 		ctx.fillStyle = "rgb(0,255,0)";
@@ -110,6 +115,12 @@ function update() {
 			draw(data);
 		}
 	);
+}
+
+function healthMeter(ctx, cx, cy, val) {
+	ctx.lineWidth = toViewSize(10);
+	ctx.strokeRect(cx-toViewSize(200),cy-toViewSize(40),toViewSize(400),toViewSize(80));
+	ctx.fillRect(cx-toViewSize(200),cy-toViewSize(40),toViewSize(4 * val),toViewSize(80));
 }
 
 /*
