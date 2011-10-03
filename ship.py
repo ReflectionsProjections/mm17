@@ -77,7 +77,8 @@ class Ship(MapObject):
 		"""
 		width = Constants.weapon_width
 		length = self.weapon_range
-
+		mag = hypot(*direction)
+		normalized = (direction[0]*(length/mag),direction[1]*(length/mag))
 		angle = atan2(*direction)
 		w = width/2
 		# Four points, counter clockwise
@@ -111,6 +112,9 @@ class Ship(MapObject):
 			within_beam[0].events.append({'type':'damage',
 					'amount':damage_amt,
 					'hit_by':id(self)})
+			with game.lasers_shot_lock:
+				game.lasers_shot[game.turn].append({'start': self.position, 
+													'direction':normalized})
 
 	def scan(self, object):
 		"""Scan an object, the data is fuzzed based on distance from the ship

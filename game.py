@@ -52,7 +52,7 @@ class Game(object):
 			self.player_results = {}
 		self.turn = 0
 		self.active = False
-		self.lasers_shot = []
+		self.lasers_shot = [[]]
 
 	def _log(self, message):
 		"""
