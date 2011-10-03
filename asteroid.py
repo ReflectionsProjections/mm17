@@ -92,5 +92,16 @@ class Refinery(object):
 				  }
 		return state
 
+	def _delete(self):
+		"""Delete object from map dicts and owner dicts.
+
+		@type  object: Base object
+		@param object: object to delete from map and owner dicts
+		"""
+		self.asteroid.base = None
+		del self.owner.objects[id(self)]
+		del self.owner.refineries[id(self)]
+
+
 if __name__ == '__main__':
 	unittest.main()

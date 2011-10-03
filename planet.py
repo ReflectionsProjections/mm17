@@ -124,6 +124,15 @@ class Base(object):
 		self.alive = False
 		self.planet.base = None
 
+	def _delete(self):
+		"""Delete object from map dicts and owner dicts.
+
+		@type  object: Base object
+		@param object: object to delete from map and owner dicts
+		"""
+		self.planet.base = None
+		del self.owner.objects[id(self)]
+		del self.owner.bases[id(self)]
 
 	def to_dict(self):
 		"""
