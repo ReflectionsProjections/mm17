@@ -88,10 +88,10 @@ class GameClient(object):
 		#print game_state
 		self.me = game_state['you']
 		for thing in game_state['objects']:
-			if thing['type'] == 'ship':
+			if thing['type'] == 'Ship':
 				accel = (target[0] - thing['position'][0],target[1] - thing['position'][1])
 				actions.append({
-					"obj_type": "ship",
+					"obj_type": "Ship",
 					"obj_id": thing['id'],
 					"command": "thrust",
 					"args": { 
@@ -105,7 +105,7 @@ class GameClient(object):
 						accel = (it['position'][0] - me['position'][0],it['position'][1] - me['position'][1])
 						if math.hypot(*accel) < 1000:
 							actions.append({
-								"obj_type": "ship",
+								"obj_type": "Ship",
 								"obj_id": me['id'],
 								"command": "fire",
 								"args": {
@@ -117,7 +117,7 @@ class GameClient(object):
 							print "== Shot Hit:",it['hit'],it['obj_type'],"=="
 			elif thing['type'] == 'Base':
 				actions.append({
-					"obj_type": "base",
+					"obj_type": "Base",
 					"obj_id": thing['id'],
 					"command": "create_ship",
 					"args": {
@@ -186,7 +186,7 @@ class GameClient(object):
 		Start the client.
 		"""
 		result = self._do("game/join",{"name":self.name})
-		if not result['join_success']:
+		if not result['success']:
 			print "Failed to join game: %s" % result['message']
 			sys.exit(1)
 		else:
