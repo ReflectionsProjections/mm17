@@ -330,7 +330,7 @@ class Game(object):
 			players = []
 			for p in self.players.values():
 				dict = p.to_dict()
-				dict['ships'] = [id(x) for x in p.ships if x.alive]
+				dict['ships'] = [id(x) for x in p.ships.values() if x.alive]
 				players.append(dict)
 			return {'turn':self.turn, 
 					'objects':objects, 
