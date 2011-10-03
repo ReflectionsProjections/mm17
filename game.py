@@ -116,11 +116,7 @@ class Game(object):
 					obj.health -= event['amount']
 			if obj.health <= 0:
 				# kill dead objects
-				obj.alive = False
-				obj.velocity = (0,0)
-				obj.health = 0
-				obj.events.append({'type':'status','status':'destroyed'})
-				obj.results[self.turn] = obj.events[:]
+				obj._delete()
 			else:
 				# compute radar returns for live ships
 				nearships = self.game_map.radar(obj)

@@ -74,7 +74,7 @@ class MapObject(object):
 		return state
 
 
-	def _delete(self, object):
+	def _delete(self):
 		"""Delete object from map dicts and owner dicts.
 
 		@type  object: MapObject object
@@ -84,8 +84,8 @@ class MapObject(object):
 		from game_instance import game
 
 		for dict in game.game_map.dicts:
-			if id(object) in dict.keys():
-				del dict[object]
+			if id(self) in dict.keys():
+				del dict[id(self)]
 		if hasattr(object, 'owner'):
 			owner = object.owner
 			for dict in owner.dicts:
