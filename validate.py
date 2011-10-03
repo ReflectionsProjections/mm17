@@ -99,7 +99,7 @@ def validate_ship_action(action, player, turn):
 	if action['command'] == 'thrust':
 		if ship.methods_used['thrust']:
 			return {'success':False, 'message':'thrust action already used'}
-		if 'direction' not in action['args'].keys():
+		elif 'direction' not in action['args'].keys():
 			return {'success':False, 'message':'thrust requires direction arg'}
 		elif not isinstance(action['args']['direction'], list):
 			return {'success':False, 'message':'direction must be list'}	

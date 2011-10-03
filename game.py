@@ -323,7 +323,7 @@ class Game(object):
 		else:
 			objects = [x.to_dict() for x in self.game_map.objects.itervalues()]
 			players = [x.to_dict() for x in self.players.values() if x.alive]
-			return {'turn':self.turn, 'objects':objects, 'players':players, 'lasers':self.lasers_shot[self.turn]}
+			return {'turn':self.turn, 'objects':objects, 'players':players, 'lasers':self.lasers_shot[self.turn - 1]}
 			
 class TestGame(unittest.TestCase):
 	def setUp(self):
