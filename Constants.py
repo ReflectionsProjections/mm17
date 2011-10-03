@@ -7,8 +7,8 @@ weapon_range = 1000
 weapon_strength = 10
 weapon_width = 10
 
-max_velocity = 50
-max_accel = 3
+max_velocity = 200
+max_accel = 20
 
 refinery_price = 10
 base_price = 50
