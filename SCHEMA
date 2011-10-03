@@ -1,0 +1,85 @@
+/* from /game/info */
+{
+    "description" : "Basic game info",
+    "type" : "object",
+    
+    "properties" : {
+	"game_active" : {"type":"bool"},
+	"turn" : {"type" : "integer"},
+	"active_players" : {"type" : array, "items" :{"type":"string"}}
+    }
+}
+{
+    "description" : "Game full info",
+    "properties" : {
+	"game_active" : {"type":"bool"},
+	"turn" : {"type" : "integer"},
+	"active_players" : {"type" : "array", "items" :{"type":"string"}}
+	"objects" : {"type" : "array",
+		     "items":[],
+		     "additionalItems" : [
+			 {"type":"object",
+			  "properties" : {
+			      "type":{"type":"string", "pattern":"ship"},
+			      "id":{"type":"integer"},
+			      "owner":{"type":"string"},
+			      "position" : {"type":"array",
+					    "items":[{"type":"number"},{"type":"number"}],
+					   },
+			      "velocity" : {"type" : "array",
+					    "items" : [{"type":"number"},{"type":"number"}],
+					   },
+			      "direction" : {"type" : "number"},
+			      "health" : {"type" : "number"},
+			      "events" :{"type":"array","items":{"type":"object"}}
+			  }}]}
+    }
+}
+{
+    "description" : "Turn orders",
+    "type" : "object",
+
+    "properties" : {
+	"auth":{"type":"string"},
+	"actions":{
+	    "type":"array",
+	    "items":[],
+	    "additionalItems" : [
+		{"type":"object",
+		 "properties" : {
+		     "obj_type" : {"type":"string", "pattern":"ship"},
+		     "command" : {"type":"string", "pattern":"thrust"},
+		     "obj_id" : {"type":"integer"},
+		     "args" : {"type" : "object",
+			       "properties" : {
+				   "direction" : {"type":"array",
+						  "items":[{"type":"number"},{"type":"number"}],
+						 },
+				   "speed" : {"type":"number"}
+			       }}
+		 }},
+		{"type":"object",
+		 "properties" : {
+		     "obj_type" : {"type":"string", "pattern":"ship"}
+		     "command" : {"type":"string", "pattern":"fire"},
+		     "obj_id" : {"type":"integer"},
+		     "args" : {"type" : "object",
+			       "properties" : {
+				   "direction" : {"type":"array",
+						  "items":[{"type":"number"},{"type":"number"}],
+						 }
+			       }}
+		 }},
+		{"type":"object",
+		 "properties" : {
+		     "obj_type" : {"type":"string","pattern":"ship"}
+		     "command" : {"type":"string", "pattern":"scan"},
+		     "obj_id" : {"type":"integer"},
+		     "args" : {"type" : "object",
+			       "properties" : {
+				   "scan_id" : {"type":"integer"}
+			       }}
+		 }}
+	    ]}
+    }
+}
