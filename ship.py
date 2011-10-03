@@ -97,7 +97,10 @@ class Ship(MapObject):
 		for obj in game.game_map.objects.itervalues():
 			hit = circle_in_rect((obj.position, obj.size), beam)
 			if hit and obj != self:
-				within_beam.append(obj)
+				if hasattr(obj,'alive'):
+					if obj.alive: within_beam.append(obj)
+				else:
+					within_beam.append(obj)
 		if len(within_beam) == 0:
 			# No object hit
 			self.events.append({'type':'shot','hit': None})
