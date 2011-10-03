@@ -85,12 +85,12 @@ class MapObject(object):
 
 		for dict in game.game_map.dicts:
 			if id(self) in dict.keys():
-				print "deleting from "+dict.__name__
+				print dict
 				del dict[id(self)]
 		if hasattr(self, 'owner'):
 			owner = self.owner
 			for dict in owner.dicts:
-				print "deleting from "+dict.__name__
+				print dict
 				if id(self) in dict.keys():
 					del dict[id(self)]
 
