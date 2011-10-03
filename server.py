@@ -300,6 +300,12 @@ if __name__ == '__main__':
 	# Set up the game
 	port = opts.port
 	game_map.max_players = opts.num_players
+	game.viz_auth = raw_input()
+	for i in range(0,opts.num_players):
+		game.allowed_auths.append(raw_input())
+	print "Confirm accepted auths:"
+	for i in game.allowed_auths:
+		print i
 
 	print "Starting on port " + str(port) + "..."
 	server = ThreadedHTTPServer(('', port), MMHandler)
