@@ -6,7 +6,7 @@ var screen_y = 0;
 var last_draw = 0;
 
 function draw(data) {
-	if (draw) {
+	if (data) {
 		last_draw = data;
 	}
 	var canvas = document.getElementById('visualizer');
@@ -23,8 +23,10 @@ function draw(data) {
 		ctx.fillText("Turn " + data.turn.toString(), 2, 10);
 		ctx.fillText("Players (" + data.players.length.toString() + ")", 2, 26);
 		/* Players */
+		var players = Array();
 		for (i in data.players) {
 			p = data.players[i];
+			players[p.id + "_"] = p;
 			if (p.alive) { 
 				ctx.fillStyle = "rgb(0,255,0)";
 			} else {
@@ -40,10 +42,9 @@ function draw(data) {
 				var p = toView(o.position[0],o.position[1]);
 				ctx.fillStyle = "rgb(0,255,0)";
 				circle(ctx,p[0],p[1],toViewSize(100));
-				ctx.fillStyle = "rgb(0,0,0)";
-				ctx.fillText(Math.floor(o.health),p[0]+5,p[1]-4);
 				ctx.fillStyle = "rgb(0,255,0)";
-				ctx.fillText(Math.floor(o.health),p[0]+4,p[1]-5);
+				ctx.fillText(Math.floor(o.health).toString() + " " + o.id,p[0]+20,p[1]-5);
+				ctx.fillText(players[o.owner + "_"].name,p[0]+20,p[1]+7);
 			} else if (o.type == "Planet") {
 				var p = toView(o.position[0],o.position[1]);
 				ctx.fillStyle = "rgb(0,0,255)";
@@ -63,6 +64,7 @@ function draw(data) {
 			ctx.strokeStyle = "rgb(255,0,0)";
 			ctx.lineWidth = toViewSize(50);
 			ctx.stroke();
+			ctx.strokeStyle = "rgba(0,0,0,0)";
 		}
 	}
 }

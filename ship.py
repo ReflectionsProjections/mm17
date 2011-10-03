@@ -88,8 +88,8 @@ class Ship(MapObject):
 				self.position[1] + w * -sin(angle))
 		p_3 = (self.position[0] + w * -cos(angle),
 				self.position[1] + w * sin(angle))
-		p_1 = (p_0[0] + length * cos(angle), p_0[1] + length * sin(angle))
-		p_2 = (p_1[0] + length * cos(angle), p_1[1] + length * sin(angle))
+		p_1 = (p_0[0] + length * sin(angle), p_0[1] + length * cos(angle))
+		p_2 = (p_3[0] + length * sin(angle), p_3[1] + length * cos(angle))
 
 		# rectangle of laser beam
 		beam = (p_0, p_1, p_2, p_3)

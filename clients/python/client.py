@@ -112,7 +112,7 @@ class GameClient(object):
 								})
 					elif it['type'] == 'shot':
 						if it['hit']:
-							print "== Shot Hit:",it['hit'],"=="
+							print "== Shot Hit:",it['hit'],it['obj_type'],"=="
 		#print game_state
 		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0
