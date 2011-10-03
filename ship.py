@@ -112,9 +112,9 @@ class Ship(MapObject):
 			within_beam[0].events.append({'type':'damage',
 					'amount':damage_amt,
 					'hit_by':id(self)})
-			with game.lasers_shot_lock:
-				game.lasers_shot[game.turn].append({'start': self.position, 
-													'direction':normalized})
+		with game.lasers_shot_lock:
+			game.lasers_shot[game.turn].append({'start': self.position, 
+												'direction':normalized})
 
 	def scan(self, object):
 		"""Scan an object, the data is fuzzed based on distance from the ship
