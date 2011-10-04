@@ -56,7 +56,12 @@ class Map(object):
 		"""
 		pings = []
 		for x in self.objects.itervalues():
-			if hasattr(x, 'owner') and x.owner != object.owner:
+			if hasattr(x, 'owner'):
+				if x.owner != object.owner:
+					if distance(object.position, x.position) <= \
+							Constants.scan_range:
+						pings.append(x)
+			else:
 				if distance(object.position, x.position) <= \
 					Constants.scan_range:
 					pings.append(x)
@@ -86,10 +91,15 @@ def map_maker(players):
 		ship = Ship((x+size*1.1, y+size), player)
 		i += 1
 	for x in range(player_count*10):
-		x = randrange(-1.5*modifier, 1.5*modifier)
-		y = randrange(-1.5*modifier, 1.5*modifier)
+		x = randrange(-2*modifier, 2*modifier)
+		y = randrange(-2*modifier, 2*modifier)
 		size = randrange(100,500)
 		asteroid = Asteroid((x,y),size)
+	for x in range(player_count*3):
+		x = randrange(-2*modifier, 2*modifier)
+		y = randrange(-2*modifier, 2*modifier)
+		size = randrange(500,1000,100)
+		planet = Planet((x,y),size)
 
 class TestGame(unittest.TestCase):
 

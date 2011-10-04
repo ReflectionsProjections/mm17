@@ -106,14 +106,24 @@ class GameClient(object):
 				me = thing
 				for it in me['events']:
 					if it['type'] == 'radar':
-						accel = (it['position'][0] - me['position'][0],it['position'][1] - me['position'][1])
-						if math.hypot(*accel) < 1000:
+						if it['obj_type'] == 'Ship':
+							accel = (it['position'][0] - me['position'][0],it['position'][1] - me['position'][1])
+							if math.hypot(*accel) < 1000:
+								actions.append({
+										"obj_type": "Ship",
+										"obj_id": me['id'],
+										"command": "fire",
+										"args": {
+											"direction": accel
+											}
+										})
+						if it['obj_type'] == 'Asteroid':
 							actions.append({
 								"obj_type": "Ship",
 								"obj_id": me['id'],
-								"command": "fire",
+								"command": "create_refinery",
 								"args": {
-										"direction": accel
+										"asteroid_id": it["id"]
 									}
 								})
 					if it['type'] == 'scan':
@@ -129,13 +139,6 @@ class GameClient(object):
 					"args": {
 						"position": thing['position']
 						}
-					})
-				if self.current_turn > 50: 
-					actions.append({
-					"obj_type": "Base",
-					"obj_id": thing['id'],
-					"command": "destroy",
-					"args": {}
 					})
 		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0

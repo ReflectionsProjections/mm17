@@ -136,16 +136,18 @@ class Ship(MapObject):
 				 }
 		return state
 
-	def create_refinery(self, asteroid):
+	def create_refinery(self, asteroid_id):
 		"""
 		Create a refinery on an asteroid
 
 		@type asteroid: Asteroid object
 		@param asteroid: Asteroid to build refinery on
 		"""
+		from asteroid import Refinery
+		from game_instance import game
+		asteroid = game.game_map.asteroids[asteroid_id]
 		new_refinery = Refinery(asteroid, self.owner)
-		resources -= Constants.refinery_price
-		return nee_refinery
+		self.owner.resources -= Constants.refinery_price
 
 	def create_base(self, planet):
 		"""
@@ -156,7 +158,6 @@ class Ship(MapObject):
 		"""
 		new_base = Base(planet, self.owner)
 		resources -= Constants.base_price
-		return new_base
 
 class TestShip(unittest.TestCase):
 	pass

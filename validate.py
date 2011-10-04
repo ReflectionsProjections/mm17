@@ -142,15 +142,15 @@ def validate_ship_action(action, player, turn):
 	elif action['command'] == 'create_refinery':
 		if ship.methods_used['create_refinery']:
 			return {'success':False, 'message':'create_refinery action already used'}
-		elif 'asteroid' not in action['args'].keys():
+		elif 'asteroid_id' not in action['args'].keys():
 			return {'success':False, 
-					'message':'create_refinery requires asteroid arg'}
+					'message':'create_refinery requires asteroid_id arg'}
 		elif player.resources < Constants.refinery_price:
 			return {'success':False, 'message':'not enough resources!'}
 		else:
-			asteroid_id = action['args']['asteroid']
+			asteroid_id = action['args']['asteroid_id']
 			if not isinstance(asteroid_id, int):
-				return {'success':False, 'message':'asteroid must be int'}
+				return {'success':False, 'message':'asteroid_id must be int'}
 			asteroid = game.game_map.asteroids[asteroid_id]
 			if distance(ship.position, asteroid.position) > \
 					Constants.ship_build_radius:
@@ -159,7 +159,7 @@ def validate_ship_action(action, player, turn):
 				return {'success':False, 'message':'asteroid already has a refinery'}
 			result = {'object': ship,
 					  'method': action['command'],
-					  'params': extract(['asteroid'], action['args'])}
+					  'params': extract(['asteroid_id'], action['args'])}
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			ship.methods_used['create_refinery'] = True

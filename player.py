@@ -63,9 +63,9 @@ class Player(object):
 		"""
 		Update the player's resources every turn.
 		"""
-		for refinery in self.refineries:
+		for refinery in self.refineries.values():
 			self.resources += Constants.resource_pull
-			self.refinery.asteroid.pull_resources
+			refinery.asteroid.pull_resources
 
 	def to_dict(self):
 		"""
