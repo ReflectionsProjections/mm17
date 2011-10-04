@@ -116,6 +116,8 @@ class GameClient(object):
 										"direction": accel
 									}
 								})
+					if it['type'] == 'scan':
+						print it
 					elif it['type'] == 'shot':
 						if it['hit']:
 							print "== Shot Hit:",it['hit'],it['obj_type'],"=="
@@ -127,6 +129,13 @@ class GameClient(object):
 					"args": {
 						"position": thing['position']
 						}
+					})
+				if self.current_turn > 50: 
+					actions.append({
+					"obj_type": "Base",
+					"obj_id": thing['id'],
+					"command": "destroy",
+					"args": {}
 					})
 		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0

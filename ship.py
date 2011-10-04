@@ -37,8 +37,7 @@ class Ship(MapObject):
 		self.methods_used = {'thrust':False,
 							 'fire':False,
 							 'create_base':False,
-							 'create_refinery':False,
-							 'scan':False}
+							 'create_refinery':False}
 		owner.add_object(self)
 
 
@@ -120,31 +119,6 @@ class Ship(MapObject):
 		with game.lasers_shot_lock:
 			game.lasers_shot[game.turn].append({'start': self.position, 
 												'direction':normalized})
-
-	def scan(self, object):
-		"""Scan an object, the data is fuzzed based on distance from the ship
-
-		@param object: The object to get fuzzed data from
-		"""
-		# Multiply the returned distance by a random value
-		dist = distance(self.position, object.position)
-		angle = hypot(*object.position)
-		dist_error = random.uniform(0.5,1.5)
-		dist *= dist_error
-		dx = object.position[0] - self.position[0]
-		dy = object.position[1] - self.position[1]
-		if dist == 0:
-			return angle, dist
-		else:
-			angle = atan2(dy, dx)
-			angle_error = random.uniform(-angle_fuzz, angle_fuzz)
-			angle += angle_error
-			if angle < -pi:
-				angle += 2*pi
-			elif angle > pi:
-				angle -= 2*pi
-				return {'angle':angle, 'distance':dist}
-			
 
 	def to_dict(self):
 		"""

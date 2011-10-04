@@ -139,30 +139,6 @@ def validate_ship_action(action, player, turn):
 			ship.methods_used['fire'] = True
 			return {'success' : True, 'message':'success'}
 
-	elif action['command'] =='scan':
-		if ship.methods_used['scan']:
-			return {'success':False, 'message':'scan action already used'}
-		elif 'scan_id' not in action['args'].keys():
-			return {'success':False, 'message':'scan requires scan_id arg'}
-		elif not isinstance(action['args']['scan_id'], int):
-			return {'success':False, 'message':'scan_id must be int'}
-		else:
-			scan_id = action['args']['scan_id']
-			if scan_id not in game.game_map.objects.keys():
-				return {'success':False, 'message':'planet not found'}
-			planet =  game.game_map.objects['keys']
-			if distance(planet.position, ship.position) > Constants.scan_radius:
-				return {'success':False, 'message':'not in range'}
-			if planet.base != None:
-				return {'success':False, 'message':'planet already has base'}
-			result = {'object': ship,
-					  'method': action['command'],
-					  'params': extract(['scan_id'], action['args'])}
-			with game.action_list_lock:
-				game.actions[turn][player.auth].append(result)
-			ship.methods_used['scan'] = True
-			return {'success' : True, 'message':'success'}
-
 	elif action['command'] == 'create_refinery':
 		if ship.methods_used['create_refinery']:
 			return {'success':False, 'message':'create_refinery action already used'}
