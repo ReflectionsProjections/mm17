@@ -25,6 +25,7 @@ planet_scale = 10000
 repair_percent = 0.10
 build_radius = 15
 ship_price = 10
+salvage_multiplier = 10
 
 """ Constants used in game.py """
 x_range = range(-20000,20000,1000)

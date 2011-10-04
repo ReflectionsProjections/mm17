@@ -93,25 +93,29 @@ class Base(object):
 		self.owner.resources -= Constants.ship_price
 		return new_ship
 
-	def salvage_ship(self, ship):
+	def salvage_ship(self, ship_id):
 		"""
 		Salvage a ship, reimbursin you with 0-50% of your resources.
 
 		@type ship: Ship object
 		@param ship: A ship object to delete within the salvage_radius
-		"""
-		resources = (ship.health/ Contstanst.base_health)*\
-			(Constants.ship_price / 2)
+		"""		
+		from game_instance import game
+		ship = game.game_map.ships[ship_id]
+		resources = (float(ship.health)/Constants.base_health)*\
+			Constants.salvage_multiplier
 		ship._delete()
 		self.owner.resources += resources
 
-	def repair_ship(self, ship):
+	def repair_ship(self, ship_id):
 		"""
 		Repair a ship, adding repair_percent ship health per turn used.
 		
 		@type ship: Ship object
 		@param ship: A ship object to add health to
 		"""
+		from game_instance import game
+		ship = game.game_map.ships[ship_id]
 		ship.health += Constants.repair_percent * Constants.base_health
 		if ship.health > Constants.base_health:
 			ship.health = Constants.base_health

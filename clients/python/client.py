@@ -84,10 +84,15 @@ class GameClient(object):
 		target = (-9000,0)
 		me = None
 		them = None
+		repair_list = []
 		#print game_state
 		self.me = game_state['you']
+		bases = [x for x in game_state['objects'] if x['type'] == 'Base']
 		for thing in game_state['objects']:
 			if thing['type'] == 'Ship':
+				if thing['health'] <= 30 and len(bases) > 0:
+					target = bases[0]['position']
+					repair_list.append(thing['id'])
 				accel = (target[0] - thing['position'][0],target[1] - thing['position'][1])
 				actions.append({
 					"obj_type": "Ship",
@@ -123,7 +128,6 @@ class GameClient(object):
 						"position": thing['position']
 						}
 					})
-		#print game_state
 		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0
 		for r in result:

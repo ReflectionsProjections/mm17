@@ -107,7 +107,7 @@ class Ship(MapObject):
 			hit = within_beam[0]
 			if hasattr(hit, 'base') and hit.base != None:
 				hit = hit.base
-			if hasattr(hit, 'refinery') and hit.base != None:
+			if hasattr(hit, 'refinery') and hit.refinery != None:
 				hit = hit.refinery
 			self.events.append({'type':'shot', 'hit': id(hit),'obj_type':hit.__class__.__name__})
 			# register damage with hit object
