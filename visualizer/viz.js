@@ -6,6 +6,21 @@ var screen_y = 0;
 var last_draw = 0;
 var t = 0.0;
 
+function sortObject(a,b) {
+	var a_ = 0, b_ = 0;
+	if (a.type == "Ship") {
+		a_ = 50;
+	} else if (a.type == "Asteroid") {
+		a_ = 25;
+	}
+	if (b.type == "Ship") {
+		b_ = 50;
+	} else if (b.type == "Asteroid") {
+		b_ = 25;
+	}
+	return a_ - b_;
+}
+
 function draw(data) {
 	if (data) {
 		last_draw = data;
@@ -27,8 +42,9 @@ function draw(data) {
 			players[data.players[i].id + "_"] = data.players[i];
 			n_players++;
 		}
-		for (i in data.objects) {
-			var o = data.objects[i];
+		var d = data.objects.sort(sortObject);
+		for (i in d) {
+			var o = d[i];
 			if (o.type == "Ship") {
 				if (o.health == 0)
 					continue;
@@ -37,27 +53,33 @@ function draw(data) {
 				ship(ctx,p[0],p[1],o.direction);
 				ctx.fillStyle = "rgb(0,255,0)";
 				ctx.font = Math.max(toViewSize(100),8) + "pt monospace";
-				ctx.fillText(players[o.owner + "_"].name,p[0]+toViewSize(100),p[1]+toViewSize(30));
+				var t = players[o.owner + "_"].name;
+				var m = ctx.measureText(t);
+				ctx.fillText(t,p[0]-m.width/2,p[1]+toViewSize(250));
 				ctx.strokeStyle = "rgb(0,255,0)";
 				ctx.fillStyle = "rgba(0,255,0,0.7)";
 				healthMeter(ctx, p[0], p[1] - toViewSize(200), o.health);
 			} else if (o.type == "Planet") {
 				var p = toView(o.position[0],o.position[1]);
 				if (o.base) {
-					ctx.strokeStyle = "rgb(0,0,255)";
-					ctx.fillStyle = "rgba(0,0,255,0.7)";
-					healthMeter(ctx, p[0], p[1] - toViewSize(o.size + 170), o.base.health);
 					ctx.strokeStyle = "rgba(0,255,0,1)";
-					ctx.lineWidth = toViewSize(200);
-					ctx.fillStyle = "rgb(0,0,255)";
-					ctx.font = Math.max(toViewSize(200),8) + "pt monospace";
-					ctx.fillText(players[o.base.owner + "_"].name,p[0]+toViewSize(o.size + 110),p[1]);
+					ctx.lineWidth = toViewSize(100);
 				} else {
 					ctx.strokeStyle = "rgba(0,0,0,0)";
 				}
 				ctx.fillStyle = "rgb(0,0,255)";
 				circle(ctx,p[0],p[1],toViewSize(o.size));
 				ctx.stroke();
+				if (o.base) {
+					ctx.strokeStyle = "rgb(0,255,0)";
+					ctx.fillStyle = "rgba(0,255,0,0.7)";
+					healthMeter(ctx, p[0], p[1] - toViewSize(200), o.base.health);
+					ctx.fillStyle = "rgb(0,255,0)";
+					ctx.font = Math.max(toViewSize(200),8) + "pt monospace";
+					var t = players[o.base.owner + "_"].name;
+					var m = ctx.measureText(t);
+					ctx.fillText(t,p[0]-m.width/2,p[1]+toViewSize(100));
+				}
 				ctx.strokeStyle = "rgba(0,0,0,0)";
 			} else if (o.type == "Asteroid") {
 				var p = toView(o.position[0],o.position[1]);
