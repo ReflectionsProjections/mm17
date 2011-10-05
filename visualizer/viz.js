@@ -5,6 +5,8 @@ var screen_x = 0;
 var screen_y = 0;
 var last_draw = 0;
 var t = 0.0;
+var turn = 0;
+var auth = 123456;
 
 function sortObject(a,b) {
 	var a_ = 0, b_ = 0;
@@ -124,6 +126,7 @@ function draw(data) {
 			}
 			ctx.fillText(p.name + "  [o:" + p.resources + " b:" + p.bases.length + " r:" + p.refineries.length + " s:" + p.ships.length + "]", 2, 40 + 13 * i);
 		}
+		turn = data.turn + 1;
 	}
 }
 
@@ -136,9 +139,15 @@ function circle(ctx, x, y, r) {
 
 function update() {
 	$.getJSON(
-		"/game/info/visualizer?auth=123456",
+		"/game/wait?auth=" + auth + "&turn=" + turn,
 		function(data) {
-			draw(data);
+			$.getJSON(
+				"/game/info/visualizer?auth=" + auth,
+				function(data) {
+					draw(data);
+					update();
+				}
+			);
 		}
 	);
 }
@@ -216,4 +225,5 @@ $(window).mousewheel(function (event, delta) {
 });
 
 
-stateTimer = setInterval(function() {update();}, 500);
+//stateTimer = setInterval(function() {update();}, 500);
+update();

@@ -48,9 +48,11 @@ class Game(object):
 		# Player results, indexed by players
 		self.player_result_lock = threading.Lock()
 		self.lasers_shot_lock = threading.Lock()
+		self.turn_lock = threading.Lock()
+		self.turn_condition = threading.Condition(self.turn_lock)
 		with self.player_result_lock:
 			self.player_results = {}
-		self.turn = 0
+		self.turn = -1
 		self.active = False
 		self.lasers_shot = [[]]
 
@@ -73,6 +75,7 @@ class Game(object):
 		"""
 		map_maker(self.players)
 		self.active = True
+		self.turn = 0
 		self.last_turn_time = time.time()
 		self._log("Game started.")
 		# is this a good idea?
@@ -100,7 +103,10 @@ class Game(object):
 		bases = [x.base for x in self.game_map.planets.itervalues() if x.base]
 		for obj in self.game_map.objects.itervalues():
 			obj.events = []
-		for obj in bases + refineries:
+		a = []
+		a.extend(bases)
+		a.extend(refineries)
+		for obj in a:
 			obj.events = []
 		# execute orders
 		with self.action_list_lock:
@@ -109,7 +115,10 @@ class Game(object):
 					method = getattr(action['object'], action['method'])
 					method(**action['params'])
 		#apply effects
-		ownables = refineries + bases + self.game_map.ships.values()
+		ownables = []
+		ownables.extend(refineries)
+		ownables.extend(bases)
+		ownables.extend(self.game_map.ships.values())
 		for obj in ownables:
 			for event in obj.events:
 				if event['type'] == 'damage':
@@ -167,7 +176,10 @@ class Game(object):
 		with self.action_list_lock:
 			self.actions.append({})
 			self.completed_turns.append({})
+			self.turn_condition.acquire()
 			self.turn += 1
+			self.turn_condition.notify()
+			self.turn_condition.release()
 		with self.lasers_shot_lock:
 			self.lasers_shot.append([])
 		self.last_turn_time = time.time()
@@ -195,6 +207,17 @@ class Game(object):
 			else:
 				continue
 
+	def wait_for_next(self, turn):
+		"""
+		Wait until the given turn, with a lock.
+		@param turn: The turn to wait for.
+		"""
+		self.turn_condition.acquire()
+		while self.turn < int(turn):
+			self.turn_condition.wait()
+		self.turn_condition.notify()
+		self.turn_condition.release()
+
 	def get_player_by_auth(self, auth):
 		"""
 		Get player object via their auth code.
@@ -218,7 +241,8 @@ class Game(object):
 		@return: Current turn as {'turn' : turn}.
 		"""
 		return {
-			'turn': self.turn
+			'turn': self.turn,
+			'game_active': self.active
 		}
 
 	def game_status(self):

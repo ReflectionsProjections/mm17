@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# vim: tabstop=4 shiftwidth=4 noexpandtab
 
 import os
 import sys
@@ -92,7 +93,12 @@ class MMHandler(BaseHTTPRequestHandler):
 		@param params: URL paramater string. No required fields for function
 				to operate.
 		"""
-		
+		self.respond()
+		output = json.dumps(game.turn_number())
+		self.wfile.write(output)
+
+	def game_turn_wait(self, params):
+		game.wait_for_next(params['turn'][0])
 		self.respond()
 		output = json.dumps(game.turn_number())
 		self.wfile.write(output)
@@ -150,6 +156,7 @@ class MMHandler(BaseHTTPRequestHandler):
 				'visualizer':game_visualizer,
 				},
 			'turn': game_turn_get,
+			'wait': game_turn_wait,
 			'join': game_join,
 		},
 	}
@@ -282,7 +289,7 @@ class MMHandler(BaseHTTPRequestHandler):
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer): pass
 
-if __name__ == '__main__':
+def Main():
 	argsys = optparse.OptionParser(description="Mechmania 17 Main Server")
 	argsys.add_option('-p', '--port', metavar='PORT', nargs=1, type='int',
 			default=7000, dest='port', help='Port to listen on')
@@ -310,3 +317,7 @@ if __name__ == '__main__':
 	print "Starting on port " + str(port) + "..."
 	server = ThreadedHTTPServer(('', port), MMHandler)
 	server.serve_forever()
+
+if __name__ == '__main__':
+	import cProfile
+	cProfile.run("Main()")
