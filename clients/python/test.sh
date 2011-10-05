@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in {1..7}
+for i in {1..4}
 do
     echo $i
     echo $i | python client.py $i &

@@ -77,14 +77,12 @@ class GameClient(object):
 		This is where all the important stuff happens.
 		"""
 		self._waitForNextTurn()
-		#print "Turn number %d..." % self.current_turn,
+		print "Turn number %d..." % self.current_turn,
 		game_state = self._do("game/info/all",{})
-		#print game_state
 		actions = []
 		me = None
 		them = None
 		repair_list = []
-		#print game_state
 		self.me = game_state['you']
 		bases = [x for x in game_state['objects'] if x['type'] == 'Base']
 		for thing in game_state['objects']:
@@ -127,37 +125,39 @@ class GameClient(object):
 										"asteroid_id": it["id"]
 									}
 								})
+					"""
 					if it['type'] == 'scan':
 						print it
 					elif it['type'] == 'shot':
 						if it['hit']:
 							print "== Shot Hit:",it['hit'],it['obj_type'],"=="
-			elif thing['type'] == 'Base':
-				if len(repair_list) > 0:
+					"""
+		for thing in bases:
+			if len(repair_list) > 0:
+				for i in repair_list:
 					actions.append({
 							"obj_type": "Base",
 							"obj_id": thing['id'],
 							"command": "repair_ship",
 							"args": {
-								"ship_id": repair_list[0]
+								"ship_id": i
 								}
 						});
-				else:
-					print game_state
-					if game_state['resources'] > 50:
-						actions.append({
-							"obj_type": "Base",
-							"obj_id": thing['id'],
-							"command": "create_ship",
-							"args": {
-								"position": thing['position']
-								}
-							})
+			else:
+				if game_state['resources'] > 50:
+					actions.append({
+						"obj_type": "Base",
+						"obj_id": thing['id'],
+						"command": "create_ship",
+						"args": {
+							"position": thing['position']
+							}
+						})
 		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0
 		for r in result:
 			if not r['success']:
-				print r['message'];
+				#print r['message'];
 				failed += 1
 		if failed == 0:
 			print "Done."
@@ -170,7 +170,6 @@ class GameClient(object):
 		_break = False
 		while not _break:
 			status = self._do("game/wait",{"turn": self.current_turn + 1})
-			print status
 			if not status["game_active"]:
 				if status['turn'] < 0:
 					continue
