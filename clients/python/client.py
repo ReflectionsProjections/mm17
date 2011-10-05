@@ -81,7 +81,6 @@ class GameClient(object):
 		game_state = self._do("game/info/all",{})
 		#print game_state
 		actions = []
-		target = (-9000,0)
 		me = None
 		them = None
 		repair_list = []
@@ -93,6 +92,8 @@ class GameClient(object):
 				if thing['health'] <= 30 and len(bases) > 0:
 					target = bases[0]['position']
 					repair_list.append(thing['id'])
+				else:
+					target = (-9000,0)
 				accel = (target[0] - thing['position'][0],target[1] - thing['position'][1])
 				actions.append({
 					"obj_type": "Ship",
@@ -155,20 +156,18 @@ class GameClient(object):
 		Poll the server for the current turn until we have switched to the next turn.
 		"""
 		_break = False
-		_time  = 0.3
 		while not _break:
-			time.sleep(_time)
-			status = self._do("game/info",{})
+			status = self._do("game/wait",{"turn": self.current_turn + 1})
+			print status
 			if not status["game_active"]:
-				if status['turn'] < 1:
+				if status['turn'] < 0:
 					continue
 				print "Game has ended. Stopping."
 				sys.exit(0)
 			if status['turn'] == self.current_turn + 1:
 				_break = True
 			else:
-				print "Turn is %d..." % status['turn']
-				_time *= 2
+				print "Turn is still %d..." % status['turn']
 		self.current_turn += 1
 	def _do(self, path, args):
 		"""
