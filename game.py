@@ -149,10 +149,6 @@ class Game(object):
 			# kill players with no live units
 				if len(value.ships) == 0 and len(value.bases) == 0:
 					value.alive = False
-				if len(value.ships) == 0 and value.resources < Constants.ship_price:
-					value.alive = False
-				if len(value.refineries) == 0 and value.resources < Constants.refinery_price:
-					value.alive = False
 				# update resources and scores
 				value.update_resources()
 				value.update_score()
