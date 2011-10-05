@@ -9,22 +9,23 @@ weapon_width = 100
 max_velocity = 200
 max_accel = 20
 
-refinery_price = 10
-base_price = 50
+refinery_price = 300
+base_price = 1000
 
 """ Constants used in asteroid.py """
 asteroid_scale = 10  # asteroid.resources = size * asteroidScale
-resource_pull = 1    # Ammount of resources pulled from factories each turn
+resource_pull = 10    # Ammount of resources pulled from factories each turn
 
 """ Constants used in players.py """
 score_constant = 1
-start_resources = 200
+start_resources = 50
+base_resource_pull = 1
 
 """ Constants used in planet.py """
 planet_scale = 10000
 repair_percent = 0.10
 build_radius = 15
-ship_price = 10
+ship_price = 200
 salvage_multiplier = 10
 
 """ Constants used in game.py """

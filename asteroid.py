@@ -105,7 +105,7 @@ class Refinery(object):
 		@type  object: Base object
 		@param object: object to delete from map and owner dicts
 		"""
-		self.asteroid.base = None
+		self.asteroid.refinery = None
 		del self.owner.objects[id(self)]
 		del self.owner.refineries[id(self)]
 

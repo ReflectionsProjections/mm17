@@ -84,7 +84,7 @@ def map_maker(players):
 	for player in players.itervalues():
 		x = modifier*cos((angle*i))
 		y = modifier*sin((angle*i))
-		size = randrange(500,1000,100)
+		size = randrange(500,1000)
 		planet = Planet((x,y),size)
 		base = Base(planet, player)
 		base.built = 0
@@ -95,7 +95,7 @@ def map_maker(players):
 		y = randrange(-2*modifier, 2*modifier)
 		size = randrange(100,500)
 		asteroid = Asteroid((x,y),size)
-	for x in range(player_count*3):
+	for x in range(player_count*2):
 		x = randrange(-2*modifier, 2*modifier)
 		y = randrange(-2*modifier, 2*modifier)
 		size = randrange(500,1000,100)

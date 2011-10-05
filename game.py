@@ -205,9 +205,9 @@ class Game(object):
 				turns_submitted = len(self.completed_turns[self.turn])
 			if turns_submitted == len(alive_players):
 					self._resolve_turn()
-			#elif time.time() - self.last_turn_time > 2:
-			#	self.busy = True
-			#	self._resolve_turn()
+			elif time.time() - self.last_turn_time > 10:
+				self.busy = True
+				self._resolve_turn()
 			else:
 				continue
 
@@ -364,16 +364,5 @@ class TestGame(unittest.TestCase):
 		del self.game_map
 		del self.game
 
-	def test_turn_number(self):
-		self.assertEqual({'turn':0},self.game.turn_number())
-
-	def testGameInfo(self):
-		self.assertEqual(
-			{'game_active':False,
-			'turn':0,
-			'active_players':[]},
-			self.game.game_status())
-
- 
 if __name__ == '__main__':
 	unittest.main()
