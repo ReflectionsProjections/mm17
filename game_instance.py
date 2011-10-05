@@ -16,3 +16,4 @@ inited = False
 # XXX: Old test cases rely on them being inited here
 game_map = Map(2)
 game = Game(game_map, log_file)
+

@@ -55,6 +55,8 @@ class Game(object):
 		self.turn = -1
 		self.active = False
 		self.lasers_shot = [[]]
+		self.action_list_lock = threading.Lock()
+
 
 	def _log(self, message):
 		"""
@@ -158,6 +160,7 @@ class Game(object):
 				value.update_resources()
 				value.update_score()
 					
+
 		for object in self.game_map.objects.itervalues():
 			object.results[self.turn + 1] = []
 			if isinstance(object, Ship):
@@ -198,15 +201,19 @@ class Game(object):
 
 		while self.active == True:
 			alive_players = [x for x in self.players.itervalues() if x.alive]
+
 			if len(alive_players) <= 1:
 				self._end()
 			with self.action_list_lock:
 				turns_submitted = len(self.completed_turns[self.turn])
 			if turns_submitted == len(alive_players):
+
+				with self.action_list_lock:
 					self._resolve_turn()
-			elif time.time() - self.last_turn_time > 10:
+			elif time.time() - self.last_turn_time > 2:
 				self.busy = True
 				self._resolve_turn()
+
 			else:
 				continue
 
@@ -295,6 +302,7 @@ class Game(object):
 		player = self.get_player_by_auth(auth)
 		if player == None:
 			return {'success':False, 'message':'bad auth'}
+
 		return {
 			'game_active': self.active,
 			'turn':self.turn,

@@ -122,6 +122,7 @@ class MMHandler(BaseHTTPRequestHandler):
 					  "message":"must request current turn"}
 		else:
 			output = handle_input(input, requested_turn)
+
 		self.respond()
 		output = json.dumps(output)
 		self.wfile.write(output)

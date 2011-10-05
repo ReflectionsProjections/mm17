@@ -41,6 +41,7 @@ class Ship(MapObject):
 		owner.add_object(self)
 
 
+
 	def thrust(self, direction, speed):
 		"""Sets the velocity based on acceleration and current velocity.
 

@@ -58,7 +58,6 @@ False
 		except Exception, e:
 			print e
 			results.append({'success':False, 'message':'action caused server error'})
-
 	with game.action_list_lock:
 		game.completed_turns[game.turn][player.auth] = True
 	return results

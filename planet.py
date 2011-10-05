@@ -58,6 +58,7 @@ class Base(object):
 		@param owner: The Player object this base is owned by
 		"""
 		self.built = 10
+		self.alive = True
 		self.planet = planet
 		self.owner = owner
 		self.position = self.planet.position
@@ -76,6 +77,9 @@ class Base(object):
 		# set methods used to true in this dict to prevent
 		# double dipping
 		self.methods_used = {}
+		self.current_action = None
+		owner.add_object(self)
+
 
 	def create_ship(self, position):
 		"""
@@ -135,6 +139,7 @@ class Base(object):
 		self.planet.base = None
 		del self.owner.objects[id(self)]
 		del self.owner.bases[id(self)]
+
 
 	def to_dict(self):
 		"""
