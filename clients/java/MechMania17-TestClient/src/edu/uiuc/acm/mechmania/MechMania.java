@@ -24,7 +24,7 @@ import edu.uiuc.acm.mechmania.objects.*;
 public class MechMania {
 	/** Some useless defaults, these should be set by the startup module **/
 	private String serverHost = "localhost";
-	private int serverPort = 80;
+	private int serverPort = 7000;
 	private String authKey = "authkey";
 	private String teamName = "nonameteam";
 	private MechManiaHTTPInterface httpInterface;
