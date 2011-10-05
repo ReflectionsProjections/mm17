@@ -16,3 +16,4 @@ logs/*
 html/*
 clients/python/html/*
 test_log
+dist/*

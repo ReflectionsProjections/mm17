@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # vim: tabstop=4 shiftwidth=4 noexpandtab
 
+from encodings import aliases
+from encodings import hex_codec
 import os
 import sys
 import optparse
