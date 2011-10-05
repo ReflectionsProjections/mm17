@@ -149,6 +149,10 @@ class Game(object):
 			# kill players with no live units
 				if len(value.ships) == 0 and len(value.bases) == 0:
 					value.alive = False
+				if len(value.ships) == 0 and value.resources < Constants.ship_price:
+					value.alive = False
+				if len(value.refineries) == 0 and value.resources < Constants.refinery_price:
+					value.alive = False
 				# update resources and scores
 				value.update_resources()
 				value.update_score()
@@ -296,6 +300,7 @@ class Game(object):
 			'game_active': self.active,
 			'turn':self.turn,
 			'you': id(player),
+			'resources': player.resources,
 			'alive_players': alive_players,
 			'objects': [object.to_dict() for object in\
 					player.objects.itervalues()],
