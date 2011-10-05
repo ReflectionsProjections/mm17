@@ -72,7 +72,7 @@ class Refinery(object):
 		# double dipping
 		self.methods_used = {}
 		asteroid.refinery = self
-		owner.refineries[id(self)] = self
+		owner.add_object(self)
 
 
 	def to_dict(self):
