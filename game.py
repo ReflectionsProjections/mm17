@@ -114,6 +114,11 @@ class Game(object):
 				for action in actions:
 					method = getattr(action['object'], action['method'])
 					method(**action['params'])
+
+		# take timestep
+		for object in self.game_map.objects.itervalues():
+			object.step(1)
+
 		#apply effects
 		ownables = []
 		ownables.extend(refineries)
@@ -153,9 +158,7 @@ class Game(object):
 				value.update_resources()
 				value.update_score()
 					
-		# take timestep
 		for object in self.game_map.objects.itervalues():
-			object.step(1)
 			object.results[self.turn + 1] = []
 			if isinstance(object, Ship):
 				for method in object.methods_used.iterkeys():

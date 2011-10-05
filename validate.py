@@ -169,9 +169,9 @@ def validate_ship_action(action, player, turn):
 		if ship.methods_used['create_base']:
 			return {'success':False, 
 					'message':'create_base action already used'}
-		elif 'planet' not in action['args'].keys():
+		elif 'planet_id' not in action['args'].keys():
 			return {'success':False, 
-					'message':'create_base requires planet arg'}
+					'message':'create_base requires planet_id arg'}
 		else:
 			planet_id = action['args']['planet']
 			if not isinstance(planet_id, int):

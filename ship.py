@@ -149,13 +149,14 @@ class Ship(MapObject):
 		new_refinery = Refinery(asteroid, self.owner)
 		self.owner.resources -= Constants.refinery_price
 
-	def create_base(self, planet):
+	def create_base(self, planet_id):
 		"""
 		Create a base on a planet
 
 		@type planet: Planet object
 		@param planet: Planet to build your base on
 		"""
+		planet = game.game_map.planets[planet_id]
 		new_base = Base(planet, self.owner)
 		resources -= Constants.base_price
 
