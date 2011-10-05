@@ -89,7 +89,7 @@ class GameClient(object):
 		bases = [x for x in game_state['objects'] if x['type'] == 'Base']
 		for thing in game_state['objects']:
 			if thing['type'] == 'Ship':
-				if thing['health'] <= 30 and len(bases) > 0:
+				if thing['health'] <= 80 and len(bases) > 0:
 					target = bases[0]['position']
 					repair_list.append(thing['id'])
 				else:
@@ -133,14 +133,26 @@ class GameClient(object):
 						if it['hit']:
 							print "== Shot Hit:",it['hit'],it['obj_type'],"=="
 			elif thing['type'] == 'Base':
-				actions.append({
-					"obj_type": "Base",
-					"obj_id": thing['id'],
-					"command": "create_ship",
-					"args": {
-						"position": thing['position']
-						}
-					})
+				if len(repair_list) > 0:
+					actions.append({
+							"obj_type": "Base",
+							"obj_id": thing['id'],
+							"command": "repair_ship",
+							"args": {
+								"ship_id": repair_list[0]
+								}
+						});
+				else:
+					print game_state
+					if game_state['resources'] > 50:
+						actions.append({
+							"obj_type": "Base",
+							"obj_id": thing['id'],
+							"command": "create_ship",
+							"args": {
+								"position": thing['position']
+								}
+							})
 		result = self._post("game/turn/%d" % self.current_turn,{'actions': actions})
 		failed = 0
 		for r in result:
