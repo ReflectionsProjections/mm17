@@ -11,7 +11,7 @@ clean:
 
 dist/server: server.py
 	cxfreeze server.py
-	ln -s visualizer dist/
+	cd dist && ln -s ../visualizer
 
 docs:
 	epydoc --graph classtree -v *.py
