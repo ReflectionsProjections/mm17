@@ -55,7 +55,6 @@ class Game(object):
 		self.turn = -1
 		self.active = False
 		self.lasers_shot = [[]]
-		self.action_list_lock = threading.Lock()
 
 
 	def _log(self, message):
@@ -80,7 +79,6 @@ class Game(object):
 		self.turn = 0
 		self.last_turn_time = time.time()
 		self._log("Game started.")
-		# is this a good idea?
 		thread.start_new_thread(self._main, ())
 
 	def _end(self):
@@ -120,7 +118,6 @@ class Game(object):
 		# take timestep
 		for object in self.game_map.objects.itervalues():
 			object.step(1)
-
 		#apply effects
 		ownables = []
 		ownables.extend(refineries)
@@ -207,13 +204,9 @@ class Game(object):
 			with self.action_list_lock:
 				turns_submitted = len(self.completed_turns[self.turn])
 			if turns_submitted == len(alive_players):
-
-				with self.action_list_lock:
 					self._resolve_turn()
-			elif time.time() - self.last_turn_time > 2:
-				self.busy = True
-				self._resolve_turn()
-
+			#elif time.time() - self.last_turn_time > 2:
+			#		self._resolve_turn()
 			else:
 				continue
 
