@@ -1,3 +1,8 @@
+/* vim: tabstop=4 shiftwidth=4 noexpandtab
+ *
+ *  MechMania 17: Thrust Wars
+ *  Visualizer
+ */
 var w = 1;
 var h = 1;
 var screen_scale = 60000;
@@ -51,7 +56,6 @@ function draw(data) {
 				if (o.health == 0)
 					continue;
 				var p = toView(o.position[0],o.position[1]);
-				//circle(ctx,p[0],p[1],toViewSize(100));
 				ship(ctx,p[0],p[1],o.direction);
 				ctx.fillStyle = "rgb(0,255,0)";
 				ctx.font = Math.max(toViewSize(100),8) + "pt monospace";
@@ -86,6 +90,14 @@ function draw(data) {
 			} else if (o.type == "Asteroid") {
 				var p = toView(o.position[0],o.position[1]);
 				if (o.refinery) {
+					ctx.fillStyle = "rgb(0,255,0)";
+					ctx.font = Math.max(toViewSize(100),8) + "pt monospace";
+					var t = players[o.refinery.owner + "_"].name;
+					var m = ctx.measureText(t);
+					ctx.fillText(t,p[0]-m.width/2,p[1]+toViewSize(o.size + 300));
+					ctx.strokeStyle = "rgb(0,255,0)";
+					ctx.fillStyle = "rgba(0,255,0,0.7)";
+					healthMeter(ctx, p[0], p[1] - toViewSize(o.size + 120), o.refinery.health);
 					ctx.strokeStyle = "rgba(0,255,0,1)";
 					ctx.lineWidth = toViewSize(100);
 				} else {
