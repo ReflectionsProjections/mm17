@@ -158,6 +158,7 @@ class Ship(MapObject):
 		@param planet: Planet to build your base on
 		"""
 		from game_instance import game
+		from planet import Base
 		planet = game.game_map.planets[planet_id]
 		new_base = Base(planet, self.owner)
 		resources -= Constants.base_price
