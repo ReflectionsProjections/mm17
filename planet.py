@@ -121,9 +121,10 @@ class Base(object):
 		"""
 		from game_instance import game
 		ship = game.game_map.ships[ship_id]
-		ship.health += Constants.repair_percent * Constants.base_health
-		if ship.health > Constants.base_health:
-			ship.health = Constants.base_health
+		if distance(self.position, ship.position) < Constants.base_repair_radius:
+			ship.health += Constants.repair_percent * Constants.ship_health
+			if ship.health > Constants.ship_health:
+				ship.health = Constants.ship_health
 
 	def destroy(self):
 		"""

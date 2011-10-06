@@ -43,9 +43,9 @@ for x in range(len(x_range)):
 	player_starts.append((x_range[x], y_range[x]))
 
 """ Constants used in validate.py """
-base_build_radius = 15000
-base_salvage_radius = 15000
-base_repair_radius = 15000
+base_build_radius = 2000
+base_salvage_radius = 2000
+base_repair_radius = 2000
 
 base_build_busy = 5
 base_salvage_busy = 5
