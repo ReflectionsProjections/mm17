@@ -9,7 +9,7 @@ weapon_width = 100
 max_velocity = 200
 max_accel = 20
 
-refinery_price = 300
+refinery_price = 100
 base_price = 1000
 
 """ Constants used in asteroid.py """

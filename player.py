@@ -68,6 +68,8 @@ class Player(object):
 			refinery.asteroid.pull_resources
 		for base in self.bases.values():
 			self.resources += Constants.base_resource_pull
+		if self.resources < 0:
+			self.resources = 0
 
 
 	def to_dict(self):

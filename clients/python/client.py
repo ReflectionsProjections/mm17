@@ -50,6 +50,7 @@ WITH THE SOFTWARE.
 import json, time, sys, math
 from urllib2 import urlopen
 from urllib  import urlencode
+from random import randrange
 
 class GameClient(object):
 	"""
@@ -84,6 +85,7 @@ class GameClient(object):
 		them = None
 		repair_list = []
 		self.me = game_state['you']
+		ships = [x for x in game_state['objects'] if x['type'] == 'Ship']
 		bases = [x for x in game_state['objects'] if x['type'] == 'Base']
 		for thing in game_state['objects']:
 			if thing['type'] == 'Ship':
@@ -91,7 +93,7 @@ class GameClient(object):
 					target = bases[0]['position']
 					repair_list.append(thing['id'])
 				else:
-					target = (-9000,0)
+					target = (randrange(-10000, 10000),randrange(-10000,10000))
 				accel = (target[0] - thing['position'][0],target[1] - thing['position'][1])
 				actions.append({
 					"obj_type": "Ship",
@@ -125,6 +127,15 @@ class GameClient(object):
 										"asteroid_id": it["id"]
 									}
 								})
+						if it['obj_type'] == 'Planet':
+							actions.append({
+								"obj_type": "Ship",
+								"obj_id": me['id'],
+								"command": "create_base",
+								"args": {
+										"planet_id": it["id"]
+									}
+								})
 					"""
 					if it['type'] == 'scan':
 						print it
@@ -132,6 +143,7 @@ class GameClient(object):
 						if it['hit']:
 							print "== Shot Hit:",it['hit'],it['obj_type'],"=="
 					"""
+
 		for thing in bases:
 			if len(repair_list) > 0:
 				for i in repair_list:
@@ -144,7 +156,7 @@ class GameClient(object):
 								}
 						});
 			else:
-				if game_state['resources'] > 50:
+				if game_state['resources'] > 50 and len(ships) < 5:
 					actions.append({
 						"obj_type": "Base",
 						"obj_id": thing['id'],
@@ -157,7 +169,7 @@ class GameClient(object):
 		failed = 0
 		for r in result:
 			if not r['success']:
-				#print r['message'];
+				print r['message'];
 				failed += 1
 		if failed == 0:
 			print "Done."

@@ -4,7 +4,7 @@ from numbers import Number
 from game_instance import game
 from vector import distance
 import Constants
-
+import traceback
 
 def extract(keys, dict):
 	answer = {}
@@ -55,8 +55,9 @@ False
 				results.append(validate_player_action(action, player, turn))
 			else:
 				results.append({'success':False, 'message':'bad or no obj_type in action'})
-		except Exception, e:
-			print e
+		except Exception as e:
+			print e.__class__
+			traceback.print_exc()
 			results.append({'success':False, 'message':'action caused server error'})
 	with game.action_list_lock:
 		game.completed_turns[game.turn][player.auth] = True
@@ -164,7 +165,7 @@ def validate_ship_action(action, player, turn):
 			ship.methods_used['create_refinery'] = True
 			return {'success' : True, 'message':'success'}
 
-	elif action['create_base'] == 'create_base':
+	elif action['command'] == 'create_base':
 		if ship.methods_used['create_base']:
 			return {'success':False, 
 					'message':'create_base action already used'}
@@ -172,7 +173,7 @@ def validate_ship_action(action, player, turn):
 			return {'success':False, 
 					'message':'create_base requires planet_id arg'}
 		else:
-			planet_id = action['args']['planet']
+			planet_id = action['args']['planet_id']
 			if not isinstance(planet_id, int):
 				return {'success':False, 'message':'planet must be int'}
 			planet = game.game_map.planets[planet_id]
@@ -183,7 +184,7 @@ def validate_ship_action(action, player, turn):
 				return {'success':False, 'message':'planet already has a base'}
 			result = {'object': ship,
 					  'method': action['command'],
-					  'params': extract(['planet'], action['args'])}
+					  'params': extract(['planet_id'], action['args'])}
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			ship.methods_used['create_base'] = True
@@ -359,7 +360,7 @@ def validate_refinery_action(action, player, turn):
 	if action['command'] == 'destroy':
 		result = {'object': refinery,
 				  'method': action['command'],
-				  'params': []}
+				  'params': {}}
 		with game.action_list_lock:
 			game.actions[turn][player.auth].append(result)
 		return {'success' : True, 'message':'success'}
@@ -386,6 +387,11 @@ def validate_player_action(action, player, turn):
 			return {'success' : False, 'message':'player not active'}
 		else:
 			game._log("Player " + player.name + " foreited the game.")
+			result = {'object': player,
+					  'method': action['command'],
+					  'params': {}}
+			with game.action_list_lock:
+				game.actions[turn][player.auth].append(result)
 			return {'success' : True, 
 					'message':'success, thanks for playing!'}
 	else:
