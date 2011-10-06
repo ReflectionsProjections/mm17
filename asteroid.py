@@ -60,7 +60,8 @@ class Refinery(object):
 		self.owner = owner
 		self.built = 5
 		self.position = asteroid.position
-		self.health = Constants.base_health
+		self.max_health = Constants.base_health
+		self.health = self.max_health
 		# holds all events to be processed on turn handle
 		self.events = []
 
@@ -88,6 +89,7 @@ class Refinery(object):
 				  'owner': id(self.owner),
 				  'position':self.asteroid.position,
 				  'asteroid':id(self.asteroid),
+				  'max_health':self.max_health,
 				  'health':self.health,
 				  'events':self.events
 				  }

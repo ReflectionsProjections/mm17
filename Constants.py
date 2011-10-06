@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 """ Constants used in ship.py  """
 base_size = 10
-base_health = 100
+ship_health = 100
 scan_range = 2000
 weapon_range = 1000
 weapon_strength = 10
@@ -15,7 +15,7 @@ base_price = 1000
 """ Constants used in asteroid.py """
 asteroid_scale = 10  # asteroid.resources = size * asteroidScale
 resource_pull = 10    # Ammount of resources pulled from factories each turn
-
+refinery_health = 300
 """ Constants used in players.py """
 score_constant = 1
 start_resources = 50
@@ -27,7 +27,7 @@ repair_percent = 0.10
 build_radius = 15
 ship_price = 200
 salvage_multiplier = 10
-
+base_health = 1000
 """ Constants used in game.py """
 x_range = range(-20000,20000,1000)
 y_range = range(-20000,20000,1000)

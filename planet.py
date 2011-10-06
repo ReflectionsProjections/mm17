@@ -62,7 +62,8 @@ class Base(object):
 		self.planet = planet
 		self.owner = owner
 		self.position = self.planet.position
-		self.health = Constants.base_health
+		self.max_health = Constants.base_health
+		self.health = self.max_health
 		self.events = []
 		self.busy = 0
 		owner.add_object(self)
@@ -155,6 +156,7 @@ class Base(object):
 				  'planet':id(self.planet),
 				  'owner': id(self.owner),
 				  'health': self.health,
+				  'max_health': self.max_health,
 				  'events':self.events
 				  }
 		return state

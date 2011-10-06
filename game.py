@@ -134,13 +134,25 @@ class Game(object):
 				# compute radar returns for live ships
 				nearships = self.game_map.radar(obj)
 				for other in nearships:
-					obj.events.append({'type':'radar',
-									   'obj_type': other.__class__.__name__,
-									   'id': id(other),
-									   'position':other.position,
-									   'health':other.health if\
-										   hasattr(other, 'health') else\
-										   None})
+					radar = {'type':'radar',
+							 'obj_type': other.__class__.__name__,
+							 'id': id(other),
+							 'position':other.position}
+					if hasattr(other, 'health'):
+						radar['health'] = other.health
+					if hasattr(other, 'refinery'):
+						if other.refinery:
+							radar['refinery'] = {
+								'owner': id(other.refinery.owner),
+								'health': other.refinery.health}
+						else: None
+					if hasattr(other, 'base'):
+						if other.base:
+							radar['base'] ={
+								'owner': id(other.base.owner),
+								'health': other.base.health}
+						else: None
+					obj.events.append(radar)			   
 				obj.results[self.turn] = obj.events[:]
 
 		# Create a massive list of results to return to the player
@@ -346,11 +358,23 @@ class Game(object):
 		if auth != self.viz_auth:
 			return {'message':'not a valid auth code'}
 		else:
-			return {'turn':self.turn, 
-					'objects':[o.to_dict() for o in\
-								   self.game_map.objects.values()], 
+			data = {'turn':self.turn, 
+					'objects':[], 
 					'players':[p.to_dict() for p in self.players.values()], 
 					'lasers':self.lasers_shot[self.turn - 1]}
+			for o in self.game_map.objects.values():
+				o_data = o.to_dict()
+				if 'health' in o_data.keys():
+					o_data['health'] = (o_data['health']*100.0/ \
+										o_data['max_health'])
+				if 'base' in o_data.keys() and o_data['base']:
+					o_data['base']['health'] = \
+						(o_data['base']['health']*100.0/o_data['base']['max_health'])
+				if 'refinery' in o_data.keys() and o_data['refinery']:
+					o_data['refinery']['health']= (o_data['refinery']['health']*100.0/ \
+												   o_data['refinery']['max_health'])
+				data['objects'].append(o_data)
+			return data
 			
 class TestGame(unittest.TestCase):
 	def setUp(self):

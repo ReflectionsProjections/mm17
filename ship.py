@@ -27,7 +27,8 @@ class Ship(MapObject):
 		self.direction = 0
 		self.owner = owner
 		# attribute itialization
-		self.health = Constants.base_health
+		self.max_health = Constants.ship_health
+		self.health = self.max_health
 		self.scan_range = Constants.scan_range
 		self.weapon_range = Constants.weapon_range
 		self.weapon_strength = Constants.weapon_strength
@@ -131,6 +132,7 @@ class Ship(MapObject):
 				 'position': self.position,
 				 'velocity': self.velocity,
 				 'direction': self.direction,
+				 'max_health': self.max_health,
 				 'health': self.health,
 				 'size': self.size,
 				 'events':self.events
