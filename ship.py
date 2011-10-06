@@ -161,7 +161,7 @@ class Ship(MapObject):
 		from planet import Base
 		planet = game.game_map.planets[planet_id]
 		new_base = Base(planet, self.owner)
-		resources -= Constants.base_price
+		self.owner.resources -= Constants.base_price
 
 class TestShip(unittest.TestCase):
 	pass
