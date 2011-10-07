@@ -57,7 +57,7 @@ class Player(object):
 		"""
 		if self.alive:
 			ships_score = 0
-			for s in self.ships:
+			for s in self.ships.values():
 				resources = (float(s.health)/Constants.ship_health)*\
 					Constants.salvage_multiplier
 				ships_score += resources
