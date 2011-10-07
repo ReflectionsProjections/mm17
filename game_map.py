@@ -90,7 +90,7 @@ def map_maker(players):
 		base.built = 0
 		ship = Ship((x+size*1.1, y+size), player)
 		i += 1
-	for x in range(player_count*10):
+	for x in range(player_count*8):
 		x = randrange(-2*modifier, 2*modifier)
 		y = randrange(-2*modifier, 2*modifier)
 		size = randrange(100,500)

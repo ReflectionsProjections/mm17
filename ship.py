@@ -23,7 +23,7 @@ class Ship(MapObject):
 		@param position: The position to locate the ship
 		@param owner: The player that is creating this ship
 		"""
-		self.size = Constants.base_size
+		self.size = Constants.ship_size
 		self.direction = 0
 		self.owner = owner
 		# attribute itialization
