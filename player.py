@@ -56,7 +56,11 @@ class Player(object):
 		Update the player score every turn.
 		"""
 		if self.alive:
-			ships_score = (len(self.ships) * Constants.score_constant)
+			ships_score = 0
+			for s in self.ships:
+				resources = (float(s.health)/Constants.ship_health)*\
+					Constants.salvage_multiplier
+				ships_score += resources
 			self.score += (self.resources + ships_score)
 
 	def update_resources(self):
@@ -83,6 +87,7 @@ class Player(object):
 				  'alive':self.alive,
 				  'name':self.name,
 				  'id': id(self),
+				  'score': self.score,
 				  'resources': self.resources,
 				  'ships': self.ships.keys(),
 				  'bases': self.bases.keys(),

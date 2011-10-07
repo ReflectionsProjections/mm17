@@ -89,7 +89,7 @@ class GameClient(object):
 		bases = [x for x in game_state['objects'] if x['type'] == 'Base']
 		for thing in game_state['objects']:
 			if thing['type'] == 'Ship':
-				if thing['health'] <= 80 and len(bases) > 0:
+				if thing['health'] <= 200  and len(bases) > 0:
 					target = bases[0]['position']
 					repair_list.append(thing['id'])
 				else:
@@ -107,7 +107,7 @@ class GameClient(object):
 				me = thing
 				for it in me['events']:
 					if it['type'] == 'radar':
-						if it['obj_type'] == 'Ship':
+						if it['obj_type'] == 'Ship' or it['obj_type'] == 'Planet' or it['obj_type'] == 'Asteroid':
 							accel = (it['position'][0] - me['position'][0],it['position'][1] - me['position'][1])
 							if math.hypot(*accel) < 1000:
 								actions.append({
@@ -136,13 +136,6 @@ class GameClient(object):
 										"planet_id": it["id"]
 									}
 								})
-					"""
-					if it['type'] == 'scan':
-						print it
-					elif it['type'] == 'shot':
-						if it['hit']:
-							print "== Shot Hit:",it['hit'],it['obj_type'],"=="
-					"""
 
 		for thing in bases:
 			if len(repair_list) > 0:
