@@ -10,6 +10,7 @@ clean:
 	rm -rf dist/logs
 
 dist/server: server.py
+	rm -fr dist
 	cxfreeze server.py
 	cd dist && ln -s ../visualizer
 

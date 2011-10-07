@@ -236,6 +236,40 @@ $(window).mousewheel(function (event, delta) {
 	draw(last_draw);
 });
 
+var scale = 1.0;
+$(window).each(function() {
+	this.ontouchstart = function(event) {
+		var targetEvent = event.touches.item(0);
+		mouseDownX = targetEvent.clientX;
+		mouseDownY = targetEvent.clientY;
+		event.preventDefault();
+		return false;
+	};
+	this.ontouchmove = function(event) {
+		var targetEvent = event.touches.item(0);
+		var dX = mouseDownX - targetEvent.clientX;
+		var dY = mouseDownY - targetEvent.clientY;
+
+		mouseDownX = targetEvent.clientX;
+		mouseDownY = targetEvent.clientY;
+
+		screen_x += dX * screen_scale / h;
+		screen_y += dY * screen_scale / h;
+		draw(last_draw);
+		event.preventDefault();
+		return false;
+	};
+	this.ongesturechange = function(event) {
+		delta = event.scale - scale;
+		screen_scale *= Math.exp(-delta / 5);
+		draw(last_draw);
+		scale = event.scale;
+	};
+	this.ongestureend = function(event) {
+		scale = 1.0;
+	}
+});
+
 
 //stateTimer = setInterval(function() {update();}, 500);
 update();
