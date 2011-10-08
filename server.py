@@ -8,6 +8,9 @@ import sys
 import optparse
 import json
 import unittest
+import time
+import thread
+import signal
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from SocketServer import ThreadingMixIn
@@ -292,6 +295,17 @@ class MMHandler(BaseHTTPRequestHandler):
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer): pass
 
+def start_timeout(game):
+	time.sleep(15)
+	if not game.active:
+		if len(game.players) == 0:
+			os.kill(os.getpid(), signal.SIGQUIT)
+		else:
+			game_map.max_players = len(game.players)
+			game._begin()
+	else:
+		return
+
 def Main():
 	argsys = optparse.OptionParser(description="Mechmania 17 Main Server")
 	argsys.add_option('-p', '--port', metavar='PORT', nargs=1, type='int',
@@ -313,11 +327,9 @@ def Main():
 	game.viz_auth = raw_input()
 	for i in range(0,opts.num_players):
 		game.allowed_auths.append(raw_input())
-	print "Confirm accepted auths:"
-	for i in game.allowed_auths:
-		print i
 
-	print "Starting on port " + str(port) + "..."
+
+	thread.start_new_thread(start_timeout, (game,))
 	server = ThreadedHTTPServer(('', port), MMHandler)
 	server.serve_forever()
 
