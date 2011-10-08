@@ -57,7 +57,8 @@ class Player(object):
 		Update the player score every turn.
 		"""
 		if self.alive:
-			score = self.resources
+			# Stockpiling resources alone shouldn't win
+			score = self.resources * Constants.resource_multiplier
 			for s in self.ships.values():
 				salvaged = (float(s.health)/Constants.ship_health)*\
 					Constants.salvage_multiplier

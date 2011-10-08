@@ -21,6 +21,7 @@ refinery_build_time = 50
 score_constant = 1
 start_resources = 5000
 base_resource_pull = 1
+resource_multiplier = .6
 
 """ Constants used in planet.py """
 planet_scale = 10000
