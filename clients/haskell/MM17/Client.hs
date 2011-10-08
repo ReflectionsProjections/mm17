@@ -130,12 +130,12 @@ encodeTurn auth orders = object ["auth" .= auth, "actions" .= orders]
 
 {- response formats 
 joining
-{"join_success":<bool>,"message":<str>}
+{"success":<bool>,"message":<str>}
 -}
 data JoinResponse = JoinResponse Bool Text
   deriving (Show)
 instance FromJSON JoinResponse where
-  parseJSON (Object o) = JoinResponse <$> o .: "join_success" <*> o .: "message"
+  parseJSON (Object o) = JoinResponse <$> o .: "success" <*> o .: "message"
   parseJSON _ = fail "/game/join response expected to be object"
 {- turn response
 {"turn":<number>}
