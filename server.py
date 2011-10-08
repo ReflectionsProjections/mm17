@@ -324,8 +324,10 @@ def Main():
 	# Set up the game
 	port = opts.port
 	game_map.max_players = opts.num_players
+	print "Visualizer auth code:",
 	game.viz_auth = raw_input()
 	for i in range(0,opts.num_players):
+		print "Auth code for player", i, ":",
 		game.allowed_auths.append(raw_input())
 
 
