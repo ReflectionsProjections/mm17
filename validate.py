@@ -45,7 +45,7 @@ False
 		game.actions[turn][player.auth] = []
 
 	resource_counter = player.resources
-
+	player.missed = 0
 	for action in input['actions']:
 		try:
 			if action['obj_type'] == "Ship":

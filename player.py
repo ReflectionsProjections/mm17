@@ -20,6 +20,7 @@ class Player(object):
 		self.name = name
 		self.auth = auth
 		self.alive = True
+		self.missed = 0
 		self.resources = Constants.start_resources
 		self.objects = {}
 		self.ships = {}
