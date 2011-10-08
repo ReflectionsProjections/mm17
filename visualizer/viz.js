@@ -13,6 +13,8 @@ var t = 0.0;
 var turn = 0;
 var auth = prompt("Authcode:");
 
+var colors = ["rgb(0,255,0)","rgb(255,128,0)","rgb(255,64,64)","rgb(0,128,255)","rgb(255,128,255)"]
+
 function sortObject(a,b) {
 	var a_ = 0, b_ = 0;
 	if (a.type == "Ship") {
@@ -43,10 +45,12 @@ function draw(data) {
 		ctx.fillRect(0,0,w,h);
 		var players = Array();
 		var n_players = 0;
+		var nums = Array();
 		ctx.lineCap = "round";
 		ctx.lineJoin = "round";
 		for (i in data.players) {
 			players[data.players[i].id + "_"] = data.players[i];
+			nums[data.players[i].id + "_"] = i;
 			n_players++;
 		}
 		var d = data.objects.sort(sortObject);
@@ -56,19 +60,21 @@ function draw(data) {
 				if (o.health == 0)
 					continue;
 				var p = toView(o.position[0],o.position[1]);
+				ctx.fillStyle = colors[nums[o.owner + "_"] % 5];
+				ctx.strokeStyle = colors[nums[o.owner + "_"] % 5];
 				ship(ctx,p[0],p[1],o.direction);
-				ctx.fillStyle = "rgb(0,255,0)";
 				ctx.font = Math.max(toViewSize(100),8) + "pt monospace";
 				var t = players[o.owner + "_"].name;
 				var m = ctx.measureText(t);
 				ctx.fillText(t,p[0]-m.width/2,p[1]+toViewSize(250));
+				ctx.fillStyle = "rgb(0,255,0)";
 				ctx.strokeStyle = "rgb(0,255,0)";
 				ctx.fillStyle = "rgba(0,255,0,0.7)";
 				healthMeter(ctx, p[0], p[1] - toViewSize(200), o.health);
 			} else if (o.type == "Planet") {
 				var p = toView(o.position[0],o.position[1]);
 				if (o.base) {
-					ctx.strokeStyle = "rgba(0,255,0,1)";
+					ctx.strokeStyle = colors[nums[o.base.owner + "_"] % 5];
 					ctx.lineWidth = toViewSize(100);
 				} else {
 					ctx.strokeStyle = "rgba(0,0,0,0)";
@@ -77,10 +83,10 @@ function draw(data) {
 				circle(ctx,p[0],p[1],toViewSize(o.size));
 				ctx.stroke();
 				if (o.base) {
-					ctx.strokeStyle = "rgb(0,255,0)";
+					ctx.strokeStyle = "rgba(0,255,0,1)";
 					ctx.fillStyle = "rgba(0,255,0,0.7)";
 					healthMeter(ctx, p[0], p[1] - toViewSize(200), o.base.health);
-					ctx.fillStyle = "rgb(0,255,0)";
+					ctx.fillStyle = colors[nums[o.base.owner + "_"] % 5];
 					ctx.font = Math.max(toViewSize(200),8) + "pt monospace";
 					var t = players[o.base.owner + "_"].name;
 					var m = ctx.measureText(t);
@@ -90,7 +96,7 @@ function draw(data) {
 			} else if (o.type == "Asteroid") {
 				var p = toView(o.position[0],o.position[1]);
 				if (o.refinery) {
-					ctx.fillStyle = "rgb(0,255,0)";
+					ctx.fillStyle = colors[nums[o.refinery.owner + "_"] % 5];
 					ctx.font = Math.max(toViewSize(100),8) + "pt monospace";
 					var t = players[o.refinery.owner + "_"].name;
 					var m = ctx.measureText(t);
@@ -98,7 +104,7 @@ function draw(data) {
 					ctx.strokeStyle = "rgb(0,255,0)";
 					ctx.fillStyle = "rgba(0,255,0,0.7)";
 					healthMeter(ctx, p[0], p[1] - toViewSize(o.size + 120), o.refinery.health);
-					ctx.strokeStyle = "rgba(0,255,0,1)";
+					ctx.strokeStyle = colors[nums[o.refinery.owner + "_"] % 5];
 					ctx.lineWidth = toViewSize(100);
 				} else {
 					ctx.strokeStyle = "rgba(0,0,0,0)";
@@ -132,7 +138,7 @@ function draw(data) {
 		for (i in data.players) {
 			p = data.players[i];
 			if (p.alive) { 
-				ctx.fillStyle = "rgb(0,255,0)";
+				ctx.fillStyle = colors[i % 5];
 			} else {
 				ctx.fillStyle = "rgb(255,0,0)";
 			}
@@ -176,7 +182,6 @@ function s(ctx, cx, cy, angle, x, y) {
 }
 function ship(ctx, cx, cy, angle) {
 	angle += Math.PI;
-	ctx.strokeStyle = "rgba(0,255,0,1.0)";
 	ctx.lineWidth = toViewSize(20);
 	ctx.beginPath();
 	ctx.moveTo(cx - Math.sin(angle) * toViewSize(200),cy + Math.cos(angle) * toViewSize(200));
