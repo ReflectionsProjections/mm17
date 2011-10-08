@@ -104,13 +104,12 @@ public class MechManiaHTTPInterface {
 			HttpURLConnection urlConn = (HttpURLConnection) connection;
 			if (urlConn.getResponseCode() == 200) {
 				responseBuffer = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-
 			}
 			else {
 				responseBuffer = new BufferedReader(new InputStreamReader(urlConn.getErrorStream()));
-				System.out.println(responseBuffer.toString());
 			}
 			data = responseBuffer.readLine();
+			System.out.println(data);
 			if (data.startsWith("{")) {
 				returnJSON = new JSONObject(data);
 			}

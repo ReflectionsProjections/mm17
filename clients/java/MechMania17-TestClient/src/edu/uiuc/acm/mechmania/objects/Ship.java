@@ -1,7 +1,6 @@
 package edu.uiuc.acm.mechmania.objects;
 
 public class Ship {
-	private boolean alive;
 	private double direction;
 	private int[] position;
 	private long id;
@@ -9,12 +8,6 @@ public class Ship {
 	private int health;
 	private String owner;
 	
-	public boolean isAlive() {
-		return alive;
-	}
-	public void setAlive(boolean alive) {
-		this.alive = alive;
-	}
 	public double getDirection() {
 		return direction;
 	}

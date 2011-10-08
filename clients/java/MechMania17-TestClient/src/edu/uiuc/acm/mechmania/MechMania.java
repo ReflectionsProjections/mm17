@@ -24,7 +24,7 @@ import edu.uiuc.acm.mechmania.objects.*;
 public class MechMania {
 	/** Some useless defaults, these should be set by the startup module **/
 	private String serverHost = "localhost";
-	private int serverPort = 7000;
+	private int serverPort = 80;
 	private String authKey = "authkey";
 	private String teamName = "nonameteam";
 	private MechManiaHTTPInterface httpInterface;
@@ -53,18 +53,25 @@ public class MechMania {
 		if (joinGame()) {
 			// We're in the game, so do some things that someone that might be in the game will do...
 			GameInfo gameInfo = getGameInfo();
+			
+			/* DEPRECATED BY LONG-WAIT CALL
 			while (gameInfo.isGameRunning() == false) {
 				gameInfo = getGameInfo();
 				System.out.println("Waiting for game to start...");
-				sleep(1);
-			}
+				// sleep(1);   // Deprecated by long-wait
+				
+			} */
+			
+			// Wait for game start using new long-wait call
+			waitForTurn(0);
 			
 			// Keep track of the turn number
 			int turnNumber = -1;
 			
 			// Do some intermediate work and continue until the game is over...
-			while (gameInfo.isGameRunning() == true) {
+			while (gameInfo.getPlayerList().length > 1) {
 				gameInfo = getGameInfo();
+				turnNumber = getTurnNumber();
 				
 				JSONArray actions = new JSONArray();
 				
@@ -84,7 +91,7 @@ public class MechMania {
 						JSONObject shipFireArgs = new JSONObject();
 						JSONObject shipThrustArgs = new JSONObject();
 						
-							shipFireActions.put("obj_type", "ship");
+							shipFireActions.put("obj_type", "Ship");
 							shipFireActions.put("obj_id", ship.getId());
 							shipFireActions.put("command", "fire");
 							JSONArray fireList = new JSONArray();
@@ -103,7 +110,7 @@ public class MechMania {
 							shipThrustArgs.put("direction", accelList);
 							shipThrustArgs.put("speed", 20);
 
-							shipThrustActions.put("obj_type", "ship");
+							shipThrustActions.put("obj_type", "Ship");
 							shipThrustActions.put("obj_id", ship.getId());
 							shipThrustActions.put("args", shipThrustArgs);
 							actions.put(shipThrustActions);
@@ -154,11 +161,15 @@ public class MechMania {
 				
 				
 				// At the end of the turn, poll every two seconds or so until the turn number changes...
+				/*   DEPRECATED BY LONG-WAIT
 				while (turnNumber <= gameInfo.getCurrentTurn()) {
 					turnNumber = getTurnNumber();
 					System.out.println("Sleeping until next turn starts... (currently turn " + turnNumber + ")");
 					sleep(1);
-				}
+				} */
+				
+				// Long-wait
+				waitForTurn(turnNumber + 1);
 			}
 		}
 		else {
@@ -177,7 +188,7 @@ public class MechMania {
 		JSONObject response = httpInterface.getResponse(joinGameUrl);
 		
 		try {
-			return (response.getBoolean("join_success") == true);  // Did we get in?
+			return (response.getBoolean("success") == true);  // Did we get in?
 		} catch (JSONException e) {
 			return false;
 		}
@@ -243,9 +254,8 @@ public class MechMania {
 				}
 				
 				// Return the list of our ships, so make sure they have our owner token
-				if (objectType.equals("ship") && objectOwner == myID) {
+				if (objectType.equals("Ship") && objectOwner == myID) {
 					Ship newShip = new Ship();
-					newShip.setAlive(object.getBoolean("alive"));
 					newShip.setDirection(object.getInt("direction"));
 					newShip.setHealth(object.getInt("health"));
 					newShip.setId(object.getLong("id"));
@@ -292,9 +302,20 @@ public class MechMania {
 	}
 	
 	/**
+	 * Makes a call to the new long-polling wait
+	 * @param waitUntilTurnNumber Turn number to wait until
+	 */
+	private void waitForTurn(int waitUntilTurnNumber) {
+		String[] turnWaitArgs = {"turn=" + waitUntilTurnNumber};
+		URL waitURL = httpInterface.buildRequestURL("/game/wait",turnWaitArgs);
+		httpInterface.getResponse(waitURL);
+	}
+	
+	/**
 	 * Convenience function to pause execution temporarily
 	 * (we don't want to constantly poll the server, do we?)
-	 * 
+	 *
+	 * @deprecated
 	 * @param secs Number of seconds to wait
 	 */
 	private void sleep(int secs) {

@@ -136,7 +136,7 @@ function draw(data) {
 			} else {
 				ctx.fillStyle = "rgb(255,0,0)";
 			}
-			ctx.fillText(p.name + "  [o:" + p.resources + " b:" + p.bases.length + " r:" + p.refineries.length + " s:" + p.ships.length + "]", 2, 40 + 13 * i);
+			ctx.fillText(p.name + "  [s: " + Math.floor(p.score) + " o:" + p.resources + " b:" + p.bases.length + " r:" + p.refineries.length + " s:" + p.ships.length + "]", 2, 40 + 13 * i);
 		}
 		turn = data.turn + 1;
 	}
