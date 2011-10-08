@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+import json
 """ Constants used in ship.py  """
 ship_size = 10
 ship_health = 300
@@ -81,4 +82,5 @@ def to_dict():
 
 if __name__ == '__main__':
 	# No unit tests for constants
+	print json.dumps(to_dict())
 	pass

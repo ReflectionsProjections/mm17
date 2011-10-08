@@ -17,6 +17,8 @@ from SocketServer import ThreadingMixIn
 from urlparse import urlparse
 from urlparse import parse_qs
 
+import Constants
+
 from validate import handle_input
 
 from game_instance import game, game_map
@@ -130,6 +132,10 @@ class MMHandler(BaseHTTPRequestHandler):
 		output = json.dumps(output)
 		self.wfile.write(output)
 
+	def game_constants(self, params):
+		self.respond()
+		self.wfile.write(json.dumps(Constants.to_dict()))
+
 	def game_join(self, params):
 		"""
 		Handle a request to join the game. Writes out json data with the
@@ -156,6 +162,7 @@ class MMHandler(BaseHTTPRequestHandler):
 	GET_PATHS = {
 		'viz': viz,
 		'game': {
+			'constants': game_constants,
 			'info': {
 				'': game_status,
 				'all':game_avail_info,
