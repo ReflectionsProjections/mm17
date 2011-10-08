@@ -234,7 +234,7 @@ class Game(object):
 
 			if len(alive_players) <= 1:
 				self._end()
-			if time.time() - self.start_time > 900:
+			if time.time() - self.start_time > 600:
 				self._end()
 			with self.action_list_lock:
 				turns_submitted = len(self.completed_turns[self.turn])
