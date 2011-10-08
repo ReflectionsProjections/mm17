@@ -13,7 +13,7 @@ refinery_price = 2500
 base_price = 5000
 
 """ Constants used in asteroid.py """
-asteroid_scale = 10  # asteroid.resources = size * asteroidScale
+asteroid_scale = 1  # asteroid.resources = size * asteroidScale
 resource_pull = 3    # Ammount of resources pulled from factories each turn
 refinery_health = 700
 refinery_build_time = 50
