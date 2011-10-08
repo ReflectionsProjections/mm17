@@ -12,6 +12,7 @@ def extract(keys, dict):
 		answer[k] = dict[k]
 	return answer
 
+resource_counter = 0
 
 def handle_input(input, turn):
 	"""Handle POST request data and passes to validators.
@@ -42,6 +43,8 @@ False
 	results = []
 	with game.action_list_lock:
 		game.actions[turn][player.auth] = []
+
+	resource_counter = player.resources
 
 	for action in input['actions']:
 		try:
@@ -142,6 +145,9 @@ def validate_ship_action(action, player, turn):
 	elif action['command'] == 'create_refinery':
 		if ship.methods_used['create_refinery']:
 			return {'success':False, 'message':'create_refinery action already used'}
+		elif resource_counter - Constants.refinery_price < 0:
+			return {'success':False, 
+					'message':'not enough resources'}
 		elif 'asteroid_id' not in action['args'].keys():
 			return {'success':False, 
 					'message':'create_refinery requires asteroid_id arg'}
@@ -155,7 +161,7 @@ def validate_ship_action(action, player, turn):
 			if distance(ship.position, asteroid.position) > \
 					Constants.ship_build_radius:
 				return {'success':False, 'message':'too far away from asteroid'}
-			if asteroid.refinery:
+			if asteroid.refinery != None:
 				return {'success':False, 'message':'asteroid already has a refinery'}
 			result = {'object': ship,
 					  'method': action['command'],
@@ -163,12 +169,16 @@ def validate_ship_action(action, player, turn):
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			ship.methods_used['create_refinery'] = True
+			resource_counter -= Constants.refinery_price
 			return {'success' : True, 'message':'success'}
 
 	elif action['command'] == 'create_base':
 		if ship.methods_used['create_base']:
 			return {'success':False, 
 					'message':'create_base action already used'}
+		elif resource_counter - Constants.base_price < 0:
+			return {'success':False, 
+					'message':'not enough resources'}
 		elif 'planet_id' not in action['args'].keys():
 			return {'success':False, 
 					'message':'create_base requires planet_id arg'}
@@ -180,7 +190,7 @@ def validate_ship_action(action, player, turn):
 			if distance(ship.position, planet.position) > \
 					Constants.ship_build_radius:
 				return {'success':False, 'message':'too far away from planet'}
-			if planet.base:
+			if planet.base != None:
 				return {'success':False, 'message':'planet already has a base'}
 			result = {'object': ship,
 					  'method': action['command'],
@@ -188,6 +198,7 @@ def validate_ship_action(action, player, turn):
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			ship.methods_used['create_base'] = True
+			resource_counter -= Constants.base_price
 			return {'success' : True, 'message':'success'}
 
 	else:
@@ -243,8 +254,9 @@ def validate_base_action(action, player, turn):
 					'message':'create_ship requires position arg'}
 		elif not isinstance(action['args']['position'], list):
 			return {'success':False, 'message':'position must be list'}
-		elif player.resources < Constants.ship_price:
-			return {'success':False, 'message':'not enough resources!'}
+		elif resource_counter - Constants.ship_price < 0:
+			return {'success':False, 
+					'message':'not enough resources'}
 		position = action['args']['position']
 		if distance(position, base.position) > \
 				Constants.base_build_radius:
@@ -262,6 +274,7 @@ def validate_base_action(action, player, turn):
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			base.busy = Constants.base_build_busy
+			resource_counter -= Constants.ship_price
 			return {'success' : True, 'message':'success'}
 
 	elif action['command'] == 'salvage_ship':

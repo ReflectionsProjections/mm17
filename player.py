@@ -57,7 +57,7 @@ class Player(object):
 		"""
 		if self.alive:
 			ships_score = 0
-			for s in self.ships:
+			for s in self.ships.values():
 				resources = (float(s.health)/Constants.ship_health)*\
 					Constants.salvage_multiplier
 				ships_score += resources
@@ -68,10 +68,12 @@ class Player(object):
 		Update the player's resources every turn.
 		"""
 		for refinery in self.refineries.values():
-			self.resources += Constants.resource_pull
-			refinery.asteroid.pull_resources
+			if refinery.built == 0:
+				self.resources += Constants.resource_pull
+				refinery.asteroid.pull_resources
 		for base in self.bases.values():
-			self.resources += Constants.base_resource_pull
+			if base.built == 0:
+				self.resources += Constants.base_resource_pull
 		if self.resources < 0:
 			self.resources = 0
 

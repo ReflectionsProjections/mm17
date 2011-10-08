@@ -57,7 +57,7 @@ class Base(object):
 		@type owner: Player object
 		@param owner: The Player object this base is owned by
 		"""
-		self.built = 10
+		self.built = Constants.base_build_time
 		self.alive = True
 		self.planet = planet
 		self.owner = owner
@@ -100,14 +100,14 @@ class Base(object):
 
 	def salvage_ship(self, ship_id):
 		"""
-		Salvage a ship, reimbursin you with 0-50% of your resources.
+		Salvage a ship, reimbursing you with some of your resources.
 
 		@type ship: Ship object
 		@param ship: A ship object to delete within the salvage_radius
 		"""		
 		from game_instance import game
 		ship = game.game_map.ships[ship_id]
-		resources = (float(ship.health)/Constants.base_health)*\
+		resources = (float(ship.health)/Constants.ship_health)*\
 			Constants.salvage_multiplier
 		ship._delete()
 		self.owner.resources += resources

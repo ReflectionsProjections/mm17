@@ -21,6 +21,7 @@ class Ship(MapObject):
 		"""Add a ship to the game.
 
 		@param position: The position to locate the ship
+
 		@param owner: The player that is creating this ship
 		"""
 		self.size = Constants.ship_size

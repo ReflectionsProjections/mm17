@@ -3,6 +3,7 @@
 import unittest
 
 from math import fabs, sqrt, hypot
+import random
 
 def distance(pos1, pos2):
 	"""Returns the distance between two (x, y) position tuples
@@ -117,6 +118,12 @@ False
 		return True
 	else:
 		return False
+
+
+def jitter_tuple(tuple, min, max):
+	t0 = tuple[0] + random.uniform(min, max)
+	t1 = tuple[1] + random.uniform(min, max)
+	return (t0, t1)
 
 class VectorTests(unittest.TestCase):
 	def test_distance(self):

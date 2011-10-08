@@ -7,6 +7,7 @@ import unittest
 import os
 
 from datetime import datetime
+from vector import jitter_tuple
 import Constants
 
 class Game(object):
@@ -137,7 +138,7 @@ class Game(object):
 					radar = {'type':'radar',
 							 'obj_type': other.__class__.__name__,
 							 'id': id(other),
-							 'position':other.position}
+							 'position':jitter_tuple(other.position, -75, 75)}
 					if hasattr(other, 'health'):
 						radar['health'] = other.health
 					if hasattr(other, 'refinery'):
@@ -313,6 +314,7 @@ class Game(object):
 			'turn':self.turn,
 			'you': id(player),
 			'resources': player.resources,
+			'score':player.score,
 			'alive_players': alive_players,
 			'objects': [object.to_dict() for object in\
 					player.objects.itervalues()],
