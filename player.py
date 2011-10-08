@@ -56,12 +56,16 @@ class Player(object):
 		Update the player score every turn.
 		"""
 		if self.alive:
-			ships_score = 0
+			score = self.resources
 			for s in self.ships.values():
-				resources = (float(s.health)/Constants.ship_health)*\
+				salvaged = (float(s.health)/Constants.ship_health)*\
 					Constants.salvage_multiplier
-				ships_score += resources
-			self.score += (self.resources + ships_score)
+				score += salvaged
+			for b in self.bases:
+				score += Constants.base_price
+			for r in self.refineries:
+				score += Constants.refinery_price
+			self.score = score
 
 	def update_resources(self):
 		"""

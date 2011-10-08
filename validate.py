@@ -49,13 +49,13 @@ False
 	for action in input['actions']:
 		try:
 			if action['obj_type'] == "Ship":
-				results.append(validate_ship_action(action, player, turn))
+				results.append(validate_ship_action(action, player, turn, resource_counter))
 			elif action['obj_type'] == "Base":
-				results.append(validate_base_action(action, player, turn))
+				results.append(validate_base_action(action, player, turn, resource_counter))
 			elif action['obj_type'] == "Refinery":
-				results.append(validate_refinery_action(action, player, turn))
+				results.append(validate_refinery_action(action, player, turn, resource_counter))
 			elif action['obj_type'] == "Player":
-				results.append(validate_player_action(action, player, turn))
+				results.append(validate_player_action(action, player, turn, resource_counter))
 			else:
 				results.append({'success':False, 'message':'bad or no obj_type in action'})
 		except Exception as e:
@@ -66,7 +66,7 @@ False
 		game.completed_turns[game.turn][player.auth] = True
 	return results
 
-def validate_ship_action(action, player, turn):
+def validate_ship_action(action, player, turn, resource_counter):
 	"""Valide an action performed by a ship
 
 	@param action: Action to validate
@@ -204,7 +204,7 @@ def validate_ship_action(action, player, turn):
 	else:
 		return {'success':False, 'message':'invalid ship command'}
 
-def validate_base_action(action, player, turn):
+def validate_base_action(action, player, turn, resource_counter):
 	"""
 	Validate an action performed by a base
 
@@ -331,7 +331,7 @@ def validate_base_action(action, player, turn):
 	else:
 		return {'success':False, 'message':'invalid base command'}
 
-def validate_refinery_action(action, player, turn):
+def validate_refinery_action(action, player, turn, resource_counter):
 	"""
 	Validate an action performed by a refinery
 
