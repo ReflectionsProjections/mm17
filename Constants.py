@@ -51,11 +51,33 @@ base_salvage_radius = 1500
 base_repair_radius = 1500
 
 base_build_busy = 15
-base_salvage_busy = 5
-base_repair_busy = 10
+base_salvage_busy = 10
+base_repair_busy = 1
 
 ship_build_radius = 1500
 
+def to_dict():
+	dict = {'ship_health':ship_health,
+			'scan_range':scan_range,
+			'weapon_range':weapon_range,
+			'weapon_strength':weapon_strength,
+			'max_velocity':max_velocity,
+			'max_accel':max_accel,
+			'refinery_price':refinery_price,
+			'base_price':base_price,
+			'ship_price':ship_price,
+			'ship_build_radius':ship_build_radius,
+			'base_build_busy':base_build_busy,
+			'base_salvage_busy': base_salvage_busy,
+			'base_repair_busy':base_repair_busy,
+			'base_build_radius':base_build_radius,
+			'base_repair_raidus':base_repair_radius,
+			'base_salcage_raidus':base_salvage_radius,
+			'repair_percent':repair_percent,
+			'base_resource_pull':base_resource_pull,
+			'resource_pull':resource_pull,
+			'start_resources':start_resources}
+	return dict
 
 if __name__ == '__main__':
 	# No unit tests for constants

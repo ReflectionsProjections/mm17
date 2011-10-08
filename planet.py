@@ -153,6 +153,7 @@ class Base(object):
 		state = { 'type':'Base',
 				  'id': id(self),
 				  'built': self.built,
+				  'busy':self.busy,
 				  'position': self.position,
 				  'planet':id(self.planet),
 				  'owner': id(self.owner),

@@ -357,6 +357,7 @@ class Game(object):
 		return {
 			'game_active': self.active,
 			'turn':self.turn,
+			'constants':Constants.to_dict(),
 			'you': id(player),
 			'resources': player.resources,
 			'score':player.score,
