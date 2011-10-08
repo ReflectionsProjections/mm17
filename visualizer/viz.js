@@ -276,5 +276,5 @@ $(window).each(function() {
 });
 
 
-//stateTimer = setInterval(function() {update();}, 500);
+stateTimer = setInterval(function() { turn = 0 }, 10000);
 update();
