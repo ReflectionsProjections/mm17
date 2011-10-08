@@ -41,6 +41,8 @@ def runClients(n):
     viz = r()
     print "Visualizer authcode is",viz
     server.stdin.write(viz + "\n")
+    print "Game will start in 2 seconds."
+    time.sleep(2)
     p = []
     for i in random.sample(accounts,n):
         os.chdir(i)
