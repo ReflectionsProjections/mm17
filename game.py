@@ -133,13 +133,17 @@ class Game(object):
 		# execute orders
 		with self.action_list_lock:
 			for player in self.players.values():
-				if id(player) in  actions.keys():
-					p_actions = actions[id(player)]
+				if player.auth in  actions.keys():
+					p_actions = actions[player.auth]
 					for action in p_actions:
 						method = getattr(action['object'], action['method'])
 						method(**action['params'])
 				else:
 					player.missed += 1
+					if player.missed > 3:
+						player.alive = False
+						for obj in player.objects.values():
+							obj._delete()
 
 		# take timestep
 		for object in self.game_map.objects.itervalues():
