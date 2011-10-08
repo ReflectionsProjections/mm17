@@ -5,6 +5,8 @@ import thread
 import threading
 import unittest
 import os
+import json
+import signal
 
 from datetime import datetime
 from vector import jitter_tuple
@@ -78,6 +80,7 @@ class Game(object):
 		map_maker(self.players)
 		self.active = True
 		self.turn = 0
+		self.start_time = time.time()
 		self.last_turn_time = time.time()
 		self._log("Game started.")
 		thread.start_new_thread(self._main, ())
@@ -87,7 +90,19 @@ class Game(object):
 		Stop the game main loop.
 		"""
 		self._log("Game ended.")
+		alive = [x for x in self.players.values() if x.alive]
+		if alive > 1:
+			wins = [{"winner":id(alive[0]),"score":alive[0].score}]
+		else:
+			wins = []
+			for x in alive:
+				w = {"winner":id(x),"score":x.score}
+				wins.append(w)
+		print json.dumps(wins)
 		self.active = False
+		time.sleep(5)
+		os.kill(os.getpid(), signal.SIGQUIT)
+
 
 	def _resolve_turn(self):
 		from ship import Ship
@@ -214,12 +229,14 @@ class Game(object):
 
 			if len(alive_players) <= 1:
 				self._end()
+			if time.time() - self.start_time > 900:
+				self._end()
 			with self.action_list_lock:
 				turns_submitted = len(self.completed_turns[self.turn])
 			if turns_submitted == len(alive_players):
 					self._resolve_turn()
-			#elif time.time() - self.last_turn_time > 2:
-			#		self._resolve_turn()
+			elif time.time() - self.last_turn_time > 2:
+					self._resolve_turn()
 			else:
 				continue
 
