@@ -32,6 +32,13 @@ function sortObject(a,b) {
 
 function draw(data) {
 	if (data) {
+		if (data.turn > -1) {
+			if (!data.game_active) {
+				turn = 0;
+				update();
+				return false;
+			}
+		}
 		last_draw = data;
 	}
 	var canvas = document.getElementById('visualizer');
@@ -146,6 +153,7 @@ function draw(data) {
 		}
 		turn = data.turn + 1;
 	}
+	return true;
 }
 
 function circle(ctx, x, y, r) {
@@ -162,8 +170,9 @@ function update() {
 			$.getJSON(
 				"/game/info/visualizer?auth=" + auth,
 				function(data) {
-					draw(data);
-					update();
+					if (draw(data)) {
+						update();
+					}
 				}
 			);
 		}

@@ -6,6 +6,8 @@ import subprocess, time
 init_dir = "/home/enx-mmteam00/mm/"
 os.chdir(init_dir)
 
+viz = "herpaderp"
+
 #accounts = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20"]
 accounts = ["test1","test2","test3","test4"]
 
@@ -38,16 +40,18 @@ def updateRepos():
 def runClients(n):
     print "[arena] RUNNING ALL THE CLIENTS"
     server = subprocess.Popen(["/usr/bin/python", "/home/enx-mmteam00/mm17/server.py", "-n", str(n)],stdin=subprocess.PIPE)
-    viz = r()
-    print "Visualizer authcode is",viz
     server.stdin.write(viz + "\n")
-    print "Game will start in 2 seconds."
     time.sleep(2)
+    auths = []
     p = []
     for i in random.sample(accounts,n):
         os.chdir(i)
         f = open("name")
-        p.append( (f.read().strip(), subprocess.Popen(["./run"],stdin=subprocess.PIPE), r() ) )
+        a = r()
+        while a in auths:
+            a = r()
+        auths.append(a)
+        p.append( (f.read().strip(), subprocess.Popen(["./run"],stdin=subprocess.PIPE), a ) )
         os.chdir(init_dir)
     for i,v,k in p:
         server.stdin.write(k + "\n")
