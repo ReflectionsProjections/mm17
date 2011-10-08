@@ -167,7 +167,7 @@ function update() {
 				}
 			);
 		}
-	);
+	).error(function() { turn = 0; update(); });
 }
 
 function healthMeter(ctx, cx, cy, val) {
@@ -275,6 +275,4 @@ $(window).each(function() {
 	}
 });
 
-
-stateTimer = setInterval(function() { turn = 0 }, 10000);
 update();
