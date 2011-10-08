@@ -11,7 +11,7 @@ var screen_y = 0;
 var last_draw = 0;
 var t = 0.0;
 var turn = 0;
-var auth = 123456;
+var auth = prompt("Authcode:");
 
 function sortObject(a,b) {
 	var a_ = 0, b_ = 0;
