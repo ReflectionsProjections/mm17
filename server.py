@@ -331,7 +331,7 @@ def Main():
 		game.allowed_auths.append(raw_input())
 
 
-	thread.start_new_thread(start_timeout, (game,))
+#	thread.start_new_thread(start_timeout, (game,))
 	server = ThreadedHTTPServer(('', port), MMHandler)
 	server.allow_reuse_address = True
 	server.serve_forever()

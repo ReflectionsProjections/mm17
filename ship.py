@@ -76,6 +76,8 @@ class Ship(MapObject):
 
 		@param direction: vector to fire at 
 		"""
+		from asteroid import Asteroid
+		from planet import Planet
 		width = Constants.weapon_width
 		length = self.weapon_range
 		mag = hypot(*direction)
@@ -105,23 +107,34 @@ class Ship(MapObject):
 		else:
 			cmp_dist = lambda a: distance(self.position, a.position)
 			within_beam.sort(key=cmp_dist)
-			# Hit first in line, record id
-			hit = within_beam[0]
-			if hasattr(hit, 'base') and hit.base != None:
-				hit = hit.base
-			if hasattr(hit, 'refinery') and hit.refinery != None:
-				hit = hit.refinery
-			self.events.append({'type':'shot', 'hit': id(hit),'obj_type':hit.__class__.__name__})
+			for o in within_beam:
+				if isinstance(o, Planet) or isinstance(o, Asteroid):
+					if hasattr(o,'base') and o.base != None:
+						if o.base.owner == self.owner:
+							within_beam.remove(o)
+					if hasattr(o, 'refinery') and o.refinery != None:
+						if o.refinery.owner == self.owner:
+							within_beam.remove(o)
+			if len(within_beam) == 0:
+			# No object hit
+				self.events.append({'type':'shot','hit': None})	
+			else:	
+				# Hit first in line, record id
+				hit = within_beam[0]
+				if hasattr(hit, 'base') and hit.base != None:
+					hit = hit.base
+				if hasattr(hit, 'refinery') and hit.refinery != None:
+					hit = hit.refinery
+				self.events.append({'type':'shot', 'hit': id(hit),'obj_type':hit.__class__.__name__})
 			# register damage with hit object
-			diagonal = distance(self.position, p_2)
-			dist = distance(self.position, hit.position)
-			damage_amt = Constants.weapon_strength
-			hit.events.append({'type':'damage',
-										  'amount':damage_amt,
-										  'hit_by':id(self)})
-		with game.lasers_shot_lock:
-			game.lasers_shot[game.turn].append({'start': self.position, 
-												'direction':normalized})
+				diagonal = distance(self.position, p_2)
+				dist = distance(self.position, hit.position)
+				damage_amt = Constants.weapon_strength
+				hit.events.append({'type':'damage',
+								   'amount':damage_amt,
+								   'hit_by':id(self)})
+				with game.lasers_shot_lock:
+					game.lasers_shot[game.turn].append({'start': self.position, 'direction':normalized})
 
 	def to_dict(self):
 		"""
