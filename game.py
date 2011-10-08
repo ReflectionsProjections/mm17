@@ -79,10 +79,15 @@ class Game(object):
 		"""
 		map_maker(self.players)
 		self.active = True
+		self.completed_turns.append({})
+		self.turn_condition.acquire()
 		self.turn = 0
 		self.start_time = time.time()
+		self.turn_condition.notify()
+		self.turn_condition.release()
 		self.last_turn_time = time.time()
 		self._log("Game started.")
+		print "game started"
 		thread.start_new_thread(self._main, ())
 
 	def _end(self):

@@ -296,11 +296,13 @@ class MMHandler(BaseHTTPRequestHandler):
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer): pass
 
 def start_timeout(game):
-	time.sleep(15)
+	time.sleep(5)
 	if not game.active:
 		if len(game.players) == 0:
+			print "No players"
 			os.kill(os.getpid(), signal.SIGQUIT)
 		else:
+			print "Starting with less players"
 			game_map.max_players = len(game.players)
 			game._begin()
 	else:
@@ -331,6 +333,7 @@ def Main():
 
 	thread.start_new_thread(start_timeout, (game,))
 	server = ThreadedHTTPServer(('', port), MMHandler)
+	server.allow_reuse_address = True
 	server.serve_forever()
 
 if __name__ == '__main__':
