@@ -96,13 +96,14 @@ class Game(object):
 		"""
 		self._log("Game ended.")
 		alive = [x for x in self.players.values() if x.alive]
-		if alive > 1:
-			wins = [{"winner":id(alive[0]),"score":alive[0].score}]
+		if len(alive) == 1:
+			wins = {"winner":id(alive[0]),"score":alive[0].score}
 		else:
-			wins = []
+			max = alive[0]
 			for x in alive:
-				w = {"winner":id(x),"score":x.score}
-				wins.append(w)
+				if x.score > max.score:
+					max = x
+			wins = {"winner":max.auth, "score":max.score}
 		print json.dumps(wins)
 		self.active = False
 		time.sleep(5)
@@ -131,10 +132,14 @@ class Game(object):
 			obj.events = []
 		# execute orders
 		with self.action_list_lock:
-			for player , actions in actions.iteritems():
-				for action in actions:
-					method = getattr(action['object'], action['method'])
-					method(**action['params'])
+			for player in self.players.values():
+				if id(player) in  actions.keys():
+					p_actions = actions[id(player)]
+					for action in p_actions:
+						method = getattr(action['object'], action['method'])
+						method(**action['params'])
+				else:
+					player.missed += 1
 
 		# take timestep
 		for object in self.game_map.objects.itervalues():
@@ -161,16 +166,20 @@ class Game(object):
 							 'position':jitter_tuple(other.position, -75, 75)}
 					if hasattr(other, 'health'):
 						radar['health'] = other.health
+					if hasattr(other, 'owner'):
+						radar['owner'] = id(other.owner)
 					if hasattr(other, 'refinery'):
 						if other.refinery:
 							radar['refinery'] = {
 								'owner': id(other.refinery.owner),
+								'id':id(other.refinery),
 								'health': other.refinery.health}
 						else: None
 					if hasattr(other, 'base'):
 						if other.base:
 							radar['base'] ={
 								'owner': id(other.base.owner),
+								'id':id(other.base),
 								'health': other.base.health}
 						else: None
 					obj.events.append(radar)			   
@@ -383,6 +392,7 @@ class Game(object):
 			return {'message':'not a valid auth code'}
 		else:
 			data = {'turn':self.turn, 
+					'game_active': self.active,
 					'objects':[], 
 					'players':[p.to_dict() for p in self.players.values()], 
 					'lasers':self.lasers_shot[self.turn - 1]}
