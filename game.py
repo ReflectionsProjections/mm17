@@ -42,6 +42,7 @@ class Game(object):
 		self.allowed_auths = []
 		self.viz_auth = ''
 		self.players = {}
+		self.last_alive = []
 		self.log_file = open(log_file, 'w')
 		# List of orders for each turn, dictionaries indexed by player
 		self.action_list_lock = threading.Lock()
@@ -96,6 +97,13 @@ class Game(object):
 		"""
 		self._log("Game ended.")
 		alive = [x for x in self.players.values() if x.alive]
+		if len(alive) == 0:
+			alive = self.last_alive
+			max = alive[0]
+			for x in alive:
+				if x.score > max.score:
+					max = x
+			wins = {"winner":max.auth, "score":max.score}
 		if len(alive) == 1:
 			wins = {"winner":id(alive[0]),"score":alive[0].score}
 		else:
@@ -244,9 +252,11 @@ class Game(object):
 
 		while self.active == True:
 			alive_players = [x for x in self.players.itervalues() if x.alive]
-
+			
 			if len(alive_players) <= 1:
 				self._end()
+			else: 
+				self.last_alive = alive_players
 			if time.time() - self.start_time > 600:
 				self._end()
 			with self.action_list_lock:
