@@ -92,8 +92,8 @@ class Base(object):
 		# if outside build radius, move position in
 		if distance(self.planet.position, position) > Constants.build_radius:
 			mag = hypot(*position)
-			position = (position[0]*(build_radius/mag),
-						position[1]*(build_radius/mag))
+			position = (position[0]*(Constants.build_radius/mag),
+						position[1]*(Constants.build_radius/mag))
 		new_ship = Ship(position, self.owner)
 		self.owner.resources -= Constants.ship_price
 		return new_ship
