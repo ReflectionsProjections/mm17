@@ -59,6 +59,8 @@ ship_build_radius = 1500
 
 def to_dict():
 	dict = {'ship_health':ship_health,
+			'refinery_health':refinery_health,
+			'base_health':base_health,
 			'scan_range':scan_range,
 			'weapon_range':weapon_range,
 			'weapon_strength':weapon_strength,
