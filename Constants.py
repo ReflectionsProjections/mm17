@@ -29,7 +29,7 @@ planet_scale = 10000
 repair_percent = 0.10
 build_radius = 15
 ship_price = 1000
-salvage_multiplier = 10
+salvage_multiplier = ship_price
 base_health = 5000
 base_build_time = 100
 """ Constants used in game.py """
@@ -79,6 +79,8 @@ def to_dict():
 			'repair_percent':repair_percent,
 			'base_resource_pull':base_resource_pull,
 			'resource_pull':resource_pull,
+			'weapon_width':weapon_width,
+			'salvage_multiplier':salvage_multiplier,
 			'start_resources':start_resources}
 	return dict
 
