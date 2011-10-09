@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-
+from math import hypot
 import unittest
 from vector import distance
 import Constants
