@@ -144,11 +144,8 @@ class Game(object):
 				if player.auth in  actions.keys():
 					p_actions = actions[player.auth]
 					for action in p_actions:
-						if action['method'] == 'thrust':
-							a = action
-							method = getattr(a['object'], a['method'])
-							method(**a['params'])
-							p_actions.remove(action)
+						method = getattr(action['object'], action['method'])
+						method(**action['params'])
 				else:
 					player.missed += 1
 					if player.missed > 3:
@@ -159,15 +156,6 @@ class Game(object):
 		# take timestep
 		for object in self.game_map.objects.itervalues():
 			object.step(1)
-
-		with self.action_list_lock:
-			for player in self.players.values():
-				if player.auth in  actions.keys():
-					p_actions = actions[player.auth]
-					for action in p_actions:
-						if action['method'] != 'thrust':
-							method = getattr(action['object'], action['method'])
-							method(**action['params'])
 		#apply effects
 		ownables = []
 		ownables.extend(refineries)
