@@ -169,8 +169,9 @@ class Ship(MapObject):
 		from asteroid import Refinery
 		from game_instance import game
 		asteroid = game.game_map.asteroids[asteroid_id]
-		new_refinery = Refinery(asteroid, self.owner)
-		self.owner.resources -= Constants.refinery_price
+		if asteroid.refinery == None:
+			new_refinery = Refinery(asteroid, self.owner)
+			self.owner.resources -= Constants.refinery_price
 
 	def create_base(self, planet_id):
 		"""
@@ -182,8 +183,9 @@ class Ship(MapObject):
 		from game_instance import game
 		from planet import Base
 		planet = game.game_map.planets[planet_id]
-		new_base = Base(planet, self.owner)
-		self.owner.resources -= Constants.base_price
+		if planet.base == None:
+			new_base = Base(planet, self.owner)
+			self.owner.resources -= Constants.base_price
 
 class TestShip(unittest.TestCase):
 	pass

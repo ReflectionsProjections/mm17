@@ -166,6 +166,7 @@ def validate_ship_action(action, player, turn, resource_counter):
 			result = {'object': ship,
 					  'method': action['command'],
 					  'params': extract(['asteroid_id'], action['args'])}
+			# TODO Check if another ship has built a base/refinery
 			with game.action_list_lock:
 				game.actions[turn][player.auth].append(result)
 			ship.methods_used['create_refinery'] = True
@@ -176,6 +177,9 @@ def validate_ship_action(action, player, turn, resource_counter):
 		if ship.methods_used['create_base']:
 			return {'success':False, 
 					'message':'create_base action already used'}
+		elif turn == 0:
+			return {'success':False, 
+					'message':'create_base action can\'t be used first turn'}
 		elif resource_counter - Constants.base_price < 0:
 			return {'success':False, 
 					'message':'not enough resources'}
