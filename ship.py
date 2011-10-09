@@ -6,7 +6,7 @@ import random
 import Constants
 from player import Player
 from map_obj import MapObject
-from vector import distance, circle_in_rect
+from vector import distance, circle_in_rect, circle_collision
 
 # half of dispersion
 angle_fuzz = (2*pi)/16
@@ -78,6 +78,7 @@ class Ship(MapObject):
 		"""
 		from asteroid import Asteroid
 		from planet import Planet
+		from ship import Ship
 		width = Constants.weapon_width
 		length = self.weapon_range
 		mag = hypot(*direction)
@@ -121,6 +122,11 @@ class Ship(MapObject):
 			else:	
 				# Hit first in line, record id
 				hit = within_beam[0]
+				for o in within_beam:
+					for i in within_beam:
+						if isinstance(o, Ship) and o != i:
+							if circle_collision((o.position, o.size),(i.position, i.size)):
+								hit = o
 				if hasattr(hit, 'base') and hit.base != None:
 					hit = hit.base
 				if hasattr(hit, 'refinery') and hit.refinery != None:
